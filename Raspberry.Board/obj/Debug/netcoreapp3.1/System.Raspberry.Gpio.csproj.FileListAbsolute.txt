@@ -1,8 +1,0 @@
-/home/gigauser/Development/Dotnet/IoT/System.Raspberry.Gpio/bin/Debug/netcoreapp3.1/System.Raspberry.Gpio.deps.json
-/home/gigauser/Development/Dotnet/IoT/System.Raspberry.Gpio/bin/Debug/netcoreapp3.1/System.Raspberry.Gpio.dll
-/home/gigauser/Development/Dotnet/IoT/System.Raspberry.Gpio/bin/Debug/netcoreapp3.1/System.Raspberry.Gpio.pdb
-/home/gigauser/Development/Dotnet/IoT/System.Raspberry.Gpio/obj/Debug/netcoreapp3.1/System.Raspberry.Gpio.csproj.CoreCompileInputs.cache
-/home/gigauser/Development/Dotnet/IoT/System.Raspberry.Gpio/obj/Debug/netcoreapp3.1/System.Raspberry.Gpio.AssemblyInfoInputs.cache
-/home/gigauser/Development/Dotnet/IoT/System.Raspberry.Gpio/obj/Debug/netcoreapp3.1/System.Raspberry.Gpio.AssemblyInfo.cs
-/home/gigauser/Development/Dotnet/IoT/System.Raspberry.Gpio/obj/Debug/netcoreapp3.1/System.Raspberry.Gpio.dll
-/home/gigauser/Development/Dotnet/IoT/System.Raspberry.Gpio/obj/Debug/netcoreapp3.1/System.Raspberry.Gpio.pdb
