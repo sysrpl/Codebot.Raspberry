@@ -1,0 +1,11 @@
+<Project>
+  <Import Project="../../eng/Compilers.props" />
+  <Import Project="../../eng/Versions.props" />
+  <Import Project="../../eng/Analyzers.props" />
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);CS8321</NoWarn>
+    <DeterministicSourcePaths>false</DeterministicSourcePaths>
+    <IsPackable>false</IsPackable>
+    <MainLibraryPath>$(MSBuildThisFileDirectory)../System.Device.Gpio/</MainLibraryPath>
+  </PropertyGroup>
+</Project>

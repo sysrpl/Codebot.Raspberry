@@ -1,0 +1,7 @@
+#!/bin/bash
+DIR=${PWD##*/} 
+rm -rf ~/media/raspberry/tmp/$DIR/*
+mkdir ~/media/raspberry/tmp/$DIR
+cp -r bin/Debug/netcoreapp3.1/* ~/media/raspberry/tmp/$DIR/
+notify-send "Deployed $DIR"
+

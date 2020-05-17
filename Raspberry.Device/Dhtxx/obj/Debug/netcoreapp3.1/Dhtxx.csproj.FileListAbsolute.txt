@@ -1,0 +1,14 @@
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Device/Dhtxx/bin/Debug/netcoreapp3.1/Dhtxx.deps.json
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Device/Dhtxx/bin/Debug/netcoreapp3.1/Dhtxx.dll
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Device/Dhtxx/bin/Debug/netcoreapp3.1/Dhtxx.pdb
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Device/Dhtxx/bin/Debug/netcoreapp3.1/Raspberry.Board.dll
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Device/Dhtxx/bin/Debug/netcoreapp3.1/Raspberry.dll
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Device/Dhtxx/bin/Debug/netcoreapp3.1/Raspberry.pdb
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Device/Dhtxx/bin/Debug/netcoreapp3.1/Raspberry.Board.pdb
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Device/Dhtxx/obj/Debug/netcoreapp3.1/Dhtxx.csprojAssemblyReference.cache
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Device/Dhtxx/obj/Debug/netcoreapp3.1/Dhtxx.csproj.CoreCompileInputs.cache
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Device/Dhtxx/obj/Debug/netcoreapp3.1/Dhtxx.AssemblyInfoInputs.cache
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Device/Dhtxx/obj/Debug/netcoreapp3.1/Dhtxx.AssemblyInfo.cs
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Device/Dhtxx/obj/Debug/netcoreapp3.1/Dhtxx.csproj.CopyComplete
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Device/Dhtxx/obj/Debug/netcoreapp3.1/Dhtxx.dll
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Device/Dhtxx/obj/Debug/netcoreapp3.1/Dhtxx.pdb

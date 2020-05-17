@@ -1,0 +1,47 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raspberry.Board", "Raspberry.Board\Raspberry.Board.csproj", "{D1F771E6-A131-4A83-985E-9975BA5DDD49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raspberry", "Raspberry\Raspberry.csproj", "{DFC1B376-32F3-4E1C-833A-DA74BF035345}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Raspbery.Device", "Raspbery.Device", "{5A361178-AAD3-4407-A2D3-10E676E4BC95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dhtxx", "Raspberry.Device\Dhtxx\Dhtxx.csproj", "{E11EAF45-75BD-438A-B8E1-4CF25DE0C4C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{E20F9C91-664E-4482-9774-5E5B8C68C164}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterLcd", "Raspberry.Device\CharacterLcd\CharacterLcd.csproj", "{400B545C-503A-4584-BFF6-5CD61E4AB141}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D1F771E6-A131-4A83-985E-9975BA5DDD49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1F771E6-A131-4A83-985E-9975BA5DDD49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1F771E6-A131-4A83-985E-9975BA5DDD49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1F771E6-A131-4A83-985E-9975BA5DDD49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFC1B376-32F3-4E1C-833A-DA74BF035345}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFC1B376-32F3-4E1C-833A-DA74BF035345}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFC1B376-32F3-4E1C-833A-DA74BF035345}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFC1B376-32F3-4E1C-833A-DA74BF035345}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E11EAF45-75BD-438A-B8E1-4CF25DE0C4C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E11EAF45-75BD-438A-B8E1-4CF25DE0C4C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E11EAF45-75BD-438A-B8E1-4CF25DE0C4C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E11EAF45-75BD-438A-B8E1-4CF25DE0C4C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E20F9C91-664E-4482-9774-5E5B8C68C164}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E20F9C91-664E-4482-9774-5E5B8C68C164}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E20F9C91-664E-4482-9774-5E5B8C68C164}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E20F9C91-664E-4482-9774-5E5B8C68C164}.Release|Any CPU.Build.0 = Release|Any CPU
+		{400B545C-503A-4584-BFF6-5CD61E4AB141}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{400B545C-503A-4584-BFF6-5CD61E4AB141}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{400B545C-503A-4584-BFF6-5CD61E4AB141}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{400B545C-503A-4584-BFF6-5CD61E4AB141}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E11EAF45-75BD-438A-B8E1-4CF25DE0C4C2} = {5A361178-AAD3-4407-A2D3-10E676E4BC95}
+		{400B545C-503A-4584-BFF6-5CD61E4AB141} = {5A361178-AAD3-4407-A2D3-10E676E4BC95}
+	EndGlobalSection
+EndGlobal

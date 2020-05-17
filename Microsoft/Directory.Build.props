@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <Import Project="Sdk.props" Sdk="Microsoft.DotNet.Arcade.Sdk" />
+  <Import Project="$(RepositoryEngineeringDir)Compilers.props" />
+  <Import Project="$(RepositoryEngineeringDir)Analyzers.props" />
+
+  <PropertyGroup>
+    <Copyright>$(CopyrightNetFoundation)</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <MainLibraryPath>$(MSBuildThisFileDirectory)src/System.Device.Gpio/</MainLibraryPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Language>C#</Language>
+    <LangVersion>Latest</LangVersion>
+    <!-- Generate snupkg package -->
+    <IncludeSymbols>true</IncludeSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Include license and third party files to packages -->
+    <Content Include="$(RepoRoot)THIRD-PARTY-NOTICES.TXT" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>

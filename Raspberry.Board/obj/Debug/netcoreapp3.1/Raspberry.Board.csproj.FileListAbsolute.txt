@@ -1,0 +1,12 @@
+/home/gigauser/Development/Dotnet/IoT/Raspberry.Board/obj/Debug/netcoreapp3.1/Raspberry.Board.csprojAssemblyReference.cache
+/home/gigauser/Development/Dotnet/IoT/Raspberry.Board/obj/Debug/netcoreapp3.1/Raspberry.Board.csproj.CoreCompileInputs.cache
+/home/gigauser/Development/Dotnet/IoT/Raspberry.Board/obj/Debug/netcoreapp3.1/Raspberry.Board.AssemblyInfoInputs.cache
+/home/gigauser/Development/Dotnet/IoT/Raspberry.Board/obj/Debug/netcoreapp3.1/Raspberry.Board.AssemblyInfo.cs
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Board/bin/Debug/netcoreapp3.1/Raspberry.Board.deps.json
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Board/bin/Debug/netcoreapp3.1/Raspberry.Board.dll
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Board/bin/Debug/netcoreapp3.1/Raspberry.Board.pdb
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Board/obj/Debug/netcoreapp3.1/Raspberry.Board.csproj.CoreCompileInputs.cache
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Board/obj/Debug/netcoreapp3.1/Raspberry.Board.AssemblyInfoInputs.cache
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Board/obj/Debug/netcoreapp3.1/Raspberry.Board.AssemblyInfo.cs
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Board/obj/Debug/netcoreapp3.1/Raspberry.Board.dll
+/home/gigauser/Development/Dotnet/Raspberry/Raspberry.Board/obj/Debug/netcoreapp3.1/Raspberry.Board.pdb

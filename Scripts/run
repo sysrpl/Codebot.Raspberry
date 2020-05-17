@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [ -z "$1" ] ; then
+    echo 'Usage: run folder'
+    exit 1
+fi
+
+if [ ! -d $1 ] ; then
+    echo "Cannot find folder '$1'"
+    exit 1
+fi
+
+cd $1
+dotnet $1.dll
+cd ..

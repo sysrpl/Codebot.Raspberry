@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <EnableDefaultItems>false</EnableDefaultItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(MainLibraryPath)System.Device.Gpio.csproj" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)../SoftPwm/SoftwarePwm.csproj" />
+    <Compile Include="DCMotor.cs" />
+    <Compile Include="DCMotor3Pin.cs" />
+    <Compile Include="DCMotor2PinNoEnable.cs" />
+    <None Include="README.md" />
+  </ItemGroup>
+
+</Project>

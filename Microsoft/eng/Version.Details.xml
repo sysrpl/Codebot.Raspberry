@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Dependencies>
+  <ToolsetDependencies>
+    <Dependency Name="Microsoft.DotNet.Arcade.Sdk" Version="5.0.0-beta.20224.11">
+      <Uri>https://github.com/dotnet/arcade</Uri>
+      <Sha>ff09a8a065a615c2fde8df82106bcd1f0fcb32aa</Sha>
+    </Dependency>
+    <Dependency Name="Microsoft.DotNet.Helix.Sdk" Version="5.0.0-beta.20224.11">
+      <Uri>https://github.com/dotnet/arcade</Uri>
+      <Sha>ff09a8a065a615c2fde8df82106bcd1f0fcb32aa</Sha>
+    </Dependency>
+    <Dependency Name="Microsoft.DotNet.GenAPI" Version="5.0.0-beta.20224.11">
+      <Uri>https://github.com/dotnet/arcade</Uri>
+      <Sha>ff09a8a065a615c2fde8df82106bcd1f0fcb32aa</Sha>
+    </Dependency>
+  </ToolsetDependencies>
+  <!-- ProductDependencies -->
+  <ProductDependencies>
+    <Dependency Name="System.Drawing.Common" Version="4.6.0">
+      <Uri>https://github.com/dotnet/corefx</Uri>
+      <Sha>4ac4c0367003fe3973a3648eb0715ddb0e3bbcea</Sha>
+    </Dependency>
+    <Dependency Name="System.IO.Ports" Version="4.6.0">
+      <Uri>https://github.com/dotnet/corefx</Uri>
+      <Sha>4ac4c0367003fe3973a3648eb0715ddb0e3bbcea</Sha>
+    </Dependency>
+    <Dependency Name="Microsoft.Win32.Registry" Version="4.6.0">
+      <Uri>https://github.com/dotnet/corefx</Uri>
+      <Sha>4ac4c0367003fe3973a3648eb0715ddb0e3bbcea</Sha>
+    </Dependency>
+    <Dependency Name="System.Runtime.WindowsRuntime" Version="4.6.0">
+      <Uri>https://github.com/dotnet/corefx</Uri>
+      <Sha>4ac4c0367003fe3973a3648eb0715ddb0e3bbcea</Sha>
+    </Dependency>
+  </ProductDependencies>
+</Dependencies>
