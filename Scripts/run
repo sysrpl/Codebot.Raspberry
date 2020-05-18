@@ -11,5 +11,15 @@ if [ ! -d $1 ] ; then
 fi
 
 cd $1
-dotnet $1.dll
+
+if [ -d wwwroot ] ; then
+	if [ -z "$2" ] ; then
+		dotnet $1.dll --urls=http://0.0.0.0:5000
+	else
+		dotnet $1.dll --urls=http://0.0.0.0:$2
+	fi
+else    
+    dotnet $1.dll
+fi
+
 cd ..

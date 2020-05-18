@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterLcd", "Raspberry.Device\CharacterLcd\CharacterLcd.csproj", "{400B545C-503A-4584-BFF6-5CD61E4AB141}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebTest", "WebTest\WebTest.csproj", "{B75394D4-C186-41FF-B85F-D2826F8BF76D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codebot.Web", "..\Web\Codebot.Web\Codebot.Web.csproj", "{5C072406-0C59-429E-8718-4DA2EFE3F189}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{400B545C-503A-4584-BFF6-5CD61E4AB141}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{400B545C-503A-4584-BFF6-5CD61E4AB141}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{400B545C-503A-4584-BFF6-5CD61E4AB141}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B75394D4-C186-41FF-B85F-D2826F8BF76D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B75394D4-C186-41FF-B85F-D2826F8BF76D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B75394D4-C186-41FF-B85F-D2826F8BF76D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B75394D4-C186-41FF-B85F-D2826F8BF76D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C072406-0C59-429E-8718-4DA2EFE3F189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C072406-0C59-429E-8718-4DA2EFE3F189}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C072406-0C59-429E-8718-4DA2EFE3F189}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C072406-0C59-429E-8718-4DA2EFE3F189}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E11EAF45-75BD-438A-B8E1-4CF25DE0C4C2} = {5A361178-AAD3-4407-A2D3-10E676E4BC95}
