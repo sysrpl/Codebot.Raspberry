@@ -22,7 +22,7 @@ mv id_rsa.pub authorized_keys
 chmod 600 authorized_keys
 ```
 
-On your Linux machine temporarily connect to you rPi using ssh with password authentication and enabled sshfs for secure file transfers. Where you see ``1.2.3.4`` substitute it the ip address of your Pi:
+On your Linux machine temporarily connect to your Pi using ssh with password authentication and enabled sshfs for secure file transfers. Where you see ``1.2.3.4`` substitute it the ip address of your Pi:
 
 ```bash
 # go to you home folder and install the tool for sshfs
