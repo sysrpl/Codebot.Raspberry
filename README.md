@@ -8,7 +8,7 @@ Before using this repository you should configure your Pi to require a ssh key f
 
 On your Pi should enable ssh, sshfs, and generate a secure key on using these commands:
 
-```console
+```bash
 # enable and start the ssh server
 sudo systemctl enable ssh
 sudo systemctl start ssh
@@ -24,7 +24,7 @@ chmod 600 authorized_keys
 
 On your Linux machine temporarily connect to you rPi using ssh with password authentication and enabled sshfs for secure file transfers. Where you see ``1.2.3.4`` substitute it the ip address of your Pi:
 
-```console
+```bash
 # go to you home folder and install the tool for sshfs
 cd ~
 sudo apt install sshfs
@@ -41,7 +41,7 @@ chmod 600
 
 On your Linux machine using a text editor to add these lines to  ``~/.ssh/config``:
 
-```console
+```bash
 Host pi
     HostName 1.2.3.4
     User pi
@@ -50,13 +50,13 @@ Host pi
 
 Now that we have ssh configured you should be able to connect to your Pi using a secure key:
 
-```console
+```bash
 ssh pi
 ```
 
 Finally on your Pi edit ``sshd_config`` to remove password authentication:
 
-```console
+```bash
 sudo nano /etc/ssh/sshd_config.
 # edit these values
 PasswordAuthentication no
@@ -67,6 +67,6 @@ sudo reboot
 
 If you reboot your Linux computer you can reconnect to the Pi file system using:
 
-```console
+```bash
 ssh pi:/home/pi ~/media/raspberry
 ```
