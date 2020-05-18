@@ -54,7 +54,7 @@ Now that we have ssh configure you should be able to connect to your Pi using a 
 ssh pi
 ```
 
-Finally edit your Pi sshd_config to remove password authentication:
+Finally edit your Pi ``sshd_config`` to remove password authentication:
 
 ```console
 sudo nano /etc/ssh/sshd_config.
@@ -63,4 +63,10 @@ PasswordAuthentication no
 PubkeyAuthentication yes
 # save and reboot your Pi
 sudo reboot
+```
+
+If you reboot your Linux computer you can reconnect to the Pi file system using:
+
+```console
+ssh pi:/home/pi ~/media/raspberry
 ```
