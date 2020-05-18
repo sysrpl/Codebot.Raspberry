@@ -7,7 +7,7 @@ This repository contains projects and tools for working with Raspberry Pi GPIO p
 Before using this repository you should configure your Pi to require a ssh key for secure and fast remote connections.
 
 <details>
-  <summary>How to configure you Pi to support ssh with key files</summary>
+  <summary>How to configure your Pi to support ssh with key files</summary>
 On your Pi should enable ssh, sshfs, and generate a secure key on using these commands:
 
 ```bash
@@ -23,7 +23,9 @@ ssh-keygen -t rsa
 mv id_rsa.pub authorized_keys
 chmod 600 authorized_keys
 ```
-
+</details>
+<details>
+  <summary>How to configure your Linux computer to use the Pi key files</summary>
 On your Linux machine temporarily connect to your Pi using ssh with password authentication and enabled sshfs for secure file transfers. Where you see ``1.2.3.4`` substitute it with  the ip address of your Pi:
 
 ```bash
@@ -49,6 +51,9 @@ Host pi
     User pi
     IdentityFile ~/.ssh/pi.pem
 ```
+</details>
+<details>
+  <summary>Testing and disabling password authentication</summary>
 
 Now that we have ssh configured you should be able to connect to your Pi using a secure key:
 
