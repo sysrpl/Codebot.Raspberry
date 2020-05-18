@@ -39,7 +39,7 @@ touch .ssh/config
 chmod 600 
 ```
 
-On your Linux machine using a text editor to add these lines to  ``~/.ssh/config``:
+On your Linux machine use a text editor to add these lines to  ``~/.ssh/config``:
 
 ```bash
 Host pi
