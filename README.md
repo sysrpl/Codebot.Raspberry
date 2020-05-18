@@ -32,7 +32,7 @@ On your Linux machine temporarily connect to your Pi using ssh with password aut
 # go to you home folder and install the tool for sshfs
 cd ~
 sudo apt install sshfs
-# create a mount poitn for your Raspberry Pi home folder
+# create a mount point for your Raspberry Pi home folder
 mkdir -p media/raspberry
 sshfs pi@1.2.3.4:/home/pi media/raspberry
 # setup ssh with the correct key on your Linux machine
