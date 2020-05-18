@@ -45,7 +45,7 @@ On your Linux machine use a text editor to add these lines to  ``~/.ssh/config``
 Host pi
     HostName 1.2.3.4
     User pi
-    IdentityFile ~/.ssh/computer.pem
+    IdentityFile ~/.ssh/pi.pem
 ```
 
 Now that we have ssh configured you should be able to connect to your Pi using a secure key:
