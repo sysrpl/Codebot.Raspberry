@@ -33,7 +33,7 @@ mkdir -p media/raspberry
 sshfs pi@1.2.3.4:/home/pi media/raspberry
 # setup ssh with the correct key on your Linux machine
 mkdir .ssh
-openssl rsa -in media/raspberryid_rsa -outform pem > .ssh/pi.pem
+openssl rsa -in media/raspberry/.ssh/id_rsa -outform pem > .ssh/pi.pem
 chmod 600 .ssh/pi.pem
 touch .ssh/config
 chmod 600 
