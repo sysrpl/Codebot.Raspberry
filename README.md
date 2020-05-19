@@ -8,6 +8,7 @@ Before using this repository you should configure your Pi to require a ssh key f
 
 <details>
   <summary>How to configure your Pi to support ssh with key files</summary>
+  
 On your Pi should enable ssh, sshfs, and generate a secure key on using these commands:
 
 ```bash
@@ -20,27 +21,31 @@ sudo apt install sshfs
 mkdir /home/pi/.ssh
 cd /home/pi/.ssh
 ssh-keygen -t rsa
+# make our new key the one and only and set permissions
 mv id_rsa.pub authorized_keys
-chmod 600 authorized_keys
+chmod 600 *
 ```
 </details>
 <details>
   <summary>How to configure your Linux computer to use the Pi key files</summary>
+  
 On your Linux machine temporarily connect to your Pi using ssh with password authentication and enabled sshfs for secure file transfers. Where you see ``1.2.3.4`` substitute it with  the ip address of your Pi:
 
 ```bash
 # go to you home folder and install the tool for sshfs
-cd ~
 sudo apt install sshfs
 # create a mount point for your Raspberry Pi home folder
-mkdir -p media/raspberry
-sshfs pi@1.2.3.4:/home/pi media/raspberry
+mkdir -p ~/media/raspberry
+sshfs pi@1.2.3.4:/home/pi ~/media/raspberry
 # setup ssh with the correct key on your Linux machine
-mkdir .ssh
-openssl rsa -in media/raspberry/.ssh/id_rsa -outform pem > .ssh/pi.pem
-chmod 600 .ssh/pi.pem
+mkdir ~/.ssh
+cd ~/.ssh
+cp ~/media/raspberry/.ssh/id_rsa id_rsa_pi
+openssl rsa -in id_rsa -outform pem  > pi.pem
+# delete the temporary file and set permissions
+rm id_rsa_pi
 touch .ssh/config
-chmod 600 
+chmod 600 * 
 ```
 
 On your Linux machine use a text editor to add these lines to  ``~/.ssh/config``:
