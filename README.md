@@ -41,7 +41,7 @@ sshfs pi@1.2.3.4:/home/pi ~/media/raspberry
 mkdir ~/.ssh
 cd ~/.ssh
 cp ~/media/raspberry/.ssh/id_rsa id_rsa_pi
-openssl rsa -in id_rsa -outform pem  > pi.pem
+openssl rsa -in id_rsa_pi -outform pem  > pi.pem
 # delete the temporary file and set permissions
 rm id_rsa_pi
 touch .ssh/config
