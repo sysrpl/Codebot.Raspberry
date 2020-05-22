@@ -45,11 +45,8 @@ namespace Raspberry.Device
                 for (var i = 0; i < pixels.Count; i++)
                 {
                     p = pixels[i];
-                    if (p.Changed)
-                    {
-                        data.SetPixel(i, p.Color);
-                        p.Changed = false;
-                    }
+                    data.SetPixel(i, p.Color);
+                    p.Changed = false;
                 }
             }
         }

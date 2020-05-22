@@ -5,6 +5,8 @@ namespace Raspberry.Device
 {
     internal class NeoPixelData
     {
+        const int BytesPerComponent = 3;
+        const int BytesPerPixel = BytesPerComponent * 3;
         static readonly byte[] lookup = new byte[256 * BytesPerComponent];
 
         static NeoPixelData()
@@ -20,8 +22,6 @@ namespace Raspberry.Device
             }
         }
 
-        private const int BytesPerComponent = 3;
-        private const int BytesPerPixel = BytesPerComponent * 3;
         // The Neo Pixels require a 50us delay (all zeros) after. Since Spi freq is not exactly
         // as requested 100us is used here with good practical results. 100us @ 2.4Mbps and 8bit
         // data means we have to add 30 bytes of zero padding.

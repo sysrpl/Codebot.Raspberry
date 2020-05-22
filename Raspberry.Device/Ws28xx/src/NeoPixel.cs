@@ -32,7 +32,7 @@ namespace Raspberry.Device
 
         public Color Color
         {
-            get => Color;
+            get => color;
             set 
             {
                 color = value;
