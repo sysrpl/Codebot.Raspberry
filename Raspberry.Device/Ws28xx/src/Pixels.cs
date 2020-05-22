@@ -56,8 +56,10 @@ namespace Raspberry.Device
             get => count;
             set
             {
-                data = new byte[count * BytesPerPixel + ResetDelayInBytes];
+                if (value == count)
+                    return;
                 count = value;
+                data = new byte[count * BytesPerPixel + ResetDelayInBytes];
                 Clear();
             }
         }
