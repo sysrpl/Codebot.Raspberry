@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Raspberry\Raspberry.csproj" />
+    <ProjectReference Include="..\..\Raspberry.Board\Raspberry.Board.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
