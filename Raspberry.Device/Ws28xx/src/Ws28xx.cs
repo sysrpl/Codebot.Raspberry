@@ -1,21 +1,31 @@
-﻿using System.Drawing;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
 using Raspberry.Board.Spi;
+using Raspberry.Common;
 
 namespace Raspberry.Device
 {
     /// <summary>
-    /// The Ws28xx class represents a strand of neopixels. This class uses
-    /// SPI to communicate efficiently and assumes use of pin GPIO 10
+    /// Represents base class for WS28XX LED drivers (i.e. WS2812B or WS2808)
     /// </summary>
     public class Ws28xx
     {
-        SpiDevice device;
-        Pixels pixels;
+        /// <summary>
+        /// SPI device used for communication with the LED driver
+        /// </summary>
+        protected readonly SpiDevice device;
 
         /// <summary>
-        /// Create a new device with count number of pixels
+        /// Backing image to be updated on the driver
         /// </summary>
-        public Ws28xx(int count)
+        public BitmapImage Image { get; protected set; }
+
+        /// <summary>
+        /// Constructs Ws28xx instance
+        /// </summary>
+        public Ws28xx(int width)
         {
             var settings = new SpiConnectionSettings(0, 0)
             {
@@ -23,33 +33,15 @@ namespace Raspberry.Device
                 Mode = SpiMode.Mode0,
                 DataBitLength = 8
             };
+
+            // Create a neopixel stick on spi 0.0
             device = SpiDevice.Create(settings);
-            pixels = new Pixels(count);
+            Image = new BitmapImage(width);
         }
 
         /// <summary>
-        /// The number of pixels in this device
+        /// Sends backing image to the LED driver
         /// </summary>
-        public int Count
-        {
-            get => pixels.Count;
-            set => pixels.Count = value;
-        }
-
-        /// <summary>
-        /// Set the clor of a pixel at the specified index
-        /// </summary>
-        public void SetPixel(int index, Color color) => pixels.SetPixel(index, color);
-
-        /// <summary>
-        /// Clears the underlying data usng a specified color
-        /// </summary>
-        public void Clear(Color color = default) => pixels.Clear(color);
-
-
-        /// <summary>
-        /// Update the neopixels with the current data
-        /// </summary>
-        public void Update() => device.Write(pixels.GetData());
+        public void Update() => device.Write(Image.Data);
     }
 }
