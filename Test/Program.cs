@@ -1,6 +1,7 @@
 ﻿using System;
 using Raspberry;
 using Raspberry.Device;
+using Test.Hardware;
 
 namespace Test
 {
@@ -55,11 +56,40 @@ namespace Test
             }
         }
 
+        static void Neopixels()
+        {
+
+            Console.WriteLine("What GPIO pin do you want to use for neopixels?");
+            var input = Console.ReadLine().Trim();
+            var pin = 18;
+            if (int.TryParse(input, out pin) && (Pi.Gpio.Pin(pin).Valid))
+            {
+                var n = new NeoTest(pin);
+                Console.WriteLine("How many neopixels do you want to turn on?");
+                input = Console.ReadLine().Trim();
+                int count;
+                if (int.TryParse(input, out count) && (count > 0) && (count < 100))
+                {
+                    n.TurnOn(count);
+                    Console.WriteLine("Press enter to quit");
+                    Console.ReadLine();
+                    Console.WriteLine("Turning off pixels");
+                    n.TurnOff(count);
+                }
+                else
+                 Console.WriteLine($"'{input}' is not a valid number of neopixels");
+
+            }
+            else
+                Console.WriteLine($"'{input}' is not a valid pin");
+        }
+
         static void Main(string[] args)
         {
             Console.WriteLine("Raspberry Pi Testing");
             Pi.Gpio.Diagram();
-            Display();
+            Neopixels();
+            // Display();
             // Weather();
         }
     }

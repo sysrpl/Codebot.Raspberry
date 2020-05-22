@@ -4,6 +4,9 @@
     <ProjectReference Include="..\..\Raspberry\Raspberry.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="README.md" />
+  </ItemGroup>
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
