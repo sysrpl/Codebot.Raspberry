@@ -19,8 +19,7 @@ We turn on certain pin protocols by editing ``/boot/config.txt``:
 ```console
 # turn on pwm one channel GPIO18
 dtoverlay=pwm
-```
-# turn on spi and configure it it to work with the correct frequencies
+# turn on spi and configure it
 dtparam=spi=on
 core_freq=250
 core_freq_min=250
