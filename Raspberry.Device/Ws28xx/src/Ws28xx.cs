@@ -1,8 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,14 +6,73 @@ using Raspberry.Board.Spi;
 
 namespace Raspberry.Device
 {
+    /// <summary>
+    /// The Ws28xx device class represents a strip of ws28xx neopixels
+    /// </summary>
+    /// <remarks>This device communicates with neopixels using SPI over GPIO 10</remarks>
     public sealed class Ws28xx : IDisposable, IEnumerable<NeoPixel>
     {
-        List<NeoPixel> pixels;
-        SpiDevice device;
-        NeoPixelData data;
 
+        /// <summary>
+        /// Private class used to manage neopixel strip data
+        /// </summary>
+        private class PixelData
+        {
+            const int BytesPerComponent = 3;
+            const int BytesPerPixel = BytesPerComponent * 3;
+            static readonly byte[] lookup = new byte[256 * BytesPerComponent];
+
+            static PixelData()
+            {
+                for (int i = 0; i < 256; i++)
+                {
+                    int data = 0;
+                    for (int j = 7; j >= 0; j--)
+                        data = (data << 3) | 0b100 | ((i >> j) << 1) & 2;
+                    lookup[i * BytesPerComponent + 0] = unchecked((byte)(data >> 16));
+                    lookup[i * BytesPerComponent + 1] = unchecked((byte)(data >> 8));
+                    lookup[i * BytesPerComponent + 2] = unchecked((byte)(data >> 0));
+                }
+            }
+
+            // The Neo Pixels require a 50us delay (all zeros) after. Since Spi freq is not exactly
+            // as requested 100us is used here with good practical results. 100us @ 2.4Mbps and 8bit
+            // data means we have to add 30 bytes of zero padding.
+            private const int ResetDelayInBytes = 30;
+
+            byte[] data;
+            public Span<byte> Data => data;
+
+            public void Resize(int count)
+            {
+                data = new byte[count * BytesPerPixel + ResetDelayInBytes];
+            }
+
+            public void SetPixel(int index, Color color)
+            {
+                var offset = index * BytesPerPixel;
+                data[offset++] = lookup[color.G * BytesPerComponent + 0];
+                data[offset++] = lookup[color.G * BytesPerComponent + 1];
+                data[offset++] = lookup[color.G * BytesPerComponent + 2];
+                data[offset++] = lookup[color.R * BytesPerComponent + 0];
+                data[offset++] = lookup[color.R * BytesPerComponent + 1];
+                data[offset++] = lookup[color.R * BytesPerComponent + 2];
+                data[offset++] = lookup[color.B * BytesPerComponent + 0];
+                data[offset++] = lookup[color.B * BytesPerComponent + 1];
+                data[offset++] = lookup[color.B * BytesPerComponent + 2];
+            }
+        }
+
+        PixelData data;
+        SpiDevice device;
+        List<NeoPixel> pixels;
+
+        /// <summary>
+        /// Create a new strip of count neopixels
+        /// </summary>
         public Ws28xx(int count)
         {
+            data = new PixelData();
             var settings = new SpiConnectionSettings(0, 0)
             {
                 ClockFrequency = 2_400_000,
@@ -29,6 +84,9 @@ namespace Raspberry.Device
             Count = count;
         }
 
+        /// <summary>
+        /// Get or set the number of neopixels in the strip
+        /// </summary>
         public int Count
         {
             get => pixels.Count;
@@ -40,7 +98,7 @@ namespace Raspberry.Device
                     pixels.Add(new NeoPixel());
                 if (pixels.Count > value)
                     pixels.RemoveRange(pixels.Count, value - pixels.Count);
-                data = new NeoPixelData(value);
+                data.Resize(value);
                 NeoPixel p;
                 for (var i = 0; i < pixels.Count; i++)
                 {
@@ -51,17 +109,26 @@ namespace Raspberry.Device
             }
         }
 
+        /// <summary>
+        /// Gets or sets a neopixel by index
+        /// </summary>
         public NeoPixel this[int index] 
         { 
             get => pixels[index]; 
             set => pixels[index].Color = value.Color;
         }
 
+        /// <summary>
+        /// Turn of all neopixels
+        /// </summary>
         public void Reset() 
         {
             foreach (var p in pixels) p.Color = Color.Black;
         }
 
+        /// <summary>
+        /// Send color information to all the neopixels in the strip
+        /// </summary>
         public void Update()
         {
             NeoPixel p;

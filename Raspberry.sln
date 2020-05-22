@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codebot.Web", "..\Web\Codeb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ws28xx", "Raspberry.Device\Ws28xx\Ws28xx.csproj", "{47F1773B-C80D-490A-B993-9B14AA6E5C42}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "WebTest", "WebTest\WebTest.csproj", "{36BA3F2C-3D1E-4EA5-BC5C-9C1C50F33075}"
+Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "WebTest", "WebTest\WebTest.csproj", "{EFE733F9-712E-43D2-84BD-3CB6CD2CA998}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,10 +53,10 @@ Global
 		{47F1773B-C80D-490A-B993-9B14AA6E5C42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47F1773B-C80D-490A-B993-9B14AA6E5C42}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47F1773B-C80D-490A-B993-9B14AA6E5C42}.Release|Any CPU.Build.0 = Release|Any CPU
-		{36BA3F2C-3D1E-4EA5-BC5C-9C1C50F33075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{36BA3F2C-3D1E-4EA5-BC5C-9C1C50F33075}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{36BA3F2C-3D1E-4EA5-BC5C-9C1C50F33075}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{36BA3F2C-3D1E-4EA5-BC5C-9C1C50F33075}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFE733F9-712E-43D2-84BD-3CB6CD2CA998}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFE733F9-712E-43D2-84BD-3CB6CD2CA998}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFE733F9-712E-43D2-84BD-3CB6CD2CA998}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFE733F9-712E-43D2-84BD-3CB6CD2CA998}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E11EAF45-75BD-438A-B8E1-4CF25DE0C4C2} = {5A361178-AAD3-4407-A2D3-10E676E4BC95}

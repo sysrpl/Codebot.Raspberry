@@ -1,5 +1,5 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
+using Raspberry.Common;
 
 namespace Raspberry.Device
 {
@@ -29,6 +29,7 @@ namespace Raspberry.Device
         public bool Changed { get; set; }
 
         Color color;
+        double hue;
 
         public Color Color
         {
@@ -36,8 +37,47 @@ namespace Raspberry.Device
             set 
             {
                 color = value;
+                hue = color.GetHue() / 360;
                 Changed = true;
             }
+        }
+
+        public NeoPixel Hue(double h)
+        {
+            Color = new HSL(h, 1, 0.5);
+            return this;
+        }
+
+        public NeoPixel Lightness(double l)
+        {
+            HSL hsl = Color;
+            hsl.Hue = hue;
+            hsl.Luminosity = l;
+            color = hsl;
+            Changed = true;
+            return this;
+        }
+
+        public NeoPixel Saturation(double s)
+        {
+            HSL hsl = Color;
+            hsl.Hue = hue;
+            hsl.Saturation= s;
+            color = hsl;
+            Changed = true;
+            return this;
+        }
+
+        public NeoPixel Rgb(int color)
+        {
+            Color = Color.FromArgb(color | (0xFF << 24));
+            return this;
+        }
+
+        public NeoPixel Rgb(byte r, byte g, byte b)
+        {
+            Color = Color.FromArgb( r, g, b);
+            return this;
         }
     }
 }
