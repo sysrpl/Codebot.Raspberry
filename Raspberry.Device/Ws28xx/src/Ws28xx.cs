@@ -2,7 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Raspberry.Spi;
+using Raspberry.Board.Spi;
+using Raspberry.Common;
 
 namespace Raspberry.Device
 {

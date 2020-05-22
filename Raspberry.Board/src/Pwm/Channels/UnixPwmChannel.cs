@@ -131,9 +131,9 @@ namespace Raspberry.Board.Pwm.Channels
                 DutyCycle = 0;
             }
 
-            _frequencyWriter.BaseStream.SetLength(0);
+            //_frequencyWriter.BaseStream.SetLength(0);
             _frequencyWriter.Write(periodInNanoseconds);
-            _frequencyWriter.Flush();
+            //_frequencyWriter.Flush();
             _frequency = frequency;
 
             DutyCycle = newDutyCycle;
@@ -152,9 +152,9 @@ namespace Raspberry.Board.Pwm.Channels
 
             // In Linux, the period needs to be a whole number and can't have decimal point.
             int dutyCycleInNanoseconds = GetDutyCycleOnTimeNs(GetPeriodInNanoseconds(_frequency), dutyCycle);
-            _dutyCycleWriter.BaseStream.SetLength(0);
+            //_dutyCycleWriter.BaseStream.SetLength(0);
             _dutyCycleWriter.Write(dutyCycleInNanoseconds);
-            _dutyCycleWriter.Flush();
+            //_dutyCycleWriter.Flush();
             _dutyCycle = dutyCycle;
         }
 
