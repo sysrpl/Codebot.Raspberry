@@ -2,30 +2,21 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
 using Raspberry.Board.Spi;
-using Raspberry.Common;
 
 namespace Raspberry.Device
 {
-    /// <summary>
-    /// Represents base class for WS28XX LED drivers (i.e. WS2812B or WS2808)
-    /// </summary>
-    public class Ws28xx
+    public sealed class Ws28xx : IDisposable, IEnumerable<NeoPixel>
     {
-        /// <summary>
-        /// SPI device used for communication with the LED driver
-        /// </summary>
-        protected readonly SpiDevice device;
+        List<NeoPixel> pixels;
+        SpiDevice device;
+        NeoPixelData data;
 
-        /// <summary>
-        /// Backing image to be updated on the driver
-        /// </summary>
-        public BitmapImage Image { get; protected set; }
-
-        /// <summary>
-        /// Constructs Ws28xx instance
-        /// </summary>
-        public Ws28xx(int width)
+        public Ws28xx(int count)
         {
             var settings = new SpiConnectionSettings(0, 0)
             {
@@ -33,15 +24,81 @@ namespace Raspberry.Device
                 Mode = SpiMode.Mode0,
                 DataBitLength = 8
             };
-
-            // Create a neopixel stick on spi 0.0
             device = SpiDevice.Create(settings);
-            Image = new BitmapImage(width);
+            pixels = new List<NeoPixel>();
+            Count = count;
         }
 
-        /// <summary>
-        /// Sends backing image to the LED driver
-        /// </summary>
-        public void Update() => device.Write(Image.Data);
+        public int Count
+        {
+            get => pixels.Count;
+            set 
+            {
+                if (value == pixels.Count)
+                    return;
+                while (pixels.Count < value)
+                    pixels.Add(new NeoPixel());
+                if (pixels.Count > value)
+                    pixels.RemoveRange(pixels.Count, value - pixels.Count);
+                data = new NeoPixelData(value);
+                NeoPixel p;
+                for (var i = 0; i < pixels.Count; i++)
+                {
+                    p = pixels[i];
+                    if (p.Changed)
+                    {
+                        data.SetPixel(i, p.Color);
+                        p.Changed = false;
+                    }
+                }
+            }
+        }
+
+        public NeoPixel this[int index] 
+        { 
+            get => pixels[index]; 
+            set => pixels[index].Color = value.Color;
+        }
+
+        public void Reset() 
+        {
+            foreach (var p in pixels) p.Color = Color.Black;
+        }
+
+        public void Update()
+        {
+            NeoPixel p;
+            for (var i = 0; i < pixels.Count; i++)
+            {
+                p = pixels[i];
+                if (p.Changed)
+                {
+                    data.SetPixel(i, p.Color);
+                    p.Changed = false;
+                }
+            }
+            device.Write(data.Data);
+        }
+
+        #region interfaces
+        bool disposed;
+
+        public void Dispose()
+        {
+            if (!disposed)
+                device.Dispose();
+            disposed = true;
+        }
+
+        public IEnumerator<NeoPixel> GetEnumerator()
+        {
+            return ((IEnumerable<NeoPixel>)pixels).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable<NeoPixel>)pixels).GetEnumerator();
+        }
+        #endregion
     }
 }
