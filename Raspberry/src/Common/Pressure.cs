@@ -12,17 +12,17 @@ namespace Raspberry.Common
     /// </summary>
     public struct Pressure : IEquatable<Pressure>, IComparable<Pressure>, IComparable
     {
-        private const double MillibarRatio = 0.01;
-        private const double KilopascalRatio = 0.001;
-        private const double HectopascalRatio = 0.01;
-        private const double InchOfMercuryRatio = 0.000295301;
-        private const double MillimeterOfMercuryRatio = 0.00750062;
-        private const double MeanSeaLevelPascal = 101325;
-        private readonly double _pascal;
+        const double MillibarRatio = 0.01;
+        const double KilopascalRatio = 0.001;
+        const double HectopascalRatio = 0.01;
+        const double InchOfMercuryRatio = 0.000295301;
+        const double MillimeterOfMercuryRatio = 0.00750062;
+        const double MeanSeaLevelPascal = 101325;
+        readonly double pascal;
 
         private Pressure(double pascal)
         {
-            _pascal = pascal;
+            this.pascal = pascal;
         }
 
         /// <summary>
@@ -33,32 +33,32 @@ namespace Raspberry.Common
         /// <summary>
         /// Pressure in Pa
         /// </summary>
-        public double Pascal => _pascal;
+        public double Pascal => pascal;
 
         /// <summary>
         /// Pressure in mbar
         /// </summary>
-        public double Millibar => MillibarRatio * _pascal;
+        public double Millibar => MillibarRatio * pascal;
 
         /// <summary>
         /// Pressure in kPa
         /// </summary>
-        public double Kilopascal => KilopascalRatio * _pascal;
+        public double Kilopascal => KilopascalRatio * pascal;
 
         /// <summary>
         /// Pressure in hPa
         /// </summary>
-        public double Hectopascal => HectopascalRatio * _pascal;
+        public double Hectopascal => HectopascalRatio * pascal;
 
         /// <summary>
         /// Pressure in inHg
         /// </summary>
-        public double InchOfMercury => InchOfMercuryRatio * _pascal;
+        public double InchOfMercury => InchOfMercuryRatio * pascal;
 
         /// <summary>
         /// Pressure in mmHg
         /// </summary>
-        public double MillimeterOfMercury => MillimeterOfMercuryRatio * _pascal;
+        public double MillimeterOfMercury => MillimeterOfMercuryRatio * pascal;
 
         /// <summary>
         /// Creates Pressure instance from pressure in Pa
@@ -133,7 +133,7 @@ namespace Raspberry.Common
         /// </summary>
         public bool Equals(Pressure other)
         {
-            return _pascal.Equals(other._pascal);
+            return pascal.Equals(other.pascal);
         }
 
         /// <summary>
@@ -147,13 +147,13 @@ namespace Raspberry.Common
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return _pascal.GetHashCode();
+            return pascal.GetHashCode();
         }
 
         /// <inheritdoc cref="IComparable{T}"/>
         public int CompareTo(Pressure other)
         {
-            return _pascal.CompareTo(other._pascal);
+            return pascal.CompareTo(other.pascal);
         }
 
         /// <inheritdoc cref="IComparable"/>

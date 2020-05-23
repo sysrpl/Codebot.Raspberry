@@ -9,7 +9,7 @@ namespace Raspberry.Device
     /// <summary>
     /// Temperature and Humidity Sensor DHT21
     /// </summary>
-    public class Dht21 : DhtBase
+    public class Dht21 : Dhtxx
     {
         /// <summary>
         /// Create a DHT22 sensor

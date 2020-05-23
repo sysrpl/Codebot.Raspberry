@@ -10,7 +10,8 @@ namespace Raspberry.Device
     /// The Ws28xx device class represents a strip of ws28xx neopixels
     /// </summary>
     /// <remarks>This device communicates with neopixels using SPI over GPIO 10</remarks>
-    public sealed class Ws28xx : IDisposable, IEnumerable<NeoPixel>
+    [Device("WS28XX", "NeoPixel Strip", Category = "Lighting", Remarks = "Must use GPIO 10")]
+    public sealed class NeopixelStrip : HardwareDevice, IDisposable, IEnumerable<NeoPixel>
     {
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace Raspberry.Device
         /// <summary>
         /// Create a new strip of count neopixels
         /// </summary>
-        public Ws28xx(int count)
+        public NeopixelStrip(int count)
         {
             data = new PixelData();
             var settings = new SpiConnectionSettings(0, 0)

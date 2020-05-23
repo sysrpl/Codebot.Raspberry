@@ -10,7 +10,7 @@ namespace Raspberry.Device
     /// <summary>
     /// Temperature and Humidity Sensor DHT12
     /// </summary>
-    public class Dht12 : DhtBase
+    public class Dht12 : Dhtxx
     {
         /// <summary>
         /// DHT12 Default I2C Address

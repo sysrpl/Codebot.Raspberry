@@ -8,14 +8,14 @@ If you are just getting started with your Raspberry Pi and this repository pleas
 
 This repository contains projects which can be used for the following:
 
-### [Raspberry](/Raspberry)
+### [Raspberry](/Raspberry/README.md)
 
 The Raspberry project provides access to your Pi and its hardware. It provides abstractions to all the various Pi pins and their I/O interfaces GPIO, PWM, SPI, and I2C.
 
-### [Raspberry.Board](/Raspberry.Board)
+### [Raspberry.Board](/Raspberry.Board/README.md)
 
-The Raspberry.Board project is based off the [Microsoft IoT](https://github.com/dotnet/iot) dotnet core project. It has been modified to work with the Raspberry Pi and assumes your Pi is running a Linux operating system. You should not need to use any of the items in this project as they are all abstracted by the [Raspberry](/Raspberry) project.
+The Raspberry.Board project is based off the [Microsoft IoT](https://github.com/dotnet/iot) dotnet core project. It has been modified to work with the Raspberry Pi and assumes your Pi is running a Linux operating system. You should not need to use any of the items in this project as they are all abstracted by the [Raspberry](/Raspberry/README.md) project.
 
-### [Raspberry.Device](/Raspberry.Device)
+### [Raspberry.Device](/Raspberry.Device/README.md)
 
 The Raspberry.Device folder contains a growing list of projects that abstracts devices which can be connected to your Raspberry Pi. Some of the devices include hardware like LCD character displays, NeoPixel strips, and temperature and humidity sensors

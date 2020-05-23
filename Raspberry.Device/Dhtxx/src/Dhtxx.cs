@@ -7,9 +7,10 @@ using Raspberry.Common;
 namespace Raspberry.Device
 {
     /// <summary>
-    /// Temperature and Humidity Sensor DHTxx
+    /// Temperature and Humidity Sensor DHTXX class of sensors
     /// </summary>
-    public abstract class DhtBase
+    [Device("DHTXX", "Temperature and Humidity Sensor", Category = "Sensor", Remarks = "Uses any GPIO")]
+    public abstract class Dhtxx : HardwareDevice
     {
         protected byte[] buffer = new byte[5];
         protected readonly GpioPin pin;
@@ -19,7 +20,7 @@ namespace Raspberry.Device
         /// Create a DHT sensor
         /// </summary>
         /// <param name="pin">The pin number (GPIO number)</param>
-        public DhtBase(int pin)
+        protected Dhtxx(int pin)
         {
             this.pin = Pi.Gpio.Pin(pin);
             IsUpdateSuccessful = false;

@@ -1,4 +1,6 @@
-﻿namespace Raspberry.Device
+﻿using Raspberry;
+
+namespace Raspberry.Device
 {
     public enum LcdTextDirection
     {
@@ -13,12 +15,13 @@
     }
 
     /// <summary>
-    /// The Lcd class provides an interface to a HD44780U dot-matrix liquid 
+    /// The Lcd class provides an interface to a HD44780 dot-matrix liquid 
     /// crystal display controller
     /// 
     /// See also https://en.wikipedia.org/wiki/Hitachi_HD44780_LCD_controller
     /// </summary>
-    public class CharacterLcd
+    [Device("HD44780", "Liquid Crystal Character Display", Category = "Display", Remarks = "Uses any GPIO")]
+    public class CharacterLcd : HardwareDevice
     {
         // Commands
         private const byte LCD_CLEARDISPLAY = 0x01;
