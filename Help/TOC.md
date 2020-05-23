@@ -12,4 +12,4 @@ How to setup your Raspberry Pi to work correctly with external hardware and allo
 
 ### See also
 
-[Projects and Tools](../)
+[Projects and Tools](/README.md)
