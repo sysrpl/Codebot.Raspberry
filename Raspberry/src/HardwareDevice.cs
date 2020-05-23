@@ -29,6 +29,6 @@
         public string Category { get => Info(nameof(Category)); }
         public string Description { get => Info(nameof(Description)); }
         public string Remarks { get => Info(nameof(Remarks)); }
-        public virtual void Update() { }
+        public virtual bool Update() => true;
     }
 }

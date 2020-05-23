@@ -36,7 +36,7 @@ namespace Raspberry.Device
         /// Update causes the sensor to be probed
         /// </summary>
         /// <returns>Returns true if the sensor probe was successful</returns>
-        public bool Update()
+        public override bool Update()
         {
             ReadData();
             return IsUpdateSuccessful;

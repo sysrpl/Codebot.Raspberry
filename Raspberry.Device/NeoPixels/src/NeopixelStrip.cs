@@ -130,7 +130,7 @@ namespace Raspberry.Device
         /// <summary>
         /// Send color information to all the neopixels in the strip
         /// </summary>
-        public void Update()
+        public override bool Update()
         {
             NeoPixel p;
             for (var i = 0; i < pixels.Count; i++)
@@ -143,6 +143,7 @@ namespace Raspberry.Device
                 }
             }
             device.Write(data.Data);
+            return true;
         }
 
         #region interfaces
