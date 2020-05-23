@@ -39,4 +39,4 @@ When any of the above changes are you will need to reboot your Pi for them to ta
 
 ### See also
 
-[Table of Contents](TOC.md)
+[Table of Contents](README.md)

@@ -84,4 +84,4 @@ ssh pi:/home/pi ~/media/raspberry
 
 ### See also
 
-[Table of Contents](TOC.md)
+[Table of Contents](README.md)

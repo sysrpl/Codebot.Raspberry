@@ -4,4 +4,4 @@ The Raspberry project is your main interface to working with your Raspberry Pi. 
 
 ### See also
 
-[Projects and Tools](../)
+[Projects and Tools](/)
