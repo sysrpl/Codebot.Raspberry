@@ -1,26 +1,6 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raspberry.Board", "Raspberry.Board\Raspberry.Board.csproj", "{D1F771E6-A131-4A83-985E-9975BA5DDD49}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raspberry", "Raspberry\Raspberry.csproj", "{DFC1B376-32F3-4E1C-833A-DA74BF035345}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Raspbery.Device", "Raspbery.Device", "{5A361178-AAD3-4407-A2D3-10E676E4BC95}"
-	ProjectSection(SolutionItems) = preProject
-		Raspberry.Device\README.md = Raspberry.Device\README.md
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dhtxx", "Raspberry.Device\Dhtxx\Dhtxx.csproj", "{E11EAF45-75BD-438A-B8E1-4CF25DE0C4C2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{E20F9C91-664E-4482-9774-5E5B8C68C164}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterLcd", "Raspberry.Device\CharacterLcd\CharacterLcd.csproj", "{400B545C-503A-4584-BFF6-5CD61E4AB141}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codebot.Web", "..\Web\Codebot.Web\Codebot.Web.csproj", "{5C072406-0C59-429E-8718-4DA2EFE3F189}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeoPixels", "Raspberry.Device\Ws28xx\NeoPixels.csproj", "{47F1773B-C80D-490A-B993-9B14AA6E5C42}"
-EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "WebTest", "WebTest\WebTest.csproj", "{1544401F-3A59-4613-9E1E-123D9E97721E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

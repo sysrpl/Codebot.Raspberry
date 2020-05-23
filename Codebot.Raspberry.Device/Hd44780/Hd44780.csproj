@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Raspberry\Raspberry.csproj" />
+    <ProjectReference Include="..\..\Codebot.Raspberry\Codebot.Raspberry.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

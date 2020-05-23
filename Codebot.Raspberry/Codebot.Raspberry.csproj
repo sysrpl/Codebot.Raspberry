@@ -1,12 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Raspberry\Raspberry.csproj" />
+    <ProjectReference Include="..\Codebot.Raspberry.Board\Codebot.Raspberry.Board.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="README.md" />
-  </ItemGroup>
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
