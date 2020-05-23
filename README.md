@@ -1,6 +1,6 @@
 # Raspberry Pi Dotnet Core Projects and Tools
 
-This repository contains projects and tools for working with Raspberry Pi GPIO pins and a collection of hardware peripherals.
+This moved repository contains projects and tools for working with Raspberry Pi GPIO pins and a collection of hardware peripherals.
 
 If you are just getting started with your Raspberry Pi and this repository please [read these topics](/Help/README.md). The contain information which might be vital accessing your Pi and using it with the hardware interfaces in this repository.
 
