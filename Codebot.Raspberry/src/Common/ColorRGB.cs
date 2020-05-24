@@ -25,6 +25,8 @@ namespace Codebot.Raspberry.Common
                 H = 1 + H % 1;
             else
                 H = H % 1;
+            if (H > 0.9999)
+                H = 0;
             if (S < 0)
                 S = 0;
             else if (S > 1)
