@@ -16,7 +16,7 @@ The Codebot.Raspberry project provides programmatic access to your Raspberry Pi 
 
 The Codebot.Raspberry.Board project is based off the [Microsoft IoT](https://github.com/dotnet/iot) dotnet core project. It has been modified to work with the Raspberry Pi and assumes your Pi is running a Linux operating system. You should not need to use any of the items in this project as they are all abstracted by the [Codebot.Raspberry](/Codebot.Raspberry/README.md) project.
 
-### [Raspberry.Device](/Codebot.Raspberry.Device/README.md)
+### [Codebot.Raspberry.Device](/Codebot.Raspberry.Device/README.md)
 
 The Codebot.Raspberry.Device folder contains multiple projects which abstract hardware devices capable of being be connected to your Raspberry Pi. Some of the hardware devices include an liquid crystal character display, NeoPixel light emitting diode strips, and temperature and humidity monitoring sensors.
 
