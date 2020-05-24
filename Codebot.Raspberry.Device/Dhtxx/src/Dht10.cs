@@ -3,9 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using Raspberry.Common;
+using Codebot.Raspberry.Common;
 
-namespace Raspberry.Device
+namespace Codebot.Raspberry.Device
 { 
     /// <summary>
     /// Temperature and Humidity Sensor DHT10

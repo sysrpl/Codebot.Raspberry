@@ -6,7 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Raspberry.Board
+namespace Codebot.Raspberry.Board
 {
     /// <summary>
     /// Base class for Gpio Drivers.

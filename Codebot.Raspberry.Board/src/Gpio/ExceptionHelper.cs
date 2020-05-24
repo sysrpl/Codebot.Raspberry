@@ -6,7 +6,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace Raspberry.Board
+namespace Codebot.Raspberry.Board
 {
     internal static class ExceptionHelper
     {

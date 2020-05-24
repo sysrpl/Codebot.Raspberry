@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Raspberry.Board.Spi
+namespace Codebot.Raspberry.Board.Spi
 {
     /// <summary>
     /// The communications channel to a device on a SPI bus.

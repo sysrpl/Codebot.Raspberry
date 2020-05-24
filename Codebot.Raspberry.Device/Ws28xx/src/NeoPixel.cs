@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
-using Raspberry.Common;
+using Codebot.Raspberry.Common;
 
-namespace Raspberry.Device
+namespace Codebot.Raspberry.Device
 {
     public class NeoPixel
     {

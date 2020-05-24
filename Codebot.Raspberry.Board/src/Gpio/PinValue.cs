@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Raspberry.Board
+namespace Codebot.Raspberry.Board
 {
     /// <summary>
     /// Represents a value for a pin.

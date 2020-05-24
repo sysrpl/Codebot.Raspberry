@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-namespace Raspberry.Board.Spi
+namespace Codebot.Raspberry.Board.Spi
 {
     /// <summary>
     /// Defines how data is synchronized between devices on a SPI bus.

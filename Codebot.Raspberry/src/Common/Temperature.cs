@@ -5,7 +5,7 @@
 using System;
 using System.Globalization;
 
-namespace Raspberry.Common
+namespace Codebot.Raspberry.Common
 {
     /// <summary>
     /// Structure representing temperature

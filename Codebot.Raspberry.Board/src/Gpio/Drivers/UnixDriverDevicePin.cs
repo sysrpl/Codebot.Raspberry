@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Raspberry.Board.Drivers
+namespace Codebot.Raspberry.Board.Drivers
 {
     internal sealed class UnixDriverRaspberryPin : IDisposable
     {

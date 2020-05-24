@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Raspberry.Board.I2c
+namespace Codebot.Raspberry.Board.I2c
 {
     /// <summary>
     /// The communications channel to a device on an I2C bus.

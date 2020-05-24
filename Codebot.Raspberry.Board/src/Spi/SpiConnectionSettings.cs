@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using Raspberry.Board;
+using Codebot.Raspberry.Board;
 
-namespace Raspberry.Board.Spi
+namespace Codebot.Raspberry.Board.Spi
 {
     /// <summary>
     /// The connection settings of a device on a SPI bus.

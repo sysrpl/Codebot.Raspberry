@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-namespace Raspberry.Board.I2c
+namespace Codebot.Raspberry.Board.I2c
 {
     /// <summary>
     /// The connection settings of a device on an I2C bus.

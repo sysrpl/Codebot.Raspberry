@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using Raspberry.Common;
-using Raspberry.Board;
+using Codebot.Raspberry.Common;
+using Codebot.Raspberry.Board;
 
-namespace Raspberry
+namespace Codebot.Raspberry
 {
     public static class Pi
     {

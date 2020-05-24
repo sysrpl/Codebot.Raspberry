@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-namespace Raspberry.Board
+namespace Codebot.Raspberry.Board
 {
     /// <summary>
     /// Pin modes supported by the GPIO controllers and drivers.

@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Raspberry.Board.I2c
+namespace Codebot.Raspberry.Board.I2c
 {
     /// <summary>
     /// Represents an I2C communication channel running on Unix.

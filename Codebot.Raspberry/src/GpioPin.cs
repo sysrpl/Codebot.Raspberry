@@ -1,6 +1,6 @@
-﻿using Raspberry.Board;
+﻿using Codebot.Raspberry.Board;
 
-namespace Raspberry
+namespace Codebot.Raspberry
 { 
     public enum GpioPinMode
     {

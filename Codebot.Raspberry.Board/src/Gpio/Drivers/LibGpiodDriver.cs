@@ -8,7 +8,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System.Collections.Concurrent;
 
-namespace Raspberry.Board.Drivers
+namespace Codebot.Raspberry.Board.Drivers
 {
     /// <summary>
     /// This driver uses the Libgpiod library to get user-level access to the gpio ports.

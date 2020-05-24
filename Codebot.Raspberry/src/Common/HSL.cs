@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Raspberry.Common
+namespace Codebot.Raspberry.Common
 {
     public class HSL
     {

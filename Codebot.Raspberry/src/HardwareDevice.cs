@@ -1,4 +1,4 @@
-﻿namespace Raspberry
+﻿namespace Codebot.Raspberry
 {
     public class HardwareDevice
     {

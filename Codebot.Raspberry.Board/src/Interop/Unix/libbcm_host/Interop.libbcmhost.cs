@@ -16,7 +16,7 @@ internal partial class Interop
         private const string LibbcmhostLibrary = "libbcm_host";
 
         /// <summary>
-        /// Get the peripheral base address of a RaspberryPi.
+        /// Get the peripheral base address of a Codebot.RaspberryPi.
         /// </summary>
         [DllImport(LibbcmhostLibrary, SetLastError = true)]
         internal static extern uint bcm_host_get_peripheral_address();

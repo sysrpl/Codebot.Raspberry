@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Raspberry.Common
+namespace Codebot.Raspberry.Common
 {
     public class Timer
     {

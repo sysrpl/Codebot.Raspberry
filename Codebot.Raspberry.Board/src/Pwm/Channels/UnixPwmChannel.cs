@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace Raspberry.Board.Pwm.Channels
+namespace Codebot.Raspberry.Board.Pwm.Channels
 {
     /// <summary>
     /// Represents a PWM channel running on Unix.

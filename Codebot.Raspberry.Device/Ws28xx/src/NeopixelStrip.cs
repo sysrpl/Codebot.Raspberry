@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using Raspberry.Board.Spi;
+using Codebot.Raspberry.Board.Spi;
 
-namespace Raspberry.Device
+namespace Codebot.Raspberry.Device
 {
     /// <summary>
     /// The Ws28xx device class represents a strip of ws28xx neopixels

@@ -5,7 +5,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Raspberry.Board
+namespace Codebot.Raspberry.Board
 {
     /// <summary>
     /// Pointer to an iterator of all GPIO chips available on the device.

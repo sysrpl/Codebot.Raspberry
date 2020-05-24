@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
-namespace Raspberry.Board.Drivers
+namespace Codebot.Raspberry.Board.Drivers
 {
     /// <summary>
     /// This overrides the SysFsDriver, when only the interrupt callback methods are required.

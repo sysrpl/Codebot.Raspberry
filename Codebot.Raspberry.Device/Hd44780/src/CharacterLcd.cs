@@ -1,6 +1,6 @@
-﻿using Raspberry;
+﻿using Codebot.Raspberry;
 
-namespace Raspberry.Device
+namespace Codebot.Raspberry.Device
 {
     public enum LcdTextDirection
     {

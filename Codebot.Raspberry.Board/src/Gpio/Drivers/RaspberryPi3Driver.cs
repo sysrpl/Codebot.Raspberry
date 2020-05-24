@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Raspberry.Board.Drivers
+namespace Codebot.Raspberry.Board.Drivers
 {
     /// <summary>
     /// A GPIO driver for the Raspberry Pi 3 or 4, running Raspbian (or, with some limitations, ubuntu)

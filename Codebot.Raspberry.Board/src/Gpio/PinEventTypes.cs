@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Raspberry.Board
+namespace Codebot.Raspberry.Board
 {
     /// <summary>
     /// Event types that can be triggered by the GPIO.

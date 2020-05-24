@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Raspberry.Board.Pwm
+namespace Codebot.Raspberry.Board.Pwm
 {
     /// <summary>
     /// Represents a single PWM channel.

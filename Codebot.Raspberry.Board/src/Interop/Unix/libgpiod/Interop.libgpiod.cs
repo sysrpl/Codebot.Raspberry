@@ -7,7 +7,7 @@
 #pragma warning disable SA1307 // Accessible fields should begin with upper-case letter
 
 using System;
-using Raspberry.Board;
+using Codebot.Raspberry.Board;
 using System.Runtime.InteropServices;
 // Since this is only used on Linux, and in C on Linux sizeof(long) == sizeof(void*) this is a valid alias.
 using NativeLong = System.IntPtr;

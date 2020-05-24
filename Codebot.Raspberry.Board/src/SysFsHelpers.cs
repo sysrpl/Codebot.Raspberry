@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
-namespace Raspberry.Board
+namespace Codebot.Raspberry.Board
 {
     internal static class SysFsHelpers
     {

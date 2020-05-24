@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Raspberry
+namespace Codebot.Raspberry
 {
     public class DeviceAttribute : Attribute
     {

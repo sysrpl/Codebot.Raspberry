@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Raspberry.Board
+namespace Codebot.Raspberry.Board
 {
     /// <summary>
     /// Arguments passed in when an event is triggered by the GPIO.

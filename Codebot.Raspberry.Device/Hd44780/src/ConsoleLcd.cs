@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Raspberry.Device
+namespace Codebot.Raspberry.Device
 {
     public sealed class ConsoleLcd
     {

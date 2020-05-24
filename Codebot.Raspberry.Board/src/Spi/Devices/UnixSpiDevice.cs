@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Raspberry.Board.Spi
+namespace Codebot.Raspberry.Board.Spi
 {
     /// <summary>
     /// Represents a SPI communication channel running on Unix.

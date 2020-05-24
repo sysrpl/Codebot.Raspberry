@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 
-namespace Raspberry.Board.Drivers
+namespace Codebot.Raspberry.Board.Drivers
 {
     /// <summary>
     /// A GPIO driver for Unix.
