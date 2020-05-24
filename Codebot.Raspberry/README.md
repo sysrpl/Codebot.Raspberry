@@ -4,4 +4,4 @@ The Codebot.Raspberry assembly is your main interface to working with your Raspb
 
 ### See also
 
-[Projects and Tools Overview](/README.md)
+[Projects and Tools](/README.md)
