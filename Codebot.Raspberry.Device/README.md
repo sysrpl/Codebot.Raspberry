@@ -15,4 +15,4 @@ The following is a list of hardware devices in this repository:
 
 ### See also
 
-[Projects and Tools](/README.md)
+[Projects and Tools](/Codebot.Raspberry.Device/README.md)
