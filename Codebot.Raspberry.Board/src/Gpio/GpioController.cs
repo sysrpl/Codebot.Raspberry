@@ -3,12 +3,12 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using Codebot.Raspberry.Board.Drivers;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Codebot.Raspberry.Board.Drivers;
 
 namespace Codebot.Raspberry.Board
 {

@@ -7,7 +7,7 @@ using Codebot.Raspberry.Board.Spi;
 namespace Codebot.Raspberry.Device
 {
     /// <summary>
-    /// The Ws28xx device class represents a strip of ws28xx neopixels
+    /// The WS28XX device class represents a strip of WS28XX neopixels
     /// </summary>
     /// <remarks>This device communicates with neopixels using SPI over GPIO 10</remarks>
     [Device("WS28XX", "NeoPixel Strip", Category = "Lighting", Remarks = "Must use GPIO 10")]
