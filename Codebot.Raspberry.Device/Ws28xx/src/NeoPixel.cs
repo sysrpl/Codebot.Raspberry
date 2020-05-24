@@ -44,27 +44,19 @@ namespace Codebot.Raspberry.Device
 
         public NeoPixel Hue(double h)
         {
-            Color = new HSL(h, 1, 0.5);
+            Color = ColorRGB.FromHSL(h, 1, 0.5);
             return this;
         }
 
         public NeoPixel Lightness(double l)
         {
-            HSL hsl = Color;
-            hsl.Hue = hue;
-            hsl.Luminosity = l;
-            color = hsl;
-            Changed = true;
+            Color = ColorRGB.FromHSL(Color.GetHue() / 360d, 1, l);
             return this;
         }
 
         public NeoPixel Saturation(double s)
         {
-            HSL hsl = Color;
-            hsl.Hue = hue;
-            hsl.Saturation= s;
-            color = hsl;
-            Changed = true;
+            Color = ColorRGB.FromHSL(Color.GetHue() / 360d, s, 0.5);
             return this;
         }
 

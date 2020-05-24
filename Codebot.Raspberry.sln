@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hd44780", "Codebot.Raspberr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ws28xx", "Codebot.Raspberry.Device\Ws28xx\Ws28xx.csproj", "{2120B2F9-5803-4586-8EB9-C2677A081339}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lighter", "Lighter\Lighter.csproj", "{F0C00948-C0EA-4F5A-9F9B-51B65D668616}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{2120B2F9-5803-4586-8EB9-C2677A081339}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2120B2F9-5803-4586-8EB9-C2677A081339}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2120B2F9-5803-4586-8EB9-C2677A081339}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0C00948-C0EA-4F5A-9F9B-51B65D668616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0C00948-C0EA-4F5A-9F9B-51B65D668616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0C00948-C0EA-4F5A-9F9B-51B65D668616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0C00948-C0EA-4F5A-9F9B-51B65D668616}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E11EAF45-75BD-438A-B8E1-4CF25DE0C4C2} = {5A361178-AAD3-4407-A2D3-10E676E4BC95}
