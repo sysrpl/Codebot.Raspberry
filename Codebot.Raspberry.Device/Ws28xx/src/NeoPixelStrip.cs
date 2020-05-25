@@ -7,15 +7,14 @@ using Codebot.Raspberry.Board.Spi;
 namespace Codebot.Raspberry.Device
 {
     /// <summary>
-    /// The WS28XX device class represents a strip of WS28XX neopixels
+    /// The WS28XX device class represents a strip of WS28XX NeoPixels
     /// </summary>
-    /// <remarks>This device communicates with neopixels using SPI over GPIO 10</remarks>
+    /// <remarks>This device communicates with WS28XX NeoPixels using SPI over GPIO 10</remarks>
     [Device("WS28XX", "NeoPixel Strip", Category = "Lighting", Remarks = "Must use GPIO 10")]
-    public sealed class NeopixelStrip : HardwareDevice, IDisposable, IEnumerable<NeoPixel>
+    public sealed class NeoPixelStrip : HardwareDevice, IDisposable, IEnumerable<NeoPixel>
     {
-
         /// <summary>
-        /// Private class used to manage neopixel strip data
+        /// Private class used to manage NeoPixelStrip strip data
         /// </summary>
         private class PixelData
         {
@@ -36,7 +35,7 @@ namespace Codebot.Raspberry.Device
                 }
             }
 
-            // The Neo Pixels require a 50us delay (all zeros) after. Since Spi freq is not exactly
+            // The NeoPixels require a 50us delay (all zeros) after. Since Spi freq is not exactly
             // as requested 100us is used here with good practical results. 100us @ 2.4Mbps and 8bit
             // data means we have to add 30 bytes of zero padding.
             private const int ResetDelayInBytes = 30;
@@ -71,7 +70,7 @@ namespace Codebot.Raspberry.Device
         /// <summary>
         /// Create a new strip of count neopixels
         /// </summary>
-        public NeopixelStrip(int count)
+        public NeoPixelStrip(int count)
         {
             data = new PixelData();
             var settings = new SpiConnectionSettings(0, 0)
