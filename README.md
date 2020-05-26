@@ -24,12 +24,6 @@ The Codebot.Raspberry.Device folder contains multiple projects which abstract ha
 
 ### [Codebot.Web](https://github.com/sysrpl/Codebot.Web)
 
-A sister repository to this is Codebot.Web. The Codebot.Web repository can be summarized as a simplified ASP.NET core library purpose designed to making websites ands service as simple to create and manage as possible.
+A sister repository to this is Codebot.Web. The Codebot.Web repository can be summarized as a simplified ASP.NET core library purpose designed to making websites and service as simple to create and manage as possible.
 
 The Codebot.Web repository pairs well the this one when used to create web interfaces and actions to control or format information read from hardware devices connected to your Pi as user friendly web pages accessible to anyone through their web browser.
-
-### Codebot.Examples
-
-Another repository of interest to users of both this repository and Codebot.Web is Codebot.Examples.
-
-The Codebot.Examples repository contains example projects which make use of both previously mentioned repositories and demonstrates the use both simplified web applications that work with ASP.NET core on any computer and Raspberry Pi specific examples which work with Pi connected hardware devices.

@@ -1,12 +1,12 @@
 #!/bin/bash
 
 if [ -z "$1" ] ; then
-    echo 'Usage: run folder'
+    echo -e "\e[31m\e[1mUsage: run folder"
     exit 1
 fi
 
 if [ ! -d $1 ] ; then
-    echo "Cannot find folder '$1'"
+    echo -e "\e[31m\e[1mCannot find folder '$1'"
     exit 1
 fi
 

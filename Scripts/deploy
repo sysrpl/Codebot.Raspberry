@@ -1,4 +1,10 @@
 #!/bin/bash
+
+if [ ! -d bin/Debug/netcoreapp3.1 ] ; then
+    echo -e "\e[31m\e[1mCannot find folder bin/Debug/netcoreapp3.1"
+    exit 1
+fi
+
 DIR=${PWD##*/} 
 rm -rf ~/media/raspberry/tmp/$DIR
 mkdir ~/media/raspberry/tmp/$DIR
@@ -7,4 +13,3 @@ if [ -d wwwroot ] ; then
     cp -r wwwroot ~/media/raspberry/tmp/$DIR/
 fi
 notify-send "Deployed $DIR"
-
