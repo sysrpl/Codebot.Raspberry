@@ -2,6 +2,7 @@
 
 namespace Codebot.Raspberry
 {
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class DeviceAttribute : Attribute
     {
         public DeviceAttribute(string model, string name)
