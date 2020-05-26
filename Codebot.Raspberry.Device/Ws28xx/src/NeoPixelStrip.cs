@@ -18,9 +18,9 @@ namespace Codebot.Raspberry.Device
         /// </summary>
         private class PixelData
         {
-            const int BytesPerComponent = 3;
-            const int BytesPerPixel = BytesPerComponent * 3;
-            static readonly byte[] lookup = new byte[256 * BytesPerComponent];
+            private const int BytesPerComponent = 3;
+            private const int BytesPerPixel = BytesPerComponent * 3;
+            private static readonly byte[] lookup = new byte[256 * BytesPerComponent];
 
             static PixelData()
             {
@@ -40,7 +40,7 @@ namespace Codebot.Raspberry.Device
             // data means we have to add 30 bytes of zero padding.
             private const int ResetDelayInBytes = 30;
 
-            byte[] data;
+            private byte[] data;
             public Span<byte> Data => data;
 
             public void Resize(int count)
@@ -63,9 +63,9 @@ namespace Codebot.Raspberry.Device
             }
         }
 
-        PixelData data;
-        SpiDevice device;
-        List<NeoPixel> pixels;
+        private readonly PixelData data;
+        private readonly SpiDevice device;
+        private readonly List<NeoPixel> pixels;
 
         /// <summary>
         /// Create a new strip of count neopixels
@@ -90,7 +90,7 @@ namespace Codebot.Raspberry.Device
         public int Count
         {
             get => pixels.Count;
-            set 
+            set
             {
                 if (value == pixels.Count)
                     return;
@@ -112,16 +112,16 @@ namespace Codebot.Raspberry.Device
         /// <summary>
         /// Gets or sets a neopixel by index
         /// </summary>
-        public NeoPixel this[int index] 
-        { 
-            get => pixels[index]; 
+        public NeoPixel this[int index]
+        {
+            get => pixels[index];
             set => pixels[index].Color = value.Color;
         }
 
         /// <summary>
         /// Turn of all neopixels
         /// </summary>
-        public void Reset() 
+        public void Reset()
         {
             foreach (var p in pixels) p.Color = Color.Black;
         }
@@ -146,7 +146,7 @@ namespace Codebot.Raspberry.Device
         }
 
         #region interfaces
-        bool disposed;
+        private bool disposed;
 
         public void Dispose()
         {
