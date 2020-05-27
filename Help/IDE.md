@@ -73,7 +73,7 @@ Install using:
 
 ## Building Task
 
-You can edit your workspace ``.vscode/tasks.json`` to combine additional task after building a project using code like this. Be sure to replace PROJECT withe the name of the project within your solution that you want to build.
+You can edit your workspace ``.vscode/tasks.json`` to combine additional task after building a project using code like this. Be sure to replace PROJECT withe the name of the project within your solution which you want to build.
 
 <details>
   <summary>Example of a build and deploy task configuration</summary>
@@ -119,6 +119,71 @@ You can edit your workspace ``.vscode/tasks.json`` to combine additional task af
 
 </details>
 
+## Debug Launching 
+
+You can edit your workspace ``.vscode/launch.json`` to allow the special built Microsoft debugger to launch and debug your projects. In most cases you will not be doing this as you will be writing code on your Desktop computer and running on your Raspberry Pi. But if you would like to test some non Pi specific project you can make these changes being sure to replace PROJECT withe the name of the project within your solution which you want to debug.
+
+<details>
+  <summary>Example of a launch and debug a console project configuration</summary>
+
+````json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/PROJECT/bin/Debug/netcoreapp3.1/Test.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/PROJECT,
+            "console": "externalTerminal",
+            "stopAtEntry": false
+        }
+    ]
+}
+````
+
+</details>
+<details>
+  <summary>Example of a launch and debug a web project configuration</summary>
+
+````json
+{
+   "version": "0.2.0",
+   "configurations": [
+        {
+            "name": ".NET Core Launch (web)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/PROJECT/bin/Debug/netcoreapp3.1/PROJECT.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/PROJECT",
+            "stopAtEntry": false,
+            // Enable launching a web browser when ASP.NET Core starts
+            // For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        }
+    ]
+}
+````
+
+</details>
+
 ### See also
 
 [Table of Contents](README.md)
+
