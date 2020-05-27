@@ -71,9 +71,9 @@ Install using:
 
 </details>
 
-## Building Task
+## Building Tasks
 
-You can edit your workspace ``.vscode/tasks.json`` to combine additional task after building a project using code like this. Be sure to replace PROJECT withe the name of the project within your solution which you want to build.
+You can edit your workspace ``.vscode/tasks.json`` to combine additional tasks to be run after building a project with VSC. Be sure to replace PROJECT withe the name of the project within your solution which you want to build.
 
 <details>
   <summary>Example of a build and deploy task configuration</summary>
