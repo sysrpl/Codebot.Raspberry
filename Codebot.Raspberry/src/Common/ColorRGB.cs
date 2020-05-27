@@ -37,7 +37,7 @@ namespace Codebot.Raspberry.Common
                 L = 1;
             double v;
             double r, g, b;
-            r = L;   
+            r = L;
             g = L;
             b = L;
             v = (L <= 0.5) ? (L * (1.0 + S)) : (L + S - L * S);
@@ -46,13 +46,13 @@ namespace Codebot.Raspberry.Common
                 double m;
                 double sv;
                 int sextant;
-                double fract, vsf, mid1, mid2;
+                double f, vsf, mid1, mid2;
                 m = L + L - v;
                 sv = (v - m) / v;
                 H *= 6.0;
                 sextant = (int)H;
-                fract = H - sextant;
-                vsf = v * sv * fract;
+                f = H - sextant;
+                vsf = v * sv * f;
                 mid1 = m + vsf;
                 mid2 = v - vsf;
                 switch (sextant)

@@ -12,13 +12,13 @@ namespace Codebot.Raspberry.Common
     /// </summary>
     public struct Pressure : IEquatable<Pressure>, IComparable<Pressure>, IComparable
     {
-        const double MillibarRatio = 0.01;
-        const double KilopascalRatio = 0.001;
-        const double HectopascalRatio = 0.01;
-        const double InchOfMercuryRatio = 0.000295301;
-        const double MillimeterOfMercuryRatio = 0.00750062;
-        const double MeanSeaLevelPascal = 101325;
-        readonly double pascal;
+        private const double MillibarRatio = 0.01;
+        private const double KilopascalRatio = 0.001;
+        private const double HectopascalRatio = 0.01;
+        private const double InchOfMercuryRatio = 0.000295301;
+        private const double MillimeterOfMercuryRatio = 0.00750062;
+        private const double MeanSeaLevelPascal = 101325;
+        private readonly double pascal;
 
         private Pressure(double pascal)
         {
@@ -159,12 +159,10 @@ namespace Codebot.Raspberry.Common
         /// <inheritdoc cref="IComparable"/>
         int IComparable.CompareTo(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
+            if (obj is null)
                 return 1;
-            }
-
-            return obj is Pressure other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(Pressure)}");
+            return obj is Pressure other ? CompareTo(other) : 
+                throw new ArgumentException($"Object must be of type {nameof(Pressure)}");
         }
 
         /// <summary>
@@ -176,7 +174,7 @@ namespace Codebot.Raspberry.Common
         }
 
         /// <summary>
-        /// Unequality operator
+        /// Inequality operator
         /// </summary>
         public static bool operator !=(Pressure left, Pressure right)
         {
@@ -184,7 +182,7 @@ namespace Codebot.Raspberry.Common
         }
 
         /// <summary>
-        /// Less-than operator
+        /// Less than operator
         /// </summary>
         public static bool operator <(Pressure left, Pressure right)
         {
@@ -192,7 +190,7 @@ namespace Codebot.Raspberry.Common
         }
 
         /// <summary>
-        /// Greater-than operator
+        /// Greater than operator
         /// </summary>
         public static bool operator >(Pressure left, Pressure right)
         {
@@ -200,7 +198,7 @@ namespace Codebot.Raspberry.Common
         }
 
         /// <summary>
-        /// Less-than-or-equal operator
+        /// Less than or equal operator
         /// </summary>
         public static bool operator <=(Pressure left, Pressure right)
         {
@@ -208,7 +206,7 @@ namespace Codebot.Raspberry.Common
         }
 
         /// <summary>
-        /// Greater-than-or-equal operator
+        /// Greater than or equal operator
         /// </summary>
         public static bool operator >=(Pressure left, Pressure right)
         {

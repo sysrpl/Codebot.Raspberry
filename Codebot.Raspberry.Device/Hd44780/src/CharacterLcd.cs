@@ -5,7 +5,7 @@ namespace Codebot.Raspberry.Device
     public enum LcdTextDirection
     {
         /// <summary>
-        /// Rext flows to the right from the cursor, as if the display is left-justified.
+        /// Rect flows to the right from the cursor, as if the display is left-justified.
         /// </summary>
         LeftToRight,
         /// <summary>
@@ -15,11 +15,10 @@ namespace Codebot.Raspberry.Device
     }
 
     /// <summary>
-    /// The Lcd class provides an interface to a HD44780 dot-matrix liquid 
-    /// crystal display controller
-    /// 
-    /// See also https://en.wikipedia.org/wiki/Hitachi_HD44780_LCD_controller
+    /// The Lcd class provides an interface to a HD44780 dot-matrix liquid
+    /// crystal display controller.
     /// </summary>
+    /// <remarks>See also https://en.wikipedia.org/wiki/Hitachi_HD44780_LCD_controller</remarks>
     [Device("HD44780", "Liquid Crystal Character Display", Category = "Display", Remarks = "Uses any GPIO")]
     public class CharacterLcd : HardwareDevice
     {
@@ -148,7 +147,7 @@ namespace Codebot.Raspberry.Device
             // can't assume that its in that state when a sketch starts (and the
             // constructor is called).
 
-            // Pull both register slect and enable pins low to start
+            // Pull both register select and enable pins low to start
             selectPin.Write(LOW);
             enablePin.Write(LOW);
             if (cols < 8)
@@ -344,7 +343,7 @@ namespace Codebot.Raspberry.Device
 
         #region Properties
         /// <summary>
-        /// When AutoScroll is true all the text is moved one space to the left 
+        /// When AutoScroll is true all the text is moved one space to the left
         /// each time a letter is added
         /// </summary>
         public bool AutoScroll
@@ -361,7 +360,7 @@ namespace Codebot.Raspberry.Device
         }
 
         /// <summary>
-        /// When Blinking is true the cursor will blink at regular periodic intervals 
+        /// When Blinking is true the cursor will blink at regular periodic intervals
         /// </summary>
         public bool Blinking
         {
@@ -377,7 +376,7 @@ namespace Codebot.Raspberry.Device
         }
 
         /// <summary>
-        /// When Cursor is true the display will show the the cursor
+        /// When Cursor is true the display will show the cursor
         /// </summary>
         public bool Cursor
         {
@@ -422,7 +421,6 @@ namespace Codebot.Raspberry.Device
                 else
                     modeBits &= unchecked((byte)~LCD_ENTRYLEFT);
                 Command((byte)(LCD_ENTRYMODESET | modeBits));
-
             }
         }
         #endregion

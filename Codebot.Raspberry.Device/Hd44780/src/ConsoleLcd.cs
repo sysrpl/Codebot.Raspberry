@@ -48,7 +48,7 @@ namespace Codebot.Raspberry.Device
             int r = row;
             if (lines[r].Length == 0)
                 r--;
-            var s = string.Empty;
+            string s;
             for (var i = 0; i < lcd.Rows; i++)
             {
                 if (r < 0)
@@ -105,8 +105,8 @@ namespace Codebot.Raspberry.Device
                 else
                     b = string.Empty;
                 a = a.Substring(0, Math.Min(a.Length, lcd.Cols));
-                a = lines[lines.Count - 1] + a;
-                lines[lines.Count - 1] = a.Trim(); 
+                a = lines[^1] + a;
+                lines[^1] = a.Trim();
                 lines.Add(string.Empty);
                 a = b;
             }
@@ -140,6 +140,5 @@ namespace Codebot.Raspberry.Device
             NewLine();
             EndUpdate();
         }
-
     }
 }

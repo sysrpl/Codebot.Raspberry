@@ -5,7 +5,7 @@ namespace Codebot.Raspberry.Device
 {
     public class NeoPixel
     {
-        static NeoPixel convert = new NeoPixel();
+        private static readonly NeoPixel convert = new NeoPixel();
 
         public static NeoPixel FromColor(Color c)
         {
@@ -17,7 +17,7 @@ namespace Codebot.Raspberry.Device
         public static implicit operator NeoPixel(Color c) => FromColor(c);
 
         public NeoPixel() : this(Color.Black)
-        { 
+        {
         }
 
         public NeoPixel(Color c)
@@ -28,16 +28,16 @@ namespace Codebot.Raspberry.Device
 
         public bool Changed { get; set; }
 
-        Color color;
-        double hue;
+        private Color color;
+        private double hue;
 
         public Color Color
         {
             get => color;
-            set 
+            set
             {
                 color = value;
-                hue = color.GetHue() / 360;
+                hue = color.GetHue() / 360d;
                 Changed = true;
             }
         }
@@ -50,13 +50,13 @@ namespace Codebot.Raspberry.Device
 
         public NeoPixel Lightness(double l)
         {
-            Color = ColorRGB.FromHSL(Color.GetHue() / 360d, 1, l);
+            Color = ColorRGB.FromHSL(hue, 1, l);
             return this;
         }
 
         public NeoPixel Saturation(double s)
         {
-            Color = ColorRGB.FromHSL(Color.GetHue() / 360d, s, 0.5);
+            Color = ColorRGB.FromHSL(hue, s, 0.5);
             return this;
         }
 
@@ -68,7 +68,7 @@ namespace Codebot.Raspberry.Device
 
         public NeoPixel Rgb(byte r, byte g, byte b)
         {
-            Color = Color.FromArgb( r, g, b);
+            Color = Color.FromArgb(r, g, b);
             return this;
         }
     }
