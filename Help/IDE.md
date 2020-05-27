@@ -37,7 +37,6 @@ Install using:
 
 ````ext install fernandoescolar.vscode-solution-explorer```` 
 
-
 ### [Roslynator](https://marketplace.visualstudio.com/items?itemName=josefpihrt-vscode.roslynator)
 
 This extension contains a collection of more than 500 analyzers, refactorings, and fixes for C#. It is powered by Roslyn code analysis APIs. 
@@ -45,6 +44,14 @@ This extension contains a collection of more than 500 analyzers, refactorings, a
 Install using:
 
 ````ext install josefpihrt-vscode.roslynator```` 
+
+### [Numbered Bookmarks](https://marketplace.visualstudio.com/items?itemName=alefragnani.numbered-bookmarks)
+
+This extension helps you to navigate in your code using numbered bookmarks. Moving between important positions easily and quickly.
+
+Install using:
+
+````ext install alefragnani.numbered-bookmarks```` 
 
 ### [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
 
