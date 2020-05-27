@@ -78,7 +78,7 @@ You can edit your workspace ``.vscode/tasks.json`` to combine additional tasks t
 <details>
   <summary>Example of a build and deploy task configuration</summary>
 
-````json
+````javascript
 {
     "version": "2.0.0",
     "tasks": [
@@ -126,7 +126,7 @@ You can edit your workspace ``.vscode/launch.json`` to allow the special built M
 <details>
   <summary>Example of a launch and debug a console project configuration</summary>
 
-````json
+````javascript
 {
     "version": "0.2.0",
     "configurations": [
