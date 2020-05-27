@@ -150,7 +150,7 @@ You can edit your workspace ``.vscode/launch.json`` to allow the special built M
 <details>
   <summary>Example of a launch and debug a web project configuration</summary>
 
-````json
+````javascript
 {
    "version": "0.2.0",
    "configurations": [
