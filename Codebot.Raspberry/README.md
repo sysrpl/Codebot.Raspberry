@@ -4,13 +4,12 @@ The Codebot.Raspberry assembly is your main interface to working with your Raspb
 
 ## Serial Port
 
-The Raspberry Pi includes a dedicated pair of UART pins for serial communication. These pins are located at GPIO pins 14 and 15 for transmitting (TX) and receiving (RX) serial data. Inside this assembly you'll find a SerialPort class providing you access to UART pins serial communication.
+The Raspberry Pi includes a dedicated pair of UART pins for serial communication. These pins are located at GPIO pins 14 and 15 for transmitting (TX) and receiving (RX) serial data. Inside this assembly you'll find a SerialPort class providing you access to UART serial communication with these pins.
 
 Before using this class and the UART pins you must enable serial communication on your Pi in one of two ways. You can use the ``raspi-config`` tool to disable the login shell through the serial pins, and enabled serial hardware port. You can also edit your ``/boot/config.txt`` file to manually enabled serial hardware ports.
 
 <details>
   <summary>Manually enabling serial port hardware</summary>
-
 
 There are two types of UART available on the Raspberry Pi - PL011 and mini UART. The PL011 is a capable, broadly 16550-compatible UART, while the mini UART has a reduced feature set. You can enabled only one of these UARTs at a any one time. 
 
