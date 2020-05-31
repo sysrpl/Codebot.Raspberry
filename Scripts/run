@@ -1,25 +1,28 @@
 #!/bin/bash
 
-if [ -z "$1" ] ; then
+dir=$1
+shift
+
+if [ -z "$dir" ] ; then
     echo -e "\e[31m\e[1mUsage: run folder"
     exit 1
 fi
 
-if [ ! -d $1 ] ; then
-    echo -e "\e[31m\e[1mCannot find folder '$1'"
+if [ ! -d $dir ] ; then
+    echo -e "\e[31m\e[1mCannot find folder '$dir'"
     exit 1
 fi
 
-cd $1
+cd $dir
 
 if [ -d wwwroot ] ; then
-	if [ -z "$2" ] ; then
-		dotnet $1.dll --urls=http://0.0.0.0:5000
+	if [ -z "$1" ] ; then
+		dotnet $dir.dll --urls=http://0.0.0.0:5000
 	else
-		dotnet $1.dll --urls=http://0.0.0.0:$2
+		dotnet $dir.dll --urls=http://0.0.0.0:$1
 	fi
 else    
-    dotnet $1.dll
+    dotnet $dir.dll $@
 fi
 
 cd ..
