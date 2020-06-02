@@ -1,11 +1,21 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Runtime.InteropServices;
 
 namespace Codebot.Raspberry
 {
+    /// <summary>
+    /// The read or write buffer to flush
+    /// </summary>
+    public enum FlushDirection
+    {
+        Input,
+        Output,
+        Both
+    }
+
     /// <summary>
     /// The parity to use when opening a serial port
     /// </summary>
@@ -25,11 +35,54 @@ namespace Codebot.Raspberry
         Two
     }
 
-    public enum FlushDirection
+    /// <summary>
+    /// Options to be used when opening a serial port
+    /// </summary>
+    public class SerialPortOptions
     {
-        Input,
-        Output,
-        Both
+        /// <summary>
+        /// The default options to be used to open a port if no options are given
+        /// </summary>
+        /// <remarks>See http://www.delorie.com/djgpp/doc/libc/libc_816.html</remarks>
+        public static readonly SerialPortOptions Default = new SerialPortOptions
+        {
+            Baud = SerialPort.Baud9600,
+            DataBits = SerialPort.Bits8,
+            Parity = Parity.None,
+            StopBits = StopBits.One,
+            Min = 1,
+            Timeout = 0
+        };
+
+        /// <summary>
+        /// The transfer speed in bits per second
+        /// </summary>
+        public int Baud { get; set; }
+
+        /// <summary>
+        /// The character size in bits
+        /// </summary>
+        public int DataBits { get; set; }
+
+        /// <summary>
+        /// The type of parity check to append to each character
+        /// </summary>
+        public Parity Parity { get; set; }
+
+        /// <summary>
+        /// The number of stop bits to apply to each character
+        /// </summary>
+        public StopBits StopBits { get; set; }
+
+        /// <summary>
+        /// The minimum number of characters for a completed read
+        /// </summary>
+        public byte Min { get; set; }
+
+        /// <summary>
+        /// The read timeout of in tenths of a second
+        /// </summary>
+        public byte Timeout { get; set; }
     }
 
     /// <summary>
@@ -42,13 +95,12 @@ namespace Codebot.Raspberry
         private const int O_RDWR = 0x002;
         private const int O_NOCTTY = 0x100;
 
-        private const uint TCGETS = 0x5401;
-        private const uint TCSETS = 0x5402;
         private const uint TCFLSH = 0x540b;
 
         private const int TCIFLUSH = 0;
         private const int TCIOFLUSH = 2;
         private const int TCOFLUSH = 1;
+        private const int TCSANOW = 0;
 
         private const uint CBAUD = 4111;
         private const uint CBAUDEX = 4096;
@@ -94,6 +146,9 @@ namespace Codebot.Raspberry
         private const uint ONLCR = 4;
         private const uint OPOST = 1;
 
+        private const uint VTIME = 6;
+        private const uint VMIN = 7;
+
         [StructLayout(LayoutKind.Explicit)]
         private struct TermiosStruct
         {
@@ -113,13 +168,9 @@ namespace Codebot.Raspberry
             [FieldOffset(12)]
             public UInt32 c_lflag;
 
-            [MarshalAs(UnmanagedType.U4)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 36)]
             [FieldOffset(16)]
-            public UInt32 c_line;
-
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-            [FieldOffset(20)]
-            public string c_cc;
+            public byte[] c_cc;
 
             [MarshalAs(UnmanagedType.U4)]
             [FieldOffset(52)]
@@ -130,6 +181,12 @@ namespace Codebot.Raspberry
             public UInt32 c_ospeed;
         }
 
+        [DllImport("libc", EntryPoint = "open")]
+        private static extern int ExternalFileOpen(string path, int flags);
+
+        [DllImport("libc", EntryPoint = "close")]
+        static private extern int ExternalFileClose(int fd);
+
         [DllImport("libc", EntryPoint = "write")]
         private static extern int ExternalWrite(int fd, byte[] buffer, int numBytes);
 
@@ -137,16 +194,13 @@ namespace Codebot.Raspberry
         private static extern int ExternalRead(int fd, byte[] buffer, int numBytes);
 
         [DllImport("libc", EntryPoint = "ioctl")]
-        private static extern int ExternalIoCtl(int fd, uint request, int intVal);
+        private static extern int ExternalIoCtl(int fd, uint request, int value);
 
-        [DllImport("libc", EntryPoint = "ioctl")]
-        private static extern int ExternalIoCtl(int fd, uint request, ref TermiosStruct xfer);
+        [DllImport("libc", EntryPoint = "tcgetattr")]
+        private static extern int ExternalTCGetAttr(int fd, ref TermiosStruct term);
 
-        [DllImport("libc", EntryPoint = "open")]
-        private static extern int ExternalFileOpen(string path, int flags);
-
-        [DllImport("libc", EntryPoint = "close")]
-        static private extern int ExternalFileClose(int fd);
+        [DllImport("libc", EntryPoint = "tcsetattr")]
+        private static extern int ExternalTCSetAttr(int fd, int actions, ref TermiosStruct term);
         #endregion
 
         public const int Baud300 = 300;
@@ -176,16 +230,26 @@ namespace Codebot.Raspberry
         {
         }
 
+        /// <summary>
+        /// Create a SerialPort using the specified device
+        /// </summary>
         public SerialPort(string device)
         {
             this.device = device;
         }
 
         /// <summary>
-        /// Open the port using a configuration
+        /// Open the port using the default options
         /// </summary>
-        public bool Open(int baud = Baud9600, int dataBits = Bits8, Parity parity = Parity.None,
-            StopBits stopBits = StopBits.One)
+        public bool Open()
+        {
+            return Open(SerialPortOptions.Default);
+        }
+
+        /// <summary>
+        /// Open the port using a specified set of options
+        /// </summary>
+        public bool Open(SerialPortOptions options)
         {
             if (IsOpened)
                 return false;
@@ -194,96 +258,63 @@ namespace Codebot.Raspberry
             port = ExternalFileOpen(device, O_RDWR | O_NOCTTY);
             if (IsClosed)
                 return false;
-            UpdatePort(baud, dataBits, parity, stopBits);
+            UpdatePort(options);
             return true;
         }
 
         /// <summary>
-        /// Update the port settings using ioctrl
+        /// Update the port settings using a set of options
         /// </summary>
         /// <remarks>See https://github.com/pyserial/pyserial/blob/master/serial/serialposix.py</remarks>
-        private void UpdatePort(int baud, int dataBits, Parity parity, StopBits stopBits)
+        private void UpdatePort(SerialPortOptions options)
         {
             if (IsClosed)
                 return;
             var term = new TermiosStruct();
-            ExternalIoCtl(port, TCGETS, ref term);
+            ExternalTCGetAttr(port, ref term);
             term.c_cflag |= CLOCAL | CREAD;
             term.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL | ISIG | IEXTEN);
             term.c_oflag &= ~(OPOST | ONLCR | OCRNL);
             term.c_iflag &= ~(INLCR | IGNCR | ICRNL | IGNBRK | INPCK | ISTRIP);
             term.c_cflag &= ~(CBAUD | CBAUDEX | CSIZE);
-            uint b;
-            switch (baud)
+            term.c_cflag |= options.Baud switch
             {
-                case Baud300:
-                    b = B300;
-                    break;
-                case Baud1200:
-                    b = B1200;
-                    break;
-                case Baud2400:
-                    b = B2400;
-                    break;
-                case Baud4800:
-                    b = B4800;
-                    break;
-                case Baud9600:
-                    b = B9600;
-                    break;
-                case Baud19200:
-                    b = B19200;
-                    break;
-                case Baud38400:
-                    b = B38400;
-                    break;
-                case Baud57600:
-                    b = B57600;
-                    break;
-                case Baud115200:
-                    b = B115200;
-                    break;
-                case Baud230400:
-                    b = B230400;
-                    break;
-                default:
-                    b = B9600;
-                    break;
-            }
-            term.c_cflag |= b;
-            switch (dataBits)
+                Baud300 => B300,
+                Baud1200 => B1200,
+                Baud2400 => B2400,
+                Baud4800 => B4800,
+                Baud9600 => B9600,
+                Baud19200 => B19200,
+                Baud38400 => B38400,
+                Baud57600 => B57600,
+                Baud115200 => B115200,
+                Baud230400 => B230400,
+                _ => B9600
+            };
+            term.c_cflag |= options.DataBits switch
             {
-                case Bits5:
-                    term.c_cflag |= CS5;
-                    break;
-                case Bits6:
-                    term.c_cflag |= CS6;
-                    break;
-                case Bits7:
-                    term.c_cflag |= CS7;
-                    break;
-                default:
-                    term.c_cflag |= CS8;
-                    break;
-            }
-            switch (parity)
+                Bits5 => CS5,
+                Bits6 => CS6,
+                Bits7 => CS7,
+                Bits8 => CS8,
+                _ => CS8,
+            };
+            if (options.Parity == Parity.Odd)
+                term.c_cflag |= PARENB | PARODD;
+            else if (options.Parity == Parity.Even)
             {
-                case Parity.Odd:
-                    term.c_cflag |= PARENB | PARODD;
-                    break;
-                case Parity.Even:
-                    term.c_cflag &= ~PARODD;
-                    term.c_cflag |= PARENB;
-                    break;
-                case Parity.None:
-                    term.c_cflag &= ~(PARENB | PARODD);
-                    break;
+                term.c_cflag &= ~PARODD;
+                term.c_cflag |= PARENB;
             }
-            if (stopBits == StopBits.One)
+            else if (options.Parity == Parity.None)
+                term.c_cflag &= ~(PARENB | PARODD);
+            if (options.StopBits == StopBits.One)
                 term.c_cflag &= ~CSTOPB;
             else
                 term.c_cflag |= CSTOPB;
-            ExternalIoCtl(port, TCSETS, ref term);
+            term.c_cc[VMIN] = options.Min;
+            term.c_cc[VTIME] = options.Timeout;
+            ExternalTCSetAttr(port, TCSANOW, ref term);
         }
 
         /// <summary>
@@ -325,10 +356,8 @@ namespace Codebot.Raspberry
         /// </summary>
         public void Write(string text)
         {
-            if (IsClosed)
-                return;
-            var data = Encoding.UTF8.GetBytes(text);
-            ExternalWrite(port, data, data.Length);
+            if (IsOpened)
+                WriteBytes(Encoding.UTF8.GetBytes(text));
         }
 
         /// <summary>
@@ -336,9 +365,8 @@ namespace Codebot.Raspberry
         /// </summary>
         public void WriteBytes(byte[] data)
         {
-            if (IsClosed)
-                return;
-            ExternalWrite(port, data, data.Length);
+            if (IsOpened)
+                ExternalWrite(port, data, data.Length);
         }
 
         /// <summary>
@@ -347,7 +375,7 @@ namespace Codebot.Raspberry
         public delegate void SerialRead(SerialPort port, string text);
 
         /// <summary>
-        /// Read text from the port using a callback when text is ready
+        /// Read text from the port using a callback when text is available
         /// </summary>
         public void Read(SerialRead readComplete)
         {
@@ -363,7 +391,7 @@ namespace Codebot.Raspberry
                             c = 0;
                         string s = string.Empty;
                         if (c > 0)
-                        s = Encoding.UTF8.GetString(buffer, 0, c);
+                            s = Encoding.UTF8.GetString(buffer, 0, c);
                         if (IsOpened)
                             readComplete(this, s);
                     }
@@ -376,7 +404,7 @@ namespace Codebot.Raspberry
         public delegate void SerialReadBytes(SerialPort port, byte[] data, int length);
 
         /// <summary>
-        /// Read binary data from the port using a callback when data is ready
+        /// Read binary data from the port using a callback when data is available
         /// </summary>
         public void ReadBytes(SerialReadBytes readComplete)
         {

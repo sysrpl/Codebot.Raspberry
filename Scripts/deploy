@@ -5,6 +5,13 @@ if [ ! -d bin/Debug/netcoreapp3.1 ] ; then
     exit 1
 fi
 
+dotnet build
+
+if [ $? -ne 0 ]; then
+    echo -e "\e[31m\e[1mBuild failed"
+    exit 1
+fi
+
 DIR=${PWD##*/} 
 rm -rf ~/media/raspberry/tmp/$DIR
 mkdir ~/media/raspberry/tmp/$DIR
