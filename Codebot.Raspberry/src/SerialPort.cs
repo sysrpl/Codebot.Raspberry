@@ -38,7 +38,7 @@ namespace Codebot.Raspberry
     /// <summary>
     /// Options to be used when opening a serial port
     /// </summary>
-    public class SerialPortOptions
+    public sealed class SerialPortOptions
     {
         /// <summary>
         /// The default options to be used to open a port if no options are given
@@ -154,19 +154,19 @@ namespace Codebot.Raspberry
         {
             [MarshalAs(UnmanagedType.U4)]
             [FieldOffset(0)]
-            public UInt32 c_iflag;
+            public uint c_iflag;
 
             [MarshalAs(UnmanagedType.U4)]
             [FieldOffset(4)]
-            public UInt32 c_oflag;
+            public uint c_oflag;
 
             [MarshalAs(UnmanagedType.U4)]
             [FieldOffset(8)]
-            public UInt32 c_cflag;
+            public uint c_cflag;
 
             [MarshalAs(UnmanagedType.U4)]
             [FieldOffset(12)]
-            public UInt32 c_lflag;
+            public uint c_lflag;
 
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 36)]
             [FieldOffset(16)]
@@ -174,11 +174,11 @@ namespace Codebot.Raspberry
 
             [MarshalAs(UnmanagedType.U4)]
             [FieldOffset(52)]
-            public UInt32 c_ispeed;
+            public uint c_ispeed;
 
             [MarshalAs(UnmanagedType.U4)]
             [FieldOffset(56)]
-            public UInt32 c_ospeed;
+            public uint c_ospeed;
         }
 
         [DllImport("libc", EntryPoint = "open")]
@@ -268,8 +268,6 @@ namespace Codebot.Raspberry
         /// <remarks>See https://github.com/pyserial/pyserial/blob/master/serial/serialposix.py</remarks>
         private void UpdatePort(SerialPortOptions options)
         {
-            if (IsClosed)
-                return;
             var term = new TermiosStruct();
             ExternalTCGetAttr(port, ref term);
             term.c_cflag |= CLOCAL | CREAD;
@@ -297,7 +295,7 @@ namespace Codebot.Raspberry
                 Bits6 => CS6,
                 Bits7 => CS7,
                 Bits8 => CS8,
-                _ => CS8,
+                _ => CS8
             };
             if (options.Parity == Parity.Odd)
                 term.c_cflag |= PARENB | PARODD;
