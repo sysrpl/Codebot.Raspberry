@@ -123,7 +123,11 @@ namespace Codebot.Raspberry.Device
         /// </summary>
         public void Reset()
         {
-            foreach (var p in pixels) p.Color = Color.Black;
+            foreach (var p in pixels)
+            {
+                p.Color = Color.Black;
+                p.Data = 0;
+            }
         }
 
         /// <summary>

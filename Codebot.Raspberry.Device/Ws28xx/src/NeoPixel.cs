@@ -42,6 +42,25 @@ namespace Codebot.Raspberry.Device
             }
         }
 
+        public int Data { get; set; }
+
+        public NeoPixel Mix(Color a, Color b, double m)
+        {
+            if (m <= 0)
+                Color = a;
+            else if (m >= 1)
+                Color = b;
+            else
+            {
+                var i = 1 - m;
+                int red = (int)(a.R * i + b.R * m);
+                int blue = (int)(a.B * i + b.B * m);
+                int green = (int)(a.G * i + b.G * m);
+                Color = Color.FromArgb(red, green, blue);
+            }
+            return this;
+        }
+
         public NeoPixel Hue(double h)
         {
             Color = ColorRGB.FromHSL(h, 1, 0.5);
