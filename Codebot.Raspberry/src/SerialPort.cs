@@ -304,7 +304,7 @@ namespace Codebot.Raspberry
                 term.c_cflag &= ~PARODD;
                 term.c_cflag |= PARENB;
             }
-            else if (options.Parity == Parity.None)
+            else
                 term.c_cflag &= ~(PARENB | PARODD);
             if (options.StopBits == StopBits.One)
                 term.c_cflag &= ~CSTOPB;
