@@ -71,6 +71,37 @@ Install using:
 
 </details>
 
+## Editing IDE Rules
+
+You may want to edit the C# analysis rules to turn on or off certain warnings, hints, or error highlighting. Follow these steps to enable and edit custom IDE rules.
+
+<details>
+  <summary>Creating and editing custom IDE rules</summary>
+
+Create a file named ``netcoreapp3.1.ruleset`` and place in in a common directory, The content of your custom rule file should look like this:
+
+````xml
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Custom Rules" Description="Custom Rules" ToolsVersion="12.0">
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp.Features" RuleNamespace="Microsoft.CodeAnalysis.CSharp.Features">
+    <Rule Id="IDE0060" Action="None" />
+  </Rules>
+</RuleSet>
+````
+The above rule ``IDE0060`` hide messages about unused parameters. You can add more rules and to this file according to your personal preferences.
+
+To enable these rules you must add the rule set to your C# project files inside the ``<PropertyGroup>`` tag:
+
+
+````xml
+<PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <CodeAnalysisRuleSet>netcoreapp3.1.ruleset</CodeAnalysisRuleSet>
+</PropertyGroup>
+````
+</details>
+
 ## Building Tasks
 
 You can edit your workspace ``.vscode/tasks.json`` to combine additional tasks to be run after building a project with VSC. Be sure to replace PROJECT withe the name of the project within your solution which you want to build.
