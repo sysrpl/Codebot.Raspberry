@@ -24,7 +24,7 @@ namespace Codebot.Raspberry.Common
             if (H < 0)
                 H = 1 + H % 1;
             else
-                H = H % 1;
+                H %= 1;
             if (H > 0.9999)
                 H = 0;
             if (S < 0)
@@ -119,6 +119,45 @@ namespace Codebot.Raspberry.Common
             {
                 return ((Color)this).GetBrightness();
             }
+        }
+    }
+
+    public static class ColorExtension
+    {
+        public static Color Mix(this Color color, Color value, double percent)
+        {
+            if (percent < 0.001)
+                return color;
+            if (percent > 0.999)
+                return value;
+            var i = 1 - percent;
+            var r = (int)Math.Round(value.R * percent + color.R * i);
+            var g = (int)Math.Round(value.G * percent + color.G * i);
+            var b = (int)Math.Round(value.B * percent + color.B * i);
+            return Color.FromArgb(r, g, b);
+        }
+
+        public static Color FromHue(this Color color, double h)
+        {
+            return ColorRGB.FromHSL(h, 1, 0.5);
+        }
+
+        public static Color Hue(this Color color, double h)
+        {
+            var c = new ColorRGB(color);
+            return ColorRGB.FromHSL(h, c.S, c.L);
+        }
+
+        public static Color Saturation(this Color color, double s)
+        {
+            var c = new ColorRGB(color);
+            return ColorRGB.FromHSL(c.H, s, c.L);
+        }
+
+        public static Color Lightness(this Color color, double l)
+        {
+            var c = new ColorRGB(color);
+            return ColorRGB.FromHSL(c.H, c.S, l);
         }
     }
 }
