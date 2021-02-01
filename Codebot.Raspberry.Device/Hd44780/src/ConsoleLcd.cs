@@ -105,8 +105,8 @@ namespace Codebot.Raspberry.Device
                 else
                     b = string.Empty;
                 a = a.Substring(0, Math.Min(a.Length, lcd.Cols));
-                a = lines[^1] + a;
-                lines[^1] = a.Trim();
+                a = lines[lines.Count - 1] + a;
+                lines[lines.Count - 1] = a.Trim();
                 lines.Add(string.Empty);
                 a = b;
             }

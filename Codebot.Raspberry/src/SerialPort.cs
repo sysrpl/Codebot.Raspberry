@@ -275,28 +275,60 @@ namespace Codebot.Raspberry
             term.c_oflag &= ~(OPOST | ONLCR | OCRNL);
             term.c_iflag &= ~(INLCR | IGNCR | ICRNL | IGNBRK | INPCK | ISTRIP);
             term.c_cflag &= ~(CBAUD | CBAUDEX | CSIZE);
-            term.c_cflag |= options.Baud switch
+            switch (options.Baud)
             {
-                Baud300 => B300,
-                Baud1200 => B1200,
-                Baud2400 => B2400,
-                Baud4800 => B4800,
-                Baud9600 => B9600,
-                Baud19200 => B19200,
-                Baud38400 => B38400,
-                Baud57600 => B57600,
-                Baud115200 => B115200,
-                Baud230400 => B230400,
-                _ => B9600
-            };
-            term.c_cflag |= options.DataBits switch
+                case (Baud300):
+                    term.c_cflag |= B300;
+                    break;
+                case (Baud1200):
+                    term.c_cflag |= B1200;
+                    break;
+                case (Baud2400):
+                    term.c_cflag |= B2400;
+                    break;
+                case (Baud4800):
+                    term.c_cflag |= B4800;
+                    break;
+                case (Baud9600):
+                    term.c_cflag |= B9600;
+                    break;
+                case (Baud19200):
+                    term.c_cflag |= B19200;
+                    break;
+                case (Baud38400):
+                    term.c_cflag |= B38400;
+                    break;
+                case (Baud57600):
+                    term.c_cflag |= B57600;
+                    break;
+                case (Baud115200):
+                    term.c_cflag |= B115200;
+                    break;
+                case (Baud230400):
+                    term.c_cflag |= B230400;
+                    break;
+                default:
+                    term.c_cflag |= B9600;
+                    break;
+            }
+            switch (options.DataBits)
             {
-                Bits5 => CS5,
-                Bits6 => CS6,
-                Bits7 => CS7,
-                Bits8 => CS8,
-                _ => CS8
-            };
+                case (Bits5):
+                    term.c_cflag |= CS5;
+                    break;
+                case (Bits6):
+                    term.c_cflag |= CS6;
+                    break;
+                case (Bits7):
+                    term.c_cflag |= CS7;
+                    break;
+                case (Bits8):
+                    term.c_cflag |= CS8;
+                    break;
+                default:
+                    term.c_cflag |= CS8;
+                    break;
+            }
             if (options.Parity == Parity.Odd)
                 term.c_cflag |= PARENB | PARODD;
             else if (options.Parity == Parity.Even)
@@ -382,7 +414,7 @@ namespace Codebot.Raspberry
             Task.Run(() => ExternalRead(port, buffer, buffer.Length))
                 .ContinueWith(task =>
                 {
-                    if (task.IsCompletedSuccessfully)
+                    if (task.IsCompleted && !(task.IsCanceled || task.IsFaulted))
                     {
                         var c = task.Result;
                         if (c < 0)
@@ -411,7 +443,7 @@ namespace Codebot.Raspberry
             Task.Run(() => ExternalRead(port, buffer, buffer.Length))
                 .ContinueWith(task =>
                 {
-                    if (task.IsCompletedSuccessfully)
+                    if (task.IsCompleted && !(task.IsCanceled || task.IsFaulted))
                     {
                         var c = task.Result;
                         if (c < 0)

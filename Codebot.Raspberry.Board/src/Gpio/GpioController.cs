@@ -252,7 +252,7 @@ namespace Codebot.Raspberry.Board
         /// <param name="eventTypes">The event types to wait for.</param>
         /// <param name="timeout">The time to wait for the event.</param>
         /// <returns>A task representing the operation of getting the structure that contains the result of the waiting operation.</returns>
-        public async ValueTask<WaitForEventResult> WaitForEventAsync(int pinNumber, PinEventTypes eventTypes, TimeSpan timeout)
+        public async Task<ValueTask<WaitForEventResult>> WaitForEventAsync(int pinNumber, PinEventTypes eventTypes, TimeSpan timeout)
         {
             using (CancellationTokenSource tokenSource = new CancellationTokenSource(timeout))
             {

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ "$#" -ne 1 ]; then
+    echo "Usage: killit [process-name]"
+    exit
+fi
+
+echo "Trying to kill '$1'"
+ps -ef | grep $1 | grep -v grep | awk '{print $2}' | xargs -r kill -9

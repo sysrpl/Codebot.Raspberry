@@ -3,10 +3,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4B801C6D-3DC2-4242-A8B3-F7434AF68092}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Codebot.Raspberry.Device</RootNamespace>
-    <AssemblyName>Hd44780</AssemblyName>
+    <ProjectGuid>{B35BBBF0-4DF8-4DFE-8F4E-8C50B071CB51}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Tests</RootNamespace>
+    <AssemblyName>Tests</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -17,28 +17,41 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ExternalConsole>true</ExternalConsole>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ExternalConsole>true</ExternalConsole>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\CharacterLcd.cs" />
-    <Compile Include="src\ConsoleLcd.cs" />
+    <Compile Include="src\Program.cs" />
+    <Compile Include="src\BlinkTest.cs" />
+    <Compile Include="src\ButtonTest.cs" />
+    <Compile Include="src\WeatherTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Codebot.Raspberry\Codebot.Raspberry.csproj">
+    <ProjectReference Include="..\Codebot.Raspberry.Board\Codebot.Raspberry.Board.csproj">
+      <Project>{B2C6E53C-E178-4ABF-A37A-09DE3CECAD22}</Project>
+      <Name>Codebot.Raspberry.Board</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Codebot.Raspberry\Codebot.Raspberry.csproj">
       <Project>{2AEF0591-36A8-4CDC-AE68-DC91B1BEB57F}</Project>
       <Name>Codebot.Raspberry</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Codebot.Raspberry.Device\Dhtxx\Dhtxx.csproj">
+      <Project>{C58D3CA2-D62E-4C81-B732-008E935F07D0}</Project>
+      <Name>Dhtxx</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# run-on-pi
+# Run a program on a Raspberry Pi
+# The variable PI can be set to specify the name of your Pi
+
+# Add the following tool to Mono Develop
+# Title: Run on pi ...
+# Command: gnome-terminal
+# Arguments: -x bash -c "run-on-pi"
+# Key Binding: Ctrl + Shift + P
+
+if [ -z ${PI+x} ]; then 
+	PI=pi
+fi
+FOLDER=${PWD##*/}
+echo "Attempting to run "$FOLDER" on "$PI
+mkdir -p $HOME/media/$PI
+if [[ ! -e $HOME/media/$PI/tmp ]]; then
+	sshfs $PI:/home/pi $HOME/media/$PI
+fi
+
+mkdir -p $HOME/media/$PI/tmp/$FOLDER/
+echo "Copying changes to project "$FOLDER
+rsync -r ./* $HOME/media/$PI/tmp/$FOLDER/
+echo "Running project "$FOLDER" ..."
+ssh $PI "cd ~/tmp/"$FOLDER"/bin/Debug/; mono "$FOLDER".exe"
+ssh $PI "/home/pi/bin/killit 'mono\s"$FOLDER"'" > /dev/null 2> /dev/null
+echo "Press ENTER to exit"
+read DONE

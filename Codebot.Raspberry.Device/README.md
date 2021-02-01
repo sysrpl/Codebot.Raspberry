@@ -16,3 +16,4 @@ The following is a list of hardware devices in this repository:
 ### See also
 
 [Projects and Tools](/Codebot.Raspberry.Device/README.md)
+[Microsoft IoT Device List](https://docs.microsoft.com/en-us/dotnet/api/?view=iot-dotnet-1.3)

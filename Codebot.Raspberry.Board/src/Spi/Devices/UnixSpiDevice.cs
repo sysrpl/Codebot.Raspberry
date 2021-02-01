@@ -111,14 +111,17 @@ namespace Codebot.Raspberry.Board.Spi
 
         private UnixSpiMode SpiModeToUnixSpiMode(SpiMode mode)
         {
-            return mode switch
+            switch (mode)
             {
-                SpiMode.Mode0 => UnixSpiMode.SPI_MODE_0,
-                SpiMode.Mode1 => UnixSpiMode.SPI_MODE_1,
-                SpiMode.Mode2 => UnixSpiMode.SPI_MODE_2,
-                SpiMode.Mode3 => UnixSpiMode.SPI_MODE_3,
-                _ => throw new ArgumentException("Invalid SPI mode.", nameof(mode))
-            };
+                case SpiMode.Mode0:
+                    return UnixSpiMode.SPI_MODE_0;
+                case SpiMode.Mode1:
+                    return UnixSpiMode.SPI_MODE_1;
+                case SpiMode.Mode2:
+                    return UnixSpiMode.SPI_MODE_2;
+                default:
+                    throw new ArgumentException("Invalid SPI mode.", nameof(mode));
+            }
         }
 
         /// <summary>

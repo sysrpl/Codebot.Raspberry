@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Drawing;
+// using System.Drawing;
 
 namespace Codebot.Raspberry.Common
 {
-    public struct ColorRGB
+    /*public struct ColorRGB
     {
         public byte R;
         public byte G;
@@ -159,5 +159,5 @@ namespace Codebot.Raspberry.Common
             var c = new ColorRGB(color);
             return ColorRGB.FromHSL(c.H, c.S, l);
         }
-    }
+    }*/
 }

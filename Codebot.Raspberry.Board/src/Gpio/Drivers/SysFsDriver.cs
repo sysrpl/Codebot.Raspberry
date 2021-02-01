@@ -248,12 +248,12 @@ namespace Codebot.Raspberry.Board.Drivers
 
         private PinValue ConvertSysFsValueToPinValue(string value)
         {
-            return value.Trim() switch
+            switch (value.Trim())
             {
-                "0" => PinValue.Low,
-                "1" => PinValue.High,
-                _ => throw new ArgumentException($"Invalid GPIO pin value {value}.")
-            };
+                case "0":  return PinValue.Low;
+                case "1": return PinValue.High;
+                default: throw new ArgumentException($"Invalid GPIO pin value {value}.");
+            }
         }
 
         /// <summary>
@@ -366,14 +366,14 @@ namespace Codebot.Raspberry.Board.Drivers
 
         private PinEventTypes StringValueToPinEventType(string value)
         {
-            return value.Trim() switch
+            switch (value.Trim())
             {
-                "none" => PinEventTypes.None,
-                "both" => PinEventTypes.Falling | PinEventTypes.Rising,
-                "rising" => PinEventTypes.Rising,
-                "falling" => PinEventTypes.Falling,
-                _ => throw new ArgumentException("Invalid pin event value.", value)
-            };
+                case "none": return PinEventTypes.None;
+                case "both": return PinEventTypes.Falling | PinEventTypes.Rising;
+                case "rising": return PinEventTypes.Rising;
+                case "falling":  return PinEventTypes.Falling;
+                default:  throw new ArgumentException("Invalid pin event value.", value);
+            }
         }
 
         private string PinEventTypeToStringValue(PinEventTypes kind)
