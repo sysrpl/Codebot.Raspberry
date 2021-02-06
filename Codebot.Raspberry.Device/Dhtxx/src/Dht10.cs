@@ -50,15 +50,15 @@ namespace Codebot.Raspberry.Device
             }
         }
 
-        protected override double GetHumidity(byte[] readBuff)
+        protected override double GetHumidity(byte[] buffer)
         {
-            int raw = (((readBuff[1] << 8) | readBuff[2]) << 4) | readBuff[3] >> 4;
+            int raw = (((buffer[1] << 8) | buffer[2]) << 4) | buffer[3] >> 4;
             return raw / Math.Pow(2, 20) * 100;
         }
 
-        protected override Temperature GetTemperature(byte[] readBuff)
+        protected override Temperature GetTemperature(byte[] buffer)
         {
-            int raw = ((((readBuff[3] & 0b_0000_1111) << 8) | readBuff[4]) << 8) | readBuff[5];
+            int raw = ((((buffer[3] & 0b00001111) << 8) | buffer[4]) << 8) | buffer[5];
             return Temperature.FromCelsius(raw / Math.Pow(2, 20) * 200 - 50);
         }
     }

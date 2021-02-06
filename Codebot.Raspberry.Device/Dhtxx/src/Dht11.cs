@@ -1,8 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using Codebot.Raspberry.Common;
+﻿using Codebot.Raspberry.Common;
 
 namespace Codebot.Raspberry.Device
 {
@@ -17,14 +13,14 @@ namespace Codebot.Raspberry.Device
         /// <param name="pin">The pin number (GPIO number)</param>
         public Dht11(int pin) : base(pin) { }
 
-        protected override double GetHumidity(byte[] readBuff)
+        protected override double GetHumidity(byte[] buffer)
         {
-            return readBuff[0] + readBuff[1] * 0.1;
+            return buffer[0] + buffer[1] * 0.1;
         }
 
-        protected override Temperature GetTemperature(byte[] readBuff)
+        protected override Temperature GetTemperature(byte[] buffer)
         {
-            var temp = readBuff[2] + readBuff[3] * 0.1;
+            var temp = buffer[2] + buffer[3] * 0.1;
             return Temperature.FromCelsius(temp);
         }
     }

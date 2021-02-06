@@ -1,8 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using Codebot.Raspberry.Common;
+﻿using Codebot.Raspberry.Common;
 
 namespace Codebot.Raspberry.Device
 {
@@ -12,19 +8,23 @@ namespace Codebot.Raspberry.Device
     [Device("DHTXX", "Temperature and Humidity Sensor", Category = "Sensor", Remarks = "Uses any GPIO")]
     public abstract class Dhtxx : HardwareDevice
     {
-        protected byte[] buffer = new byte[5];
-        protected readonly GpioPin pin;
-        private double lastUpdate = 0;
+        protected readonly byte[] buffer;
+        private readonly GpioPin pin;
+        private double lastUpdate;
 
         /// <summary>
         /// Create a DHT sensor
         /// </summary>
-        /// <param name="pin">The pin number (GPIO number)</param>
+        /// <param name="pin">The logical (GPIO) pin number</param>
         protected Dhtxx(int pin)
         {
+            this.buffer = new byte[5];
             this.pin = Pi.Gpio.Pin(pin);
+            // Set pin to high for next update
+            this.pin.Mode = GpioPinMode.Output;
+            this.pin.Write(true);
             IsUpdateSuccessful = false;
-            lastUpdate = Timer.Now;
+            lastUpdate = Timer.Now - 2;
         }
 
         /// <summary>
@@ -86,88 +86,79 @@ namespace Codebot.Raspberry.Device
         private void ReadPin()
         {
             IsUpdateSuccessful = false;
-            lastUpdate = Timer.Now;
-            byte readVal = 0;
-            // Keep data line HIGH
-            pin.Mode = GpioPinMode.Output;
-            pin.Write(true);
-            Pi.Wait(20);
-            // Send trigger signal
-            pin.Write(false);
-            // Wait at least 18 milliseconds or sensor initialization will fail
-            Pi.Wait(20);
-            pin.Write(true);
-            // Wait 20 - 40 microseconds
-            Pi.WaitMicroseconds(30);
-            pin.Mode = GpioPinMode.InputPullUp;
-            // LOW - about 80 microseconds
-            var timer = new Timer();
-            while (!pin.Read())
-                if (timer.ElapsedMicroseconds > 100)
-                {
-                    IsUpdateSuccessful = false;
-                    return;
-                }
-            // HIGH - about 80 microseconds
-            timer.Reset();
-            while (pin.Read())
+            try
             {
-                if (timer.ElapsedMicroseconds > 100)
-                {
-                    IsUpdateSuccessful = false;
+                // Send the sensor our trigger signal
+                pin.Write(false);
+                // Wait at least 18ms for sensor initialization
+                Pi.Wait(20);
+                // Send the start signal
+                pin.Write(true);
+                // Wait 20μs - 40μs
+                Pi.WaitMicroseconds(30);
+                pin.Mode = GpioPinMode.InputPullUp;
+                // Sensor should take over and go low
+                if (!pin.WaitLow(Pi.Microseconds(100)))
+                    // FAIL: sensor did not take over
                     return;
+                // Wait for the sensor to switch to high
+                if (!pin.WaitHigh(Pi.Microseconds(100)))
+                    // FAIL: sensor did not send high
+                    return;
+                // Wait for sensor to begin data bits
+                if (!pin.WaitLow(Pi.Microseconds(100)))
+                    // FAIL: sensor did not begin sending a data bit
+                    return;
+                // Elapsed is the duration a data bit was held high 
+                double elapsed = 0;
+                // A buffer for eight bits of data
+                byte data = 0;
+                // Now we can begin reading 40 data bits
+                for (int i = 0; i < 40; i++)
+                {
+                    // Wait for the data bit
+                    if (!pin.WaitHigh(Pi.Microseconds(100)))
+                        // FAIL: no data bit was sent
+                        return;
+                    // Measure the data bit
+                    if (!pin.WaitLow(Pi.Microseconds(100), out elapsed))
+                        // FAIL: data bit was too long
+                        return;
+                    // Make room to store the next data bit
+                    data <<= 1;
+                    // If elapsed was more than 40µs then the data bit is 1
+                    if (elapsed > 0.04d)
+                        data |= 1;
+                    // If 8 bits were read then copy those bits to our buffer
+                    if (((i + 1) % 8) == 0)
+                        buffer[i / 8] = data;
                 }
+                // Success is reached if the checksum passes
+                if ((buffer[4] == ((buffer[0] + buffer[1] + buffer[2] + buffer[3]) & 0xFF)))
+                    IsUpdateSuccessful = (buffer[0] != 0) || (buffer[2] != 0);
             }
-            // The read data contains 40 bits
-            for (int i = 0; i < 40; i++)
+            finally
             {
-                // Beginning signal per bit, about 50 microseconds
-                timer.Reset();
-                while (!pin.Read())
-                {
-                    if (timer.ElapsedMicroseconds > 100)
-                    {
-                        IsUpdateSuccessful = false;
-                        return;
-                    }
-                }
-                // 26 - 28 microseconds represent 0
-                // 70 microseconds represent 1
-                timer.Reset();
-                while (pin.Read())
-                {
-                    if (timer.ElapsedMicroseconds > 100)
-                    {
-                        IsUpdateSuccessful = false;
-                        return;
-                    }
-                }
-                // bit to byte
-                // less than 40 microseconds can be considered as 0, not necessarily less than 28 microseconds
-                // here take 30 microseconds
-                readVal <<= 1;
-                if (!(timer.ElapsedMicroseconds <= 35))
-                    readVal |= 1;
-                if (((i + 1) % 8) == 0)
-                    buffer[i / 8] = readVal;
+                // Set pin to high and for next update
+                pin.Mode = GpioPinMode.Output;
+                pin.Write(true);
+                // And set the last update time
+                lastUpdate = Timer.Now;
             }
-            if ((buffer[4] == ((buffer[0] + buffer[1] + buffer[2] + buffer[3]) & 0xFF)))
-                IsUpdateSuccessful = (buffer[0] != 0) || (buffer[2] != 0);
-            lastUpdate = Timer.Now;
         }
 
         /// <summary>
         /// Converting data to humidity
         /// </summary>
-        /// <param name="readBuff">Data</param>
+        /// <param name="buffer">Data</param>
         /// <returns>Humidity</returns>
-        protected abstract double GetHumidity(byte[] readBuff);
+        protected abstract double GetHumidity(byte[] buffer);
 
         /// <summary>
         /// Converting data to Temperature
         /// </summary>
-        /// <param name="readBuff">Data</param>
+        /// <param name="buffer">Data</param>
         /// <returns>Temperature</returns>
-        protected abstract Temperature GetTemperature(byte[] readBuff);
+        protected abstract Temperature GetTemperature(byte[] buffer);
     }
 }

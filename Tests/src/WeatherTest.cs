@@ -8,17 +8,22 @@ namespace Tests
     {
         public static void Run()
         {
-            var pinNumber = 22;
+            var pinNumber = 17;
             Console.WriteLine($"Weather Test on GPIO {pinNumber}");
             var sensor = new Dht22(pinNumber);
+            var attempts = 0;
             while (true)
             {
+                Pi.Wait(2500);
                 if (sensor.Update())
+                {
                     Console.WriteLine($"The current temperature is {sensor.Temperature.Fahrenheit} " +
-                        $"and the humdity is {sensor.Humidity}%");
+                            $"and the humidity is {sensor.Humidity}%");
+                    Console.WriteLine($"Attempts since last update {attempts}");
+                    attempts = 0;
+                }
                 else
-                    Console.WriteLine("Could not read weather data");
-                Pi.Wait(5000);
+                    attempts++;
             }
         }
     }
