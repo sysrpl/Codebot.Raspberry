@@ -29,8 +29,8 @@ namespace Codebot.Raspberry.Board
         private const string HummingBoardProduct = "HummingBoard-Edge";
         private const string HummingBoardHardware = @"Freescale i.MX6 Quad/DualLite (Raspberry Tree)";
 
-        private readonly GpioDriver _driver;
-        private readonly HashSet<int> _openPins;
+        public readonly GpioDriver _driver;
+        public readonly HashSet<int> _openPins;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GpioController"/> class that will use the logical pin numbering scheme as default.
@@ -208,7 +208,6 @@ namespace Codebot.Raspberry.Board
             {
                 throw new InvalidOperationException("Cannot write to a pin that is not set to Output mode.");
             }
-
             _driver.Write(logicalPinNumber, value);
         }
 

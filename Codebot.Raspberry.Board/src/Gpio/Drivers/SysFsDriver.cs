@@ -222,7 +222,7 @@ namespace Codebot.Raspberry.Board.Drivers
         /// </summary>
         /// <param name="pinNumber">The pin number in the driver's logical numbering scheme.</param>
         /// <returns>The value of the pin.</returns>
-        protected internal override PinValue Read(int pinNumber)
+        public override PinValue Read(int pinNumber)
         {
             PinValue result = default;
             string valuePath = $"{GpioBasePath}/gpio{pinNumber + s_pinOffset}/value";
@@ -261,7 +261,7 @@ namespace Codebot.Raspberry.Board.Drivers
         /// </summary>
         /// <param name="pinNumber">The pin number in the driver's logical numbering scheme.</param>
         /// <param name="value">The value to be written to the pin.</param>
-        protected internal override void Write(int pinNumber, PinValue value)
+        public override void Write(int pinNumber, PinValue value)
         {
             string valuePath = $"{GpioBasePath}/gpio{pinNumber + s_pinOffset}/value";
             if (File.Exists(valuePath))

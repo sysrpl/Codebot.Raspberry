@@ -8,7 +8,10 @@
 # Title: Run on pi ...
 # Command: gnome-terminal
 # Arguments: -x bash -c "run-on-pi"
-# Key Binding: Ctrl + Shift + P
+# Working directory: ${ProjectDir}
+# Key Binding: Ctrl+Shift+P
+
+# Notes: Make sure $HOME/media/$PI isn't already occupied
 
 if [ -z ${PI+x} ]; then 
 	PI=pi

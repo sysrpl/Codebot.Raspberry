@@ -197,7 +197,7 @@ namespace Codebot.Raspberry.Board.Drivers
         }
 
         /// <inheritdoc/>
-        protected internal override PinValue Read(int pinNumber)
+        public override PinValue Read(int pinNumber)
         {
             if (_pinNumberToSafeLineHandle.TryGetValue(pinNumber, out SafeLineHandle pinHandle))
             {
@@ -315,7 +315,7 @@ namespace Codebot.Raspberry.Board.Drivers
         }
 
         /// <inheritdoc/>
-        protected internal override void Write(int pinNumber, PinValue value)
+        public override void Write(int pinNumber, PinValue value)
         {
             if (!_pinNumberToSafeLineHandle.TryGetValue(pinNumber, out SafeLineHandle pinHandle))
             {

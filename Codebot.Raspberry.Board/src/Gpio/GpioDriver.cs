@@ -65,14 +65,14 @@ namespace Codebot.Raspberry.Board
         /// </summary>
         /// <param name="pinNumber">The pin number in the driver's logical numbering scheme.</param>
         /// <returns>The value of the pin.</returns>
-        protected internal abstract PinValue Read(int pinNumber);
+        public abstract PinValue Read(int pinNumber);
 
         /// <summary>
         /// Writes a value to a pin.
         /// </summary>
         /// <param name="pinNumber">The pin number in the driver's logical numbering scheme.</param>
         /// <param name="value">The value to be written to the pin.</param>
-        protected internal abstract void Write(int pinNumber, PinValue value);
+        public abstract void Write(int pinNumber, PinValue value);
 
         /// <summary>
         /// Blocks execution until an event of type eventType is received or a cancellation is requested.

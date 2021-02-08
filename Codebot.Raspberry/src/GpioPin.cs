@@ -134,7 +134,7 @@ namespace Codebot.Raspberry
             var timer = new Timer();
             while (true)
             {
-                if (controller.Read(Number) == target)
+                if (controller._driver.Read(Number) == target)
                 {
                     elapsed = timer.ElapsedMilliseconds;
                     return true;
@@ -153,11 +153,11 @@ namespace Codebot.Raspberry
         /// <remarks>Mode must be set to Input in order to use WaitLow</remarks>
         public bool WaitLow(double timeout, out double elapsed)
         {
-            return WaitRead(timeout, PinValue.Low, out elapsed);
+            return WaitRead(timeout, false, out elapsed);
         }
         public bool WaitLow(double timeout)
         {
-            return WaitRead(timeout, PinValue.Low, out double elapsed);
+            return WaitRead(timeout, false, out double elapsed);
         }
 
         /// <summary>
@@ -192,6 +192,16 @@ namespace Codebot.Raspberry
         }
 
         /// <summary>
+        /// Read the state of the pin quickly without safety checks
+        /// </summary>
+        /// <returns>Returns true if the pin was high or false if it was low</returns>
+        /// <remarks>Mode must be set to an input in order to use Read</remarks>
+        public bool ReadFast()
+        {
+            return controller._driver.Read(Number) == PinValue.High;
+        }
+
+        /// <summary>
         /// Write the state of the pin
         /// </summary>
         /// <param name="value">When value of <c>true</c> pin to set high otherwise the pin is set to low</param>
@@ -203,6 +213,16 @@ namespace Codebot.Raspberry
             if (!IsOutput)
                 throw new InvalidGpioModeException();
             controller.Write(Number, value ? PinValue.High : PinValue.Low);
+        }
+
+        /// <summary>
+        /// Write the state of the pin quickly without safety checks
+        /// </summary>
+        /// <param name="value">When value of <c>true</c> pin to set high otherwise the pin is set to low</param>
+        /// <remarks>Mode must be set to output in order to use Write</remarks>
+        public void WriteFast(bool value)
+        {
+            controller._driver.Write(Number, value ? PinValue.High : PinValue.Low);
         }
     }
 }

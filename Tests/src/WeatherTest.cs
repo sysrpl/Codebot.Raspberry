@@ -8,7 +8,7 @@ namespace Tests
     {
         public static void Run()
         {
-            var pinNumber = 17;
+            var pinNumber = 4;
             Console.WriteLine($"Weather Test on GPIO {pinNumber}");
             var sensor = new Dht22(pinNumber);
             var attempts = 0;

@@ -7,27 +7,26 @@ namespace Tests
     {
         public static void Run()
         {
-            var pinNumber = 17;
+            var pinNumber = 4;
             Console.WriteLine($"LED Blink Test on GPIO {pinNumber}");
             var pin = Pi.Gpio.Pin(pinNumber);
             pin.Mode = GpioPinMode.Output;
-            int onMilliseconds = 50;
-            int offMilliseconds = 50;
+            int onMilliseconds = 500;
+            int offMilliseconds = 2000;
             try
             {
                 while (true)
                 {
                     Console.WriteLine($"Light is on for {onMilliseconds}ms");
                     Pi.Wait(onMilliseconds);
-                    pin.Write(true);
-                    Console.WriteLine($"Light is off for {offMilliseconds}ms");
-                    Pi.Wait(offMilliseconds);
                     pin.Write(false);
+                    Console.WriteLine($"Light is on for {offMilliseconds}ms");
+                    Pi.Wait(offMilliseconds);
                 }
             }
             finally
             {
-                pin.Write(false);
+                pin.WriteFast(false);
             }
         }
     }

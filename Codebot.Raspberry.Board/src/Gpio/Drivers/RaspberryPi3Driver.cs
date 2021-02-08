@@ -95,7 +95,7 @@ namespace Codebot.Raspberry.Board.Drivers
         protected internal override void OpenPin(int pinNumber) => _internalDriver.OpenPin(pinNumber);
 
         /// <inheritdoc/>
-        protected internal override PinValue Read(int pinNumber) => _internalDriver.Read(pinNumber);
+        public override PinValue Read(int pinNumber) => _internalDriver.Read(pinNumber);
 
         /// <inheritdoc/>
         protected internal override void RemoveCallbackForPinValueChangedEvent(int pinNumber, PinChangeEventHandler callback) => _internalDriver.RemoveCallbackForPinValueChangedEvent(pinNumber, callback);
@@ -110,7 +110,7 @@ namespace Codebot.Raspberry.Board.Drivers
         protected internal override ValueTask<WaitForEventResult> WaitForEventAsync(int pinNumber, PinEventTypes eventTypes, CancellationToken cancellationToken) => _internalDriver.WaitForEventAsync(pinNumber, eventTypes, cancellationToken);
 
         /// <inheritdoc/>
-        protected internal override void Write(int pinNumber, PinValue value) => _internalDriver.Write(pinNumber, value);
+        public override void Write(int pinNumber, PinValue value) => _internalDriver.Write(pinNumber, value);
 
         /// <summary>
         /// Allows directly setting the "Set pin high" register. Used for special applications only
