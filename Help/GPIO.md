@@ -29,6 +29,10 @@ core_freq=250
 core_freq_min=250
 ```
 
+</details>
+<details>
+  <summary>Increasing your SPI buffer size</summary>
+
 If you need a larger SPI size buffer, you can add this (or your preferred buffer size) to your /boot/cmdline.txt:
 
 
