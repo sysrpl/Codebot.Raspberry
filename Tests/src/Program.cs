@@ -1,4 +1,6 @@
-﻿namespace Tests
+﻿using System;
+
+namespace Tests
 {
     class MainClass
     {
