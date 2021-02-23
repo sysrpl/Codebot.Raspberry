@@ -15,10 +15,10 @@ namespace Codebot.Raspberry
     public class InvalidGpioPinException : Exception { }
 
     /// <summary>
-    /// The InvalidGpioModeException exception is thrown if a read or write
-    /// attempt is made when a pin is not in an input or ooutput mode respectfully.
+    /// The InvalidGpioKindException exception is thrown if a read or write
+    /// attempt is made when a pin is not in an input or output kind respectfully.
     /// </summary>
-    public class InvalidGpioModeException : Exception { }
+    public class InvalidGpioKindException : Exception { }
 
     /// <summary>
     /// The Gpio pin class allows for reading and writing to Gpio pin
@@ -65,10 +65,10 @@ namespace Codebot.Raspberry
         public bool Value { get => Read(); set => Write(value); }
 
         /// <summary>
-        /// When Mode is set to input, read and wait can be used
+        /// When kind is set to input, read and wait can be used
         /// </summary>
-        /// <value>The mode to set</value>
-        /// <remarks>If the logical pin is invalid mode will always be None</remarks>
+        /// <value>The kind to set</value>
+        /// <remarks>If the logical pin is invalid then kind will always be None</remarks>
         public PinKind Kind
         {
             get
@@ -109,7 +109,7 @@ namespace Codebot.Raspberry
         }
 
         /// <summary>
-        /// IsInput is true if pin mode is a kind of input mode.
+        /// IsInput is true if pin kind is a type of of input.
         /// </summary>
         private bool IsInput
         {
@@ -127,7 +127,7 @@ namespace Codebot.Raspberry
         }
 
         /// <summary>
-        /// IsOutput is true if pin mode is a set to output.
+        /// IsOutput is true if pin kind is a set to output.
         /// </summary>
         private bool IsOutput
         {
@@ -146,7 +146,7 @@ namespace Codebot.Raspberry
             if (!Valid)
                 throw new InvalidGpioPinException();
             if (!IsInput)
-                throw new InvalidGpioModeException();
+                throw new InvalidGpioKindException();
             elapsed = double.NaN;
             var target = pinValue == PinValue.High;
             if (controller._driver.Read(Number) == target)
@@ -173,7 +173,7 @@ namespace Codebot.Raspberry
         /// <returns>Returns <c>true</c> if the pin went low before timeout has expired</returns>
         /// <param name="timeout">Maximum time in milliseconds to wait</param>
         /// <param name="elapsed">Elapsed time in milliseconds until pin was read as low, or NaN if timeout was reached first</param>
-        /// <remarks>Mode must be set to Input in order to use WaitLow</remarks>
+        /// <remarks>Kind must be set to Input in order to use WaitLow</remarks>
         public bool WaitLow(double timeout, out double elapsed)
         {
             return WaitRead(timeout, false, out elapsed);
@@ -190,7 +190,7 @@ namespace Codebot.Raspberry
         /// <returns>Returns <c>true</c> if the pin went high before timeout has expired</returns>
         /// <param name="timeout">Maximum time in milliseconds to wait</param>
         /// <param name="elapsed">Elapsed time in milliseconds until pin was read as high, or NaN if timeout was reached first</param>
-        /// <remarks>Mode must be set to Input in order to use WaitHigh</remarks>
+        /// <remarks>Kind must be set to Input in order to use WaitHigh</remarks>
         public bool WaitHigh(double timeout, out double elapsed)
         {
             return WaitRead(timeout, PinValue.High, out elapsed);
@@ -227,7 +227,7 @@ namespace Codebot.Raspberry
             if (!Valid)
                 throw new InvalidGpioPinException();
             if (!IsInput)
-                throw new InvalidGpioModeException();
+                throw new InvalidGpioKindException();
             var result = controller.WaitForEvent(Number,
                 edge == PinEdge.Rising ? PinEventTypes.Rising : PinEventTypes.Falling,
                 TimeSpan.FromMilliseconds(timeout));
@@ -242,7 +242,7 @@ namespace Codebot.Raspberry
             if (!Valid)
                 throw new InvalidGpioPinException();
             if (!IsInput)
-                throw new InvalidGpioModeException();
+                throw new InvalidGpioKindException();
             var token = new CancellationToken();
             var result = controller.WaitForEvent(Number,
                 edge == PinEdge.Rising ? PinEventTypes.Rising : PinEventTypes.Falling,
@@ -260,7 +260,7 @@ namespace Codebot.Raspberry
             if (!Valid)
                 throw new InvalidGpioPinException();
             if (!IsInput)
-                throw new InvalidGpioModeException();
+                throw new InvalidGpioKindException();
             var task = await controller.WaitForEventAsync(Number,
                 edge == PinEdge.Rising ? PinEventTypes.Rising : PinEventTypes.Falling,
                 TimeSpan.FromMilliseconds(timeout)).AsTask();
@@ -271,13 +271,13 @@ namespace Codebot.Raspberry
         /// Read the state of the pin
         /// </summary>
         /// <returns>Returns true if the pin was high or false if it was low</returns>
-        /// <remarks>Mode must be set to an input in order to use Read</remarks>
+        /// <remarks>Kind must be set to an input in order to use Read</remarks>
         public bool Read()
         {
             if (!Valid)
                 throw new InvalidGpioPinException();
             if (!IsInput)
-                throw new InvalidGpioModeException();
+                throw new InvalidGpioKindException();
             return controller.Read(Number) == PinValue.High;
         }
 
@@ -285,7 +285,7 @@ namespace Codebot.Raspberry
         /// Read the state of the pin quickly without safety checks
         /// </summary>
         /// <returns>Returns true if the pin was high or false if it was low</returns>
-        /// <remarks>Mode must be set to an input in order to use Read</remarks>
+        /// <remarks>Kind must be set to an input in order to use Read</remarks>
         public bool ReadFast()
         {
             return controller._driver.Read(Number) == PinValue.High;
@@ -295,13 +295,13 @@ namespace Codebot.Raspberry
         /// Write the state of the pin
         /// </summary>
         /// <param name="value">When value of <c>true</c> pin to set high otherwise the pin is set to low</param>
-        /// <remarks>Mode must be set to output in order to use Write</remarks>
+        /// <remarks>Kind must be set to output in order to use Write</remarks>
         public void Write(bool value)
         {
             if (!Valid)
                 throw new InvalidGpioPinException();
             if (!IsOutput)
-                throw new InvalidGpioModeException();
+                throw new InvalidGpioKindException();
             controller.Write(Number, value ? PinValue.High : PinValue.Low);
         }
 
@@ -309,7 +309,7 @@ namespace Codebot.Raspberry
         /// Write the state of the pin quickly without safety checks
         /// </summary>
         /// <param name="value">When value of <c>true</c> pin to set high otherwise the pin is set to low</param>
-        /// <remarks>Mode must be set to output in order to use Write</remarks>
+        /// <remarks>Kind must be set to output in order to use Write</remarks>
         public void WriteFast(bool value)
         {
             controller._driver.Write(Number, value ? PinValue.High : PinValue.Low);
@@ -371,7 +371,7 @@ namespace Codebot.Raspberry
 
         /// <summary>
         /// The OnRisingEdge can be used to trigger an event handler when a pin 
-        /// is in an input mode and the voltage rises above ground.
+        /// is an input kind and the voltage rises above ground.
         /// </summary>
         public event EventHandler<PinEventHandlerArgs> OnRisingEdge
         { 
@@ -395,7 +395,7 @@ namespace Codebot.Raspberry
 
         /// <summary>
         /// The OnFallingEdge can be used to trigger an event handler when a pin 
-        /// is in an input mode and the voltage falls to ground.
+        /// is an input kind and the voltage falls to ground.
         /// </summary>
         public event EventHandler<PinEventHandlerArgs> OnFallingEdge
         {
