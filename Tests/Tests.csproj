@@ -29,6 +29,22 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="mscorlib" />
+    <Reference Include="System.Buffers">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics.Vectors">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -36,6 +52,7 @@
     <Compile Include="src\BlinkTest.cs" />
     <Compile Include="src\ButtonTest.cs" />
     <Compile Include="src\WeatherTest.cs" />
+    <Compile Include="src\EventTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Codebot.Raspberry.Board\Codebot.Raspberry.Board.csproj">
@@ -53,6 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

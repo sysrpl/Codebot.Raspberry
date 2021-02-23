@@ -26,7 +26,7 @@ namespace Codebot.Raspberry.Device
             Changed = true;
         }
 
-        internal bool Changed { get; set; }
+        public bool Changed { get; internal set; }
 
         private Color color;
 

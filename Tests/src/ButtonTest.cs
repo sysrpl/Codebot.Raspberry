@@ -7,20 +7,20 @@ namespace Tests
     {
         public static void Run()
         {
-            var ledNumber = 17;
-            var buttonNumber = 27;
+            var ledNumber = 27;
+            var buttonNumber = 17;
             Console.WriteLine($"LED Blink Test LED on GPIO {ledNumber} and button on GPIO {buttonNumber}");
             var led = Pi.Gpio.Pin(ledNumber);
             var button = Pi.Gpio.Pin(buttonNumber);
-            led.Mode = GpioPinMode.Output;
-            button.Mode = GpioPinMode.Input;
+            led.Kind = PinKind.Output;
+            button.Kind = PinKind.InputPullUp;
             int onMilliseconds = 100;
             int offMilliseconds = 100;
             try
             {
                 while (true)
                 {
-                    if (button.Read())
+                    if (!button.Read())
                     {
                         Console.WriteLine($"Button is pressed");
                         Pi.Wait(onMilliseconds);

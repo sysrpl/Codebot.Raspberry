@@ -11,11 +11,15 @@ namespace Codebot.Raspberry
     /// </summary>
     public static class Pi
     {
-        private static void Init()
+        static PreciseTimer now;
+
+        public static double Now => now.ElapsedMilliseconds;
+
+        static void Init()
         {
-            var t = new Timer();
+            now = new PreciseTimer();
             WaitMicroseconds(1);
-            var m = t.ElapsedMicroseconds;
+            var m = now.ElapsedMicroseconds;
         }
 
         static Pi()
@@ -63,7 +67,7 @@ namespace Codebot.Raspberry
         /// </summary>
         public static void Wait(double milliseconds)
         {
-            var timer = new Timer();
+            var timer = new PreciseTimer();
             double seconds = milliseconds / 1000;
             while (seconds - timer.ElapsedSeconds > 1)
                 System.Threading.Thread.Sleep(100);
@@ -113,6 +117,11 @@ namespace Codebot.Raspberry
                 for (int i = 0; i < pins.Length; i++)
                     pins[i] = null;
             }
+
+            /// <summary>
+            /// Provide direct access to the GPIO controler for testing purposes.
+            /// </summary>
+            public static GpioController Controller => controller;
 
             /// <summary>
             /// Draw a diagram of the pin layout
@@ -195,6 +204,17 @@ namespace Codebot.Raspberry
                     if (pin.Valid)
                         controller.OpenPin(number);
                 }
+                return pin;
+            }
+
+            /// <summary>
+            /// Get a GpioPin using its logical (Gpio) number and set it to
+            /// a specified pin mode.
+            /// </summary>
+            public static GpioPin Pin(int number, PinKind mode)
+            {
+                var pin = Pin(number);
+                pin.Kind = mode;
                 return pin;
             }
 

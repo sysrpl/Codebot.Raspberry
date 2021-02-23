@@ -21,10 +21,10 @@ namespace Codebot.Raspberry.Device
             this.buffer = new byte[5];
             this.pin = Pi.Gpio.Pin(pin);
             // Set pin to high for next update
-            this.pin.Mode = GpioPinMode.Output;
+            this.pin.Kind = PinKind.Output;
             this.pin.Write(true);
             IsUpdateSuccessful = false;
-            lastUpdate = Timer.Now - 2;
+            lastUpdate = Pi.Now;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Codebot.Raspberry.Device
         /// </summary>
         protected virtual void ReadData()
         {
-            if (Timer.Now - lastUpdate < 1)
+            if (Pi.Now - lastUpdate < 1)
                 return;
             ReadPin();
         }
@@ -96,7 +96,7 @@ namespace Codebot.Raspberry.Device
                 pin.Write(true);
                 // Wait 20μs - 40μs
                 Pi.WaitMicroseconds(30);
-                pin.Mode = GpioPinMode.InputPullUp;
+                pin.Kind = PinKind.InputPullUp;
                 // Sensor should take over and go low
                 if (!pin.WaitLow(Pi.Microseconds(100)))
                     // FAIL: sensor did not take over
@@ -140,10 +140,10 @@ namespace Codebot.Raspberry.Device
             finally
             {
                 // Set pin to high and for next update
-                pin.Mode = GpioPinMode.Output;
+                pin.Kind = PinKind.Output;
                 pin.Write(true);
                 // And set the last update time
-                lastUpdate = Timer.Now;
+                lastUpdate = Pi.Now;
             }
         }
 

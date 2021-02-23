@@ -10,7 +10,7 @@ namespace Tests
             var pinNumber = 4;
             Console.WriteLine($"LED Blink Test on GPIO {pinNumber}");
             var pin = Pi.Gpio.Pin(pinNumber);
-            pin.Mode = GpioPinMode.Output;
+            pin.Kind = PinKind.Output;
             int onMilliseconds = 500;
             int offMilliseconds = 2000;
             try
