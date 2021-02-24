@@ -66,9 +66,9 @@ namespace Codebot.Raspberry.Device
         public int Cols { private set; get; }
         public int Rows { private set; get; }
 
-        private selectPin;  // Low for commands, high for characters
-        private Pin lePin;  // Activated by a high pulse
-        private Pin[] dans;
+        private GpioPin selectPin;  // Low for commands, high for characters
+        private GpioPin enablePin;  // Activated by a high pulse
+        private readonly GpioPin[] dataPins;
 
         private byte functionBits;
         private byte controlBits;
@@ -92,16 +92,16 @@ namespace Codebot.Raspberry.Device
             dataPins[5] = Pi.Gpio.Pin(d5);
             dataPins[6] = Pi.Gpio.Pin(d6);
             dataPins[7] = Pi.Gpio.Pin(d7);
-            selectPin.Mode = PinMode.Output;
-            enablePin.Mode = PinMode.Output;
-            dataPins[0].Mode = PinMode.Output;
-            dataPins[1].Mode = PinMode.Output;
-            dataPins[2].Mode = PinMode.Output;
-            dataPins[3].Mode = PinMode.Output;
-            dataPins[4].Mode = PinMode.Output;
-            dataPins[5].Mode = PinMode.Output;
-            dataPins[6].Mode = PinMode.Output;
-            dataPins[7].Mode = PinMode.Output;
+            selectPin.Kind = PinKind.Output;
+            enablePin.Kind = PinKind.Output;
+            dataPins[0].Kind = PinKind.Output;
+            dataPins[1].Kind = PinKind.Output;
+            dataPins[2].Kind = PinKind.Output;
+            dataPins[3].Kind = PinKind.Output;
+            dataPins[4].Kind = PinKind.Output;
+            dataPins[5].Kind = PinKind.Output;
+            dataPins[6].Kind = PinKind.Output;
+            dataPins[7].Kind = PinKind.Output;
             if (fourBitMode)
                 functionBits = LCD_4BITMODE;
             else
@@ -114,7 +114,7 @@ namespace Codebot.Raspberry.Device
             dataPins = new GpioPin[8];
         }
 
-        public ChterLcd(byte ct, byte enable,
+        public CharacterLcd(byte select, byte enable,
             byte d0, byte d1, byte d2, byte d3) : this()
         {
             Init(true, select, enable, d0, d1, d2, d3, 0, 0, 0, 0);

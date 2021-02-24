@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Codebot.Raspberry;
 
 namespace Tests
@@ -22,7 +23,7 @@ namespace Tests
             // Run until the rotary encoder button is clicked
             var running = true;
             while (running)
-                Pi.Wait(100);
+                Pi.Wait(10);
             // Disconnect rotate and click events
             left.OnFallingEdge -= Rotate;
             button.OnRisingEdge -= Click;

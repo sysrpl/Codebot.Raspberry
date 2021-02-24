@@ -118,10 +118,14 @@ namespace Codebot.Raspberry
                     pins[i] = null;
             }
 
-            /// <summary>
-            /// Provide direct access to the GPIO controler for testing purposes.
-            /// </summary>
-            public static GpioController Controller => controller;
+            static internal void Close(int number)
+            {
+                if (number < 0)
+                    number = 0;
+                if (number > pins.Length - 1)
+                    number = pins.Length - 1;
+                pins[number] = null;
+            }
 
             /// <summary>
             /// Draw a diagram of the pin layout
@@ -153,7 +157,7 @@ namespace Codebot.Raspberry
             }
 
             /// <summary>
-            /// The Gpio pins
+            /// The Gpio pins.
             /// </summary>
             public static IEnumerable<GpioPin> Pins
             {
@@ -170,7 +174,7 @@ namespace Codebot.Raspberry
             }
 
             /// <summary>
-            /// The list of GpioPin names
+            /// The list of GpioPin names.
             /// </summary>
             public static IEnumerable<string> Names
             {
@@ -209,12 +213,12 @@ namespace Codebot.Raspberry
 
             /// <summary>
             /// Get a GpioPin using its logical (Gpio) number and set it to
-            /// a specified pin mode.
+            /// a specified pin kind.
             /// </summary>
-            public static GpioPin Pin(int number, PinKind mode)
+            public static GpioPin Pin(int number, PinKind kind)
             {
                 var pin = Pin(number);
-                pin.Kind = mode;
+                pin.Kind = kind;
                 return pin;
             }
 

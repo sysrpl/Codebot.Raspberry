@@ -24,7 +24,7 @@ namespace Codebot.Raspberry
     /// The Gpio pin class allows for reading and writing to Gpio pin
     /// Gpio use requires these packages to be installed: gpiod libgpiod-dev 
     /// </summary>
-    /// <remarks>Use Pi.Gpio to gain access to a GpioPin</remarks>
+    /// <remarks>Use Pi.Gpio to gain access to a Pin</remarks>
     public class GpioPin
     {
         private GpioController controller;
@@ -38,34 +38,46 @@ namespace Codebot.Raspberry
         }
 
         /// <summary>
+        /// Close this pin rendering it invalid.
+        /// </summary>
+        public void Close()
+        {
+            if (!Valid)
+                throw new InvalidGpioPinException();
+            Pi.Gpio.Close(Number);
+            Number = 0;
+            Name = string.Empty;
+            Valid = false;
+        }
+
+        /// <summary>
         /// The time in millisecond to assume under which limit an input event 
         /// was a bounce rather than a legitimate voltage rise or fall.
         /// </summary>
         public double BounceDelay { get; set; } = 30;
 
         /// <summary>
-        /// The logical (Gpio) number of this pin
+        /// The logical (Gpio) number of this pin.
         /// </summary>
         public int Number { get; private set; }
 
         /// <summary>
-        /// The name of the pin
+        /// The name of the pin.
         /// </summary>
         public string Name { get; private set; }
 
         /// <summary>
-        /// Valid is true if the pin has a name
+        /// Valid is true if the pin has a name.
         /// </summary>
         public bool Valid { get; private set; }
 
-
         /// <summary>
-        /// Value reads or write from the pin
+        /// Value reads or write from the pin.
         /// </summary>
         public bool Value { get => Read(); set => Write(value); }
 
         /// <summary>
-        /// When kind is set to input, read and wait can be used
+        /// When kind is set to input, read and wait methods can be used.
         /// </summary>
         /// <value>The kind to set</value>
         /// <remarks>If the logical pin is invalid then kind will always be None</remarks>
@@ -140,16 +152,11 @@ namespace Codebot.Raspberry
         /// <summary>
         /// Called by WaitLow or WaitHigh.
         /// </summary>
-        private bool WaitRead(double timeout, PinValue pinValue, out double elapsed)
+        private bool WaitRead(double timeout, bool target, out double elapsed)
         {
             var timer = new PreciseTimer();
-            if (!Valid)
-                throw new InvalidGpioPinException();
-            if (!IsInput)
-                throw new InvalidGpioKindException();
             elapsed = double.NaN;
-            var target = pinValue == PinValue.High;
-            if (controller._driver.Read(Number) == target)
+            if (Read() == target)
             {
                 elapsed = timer.ElapsedMilliseconds;
                 return true;
@@ -158,12 +165,10 @@ namespace Codebot.Raspberry
                 target ? PinEventTypes.Rising : PinEventTypes.Falling,
                 TimeSpan.FromMilliseconds(timeout));
             var time = timer.ElapsedMilliseconds;
-            if ((!result.TimedOut) && (time < timeout))
-            {
-                elapsed = time;
-                return true;
-            }
-            return false;
+            if (result.TimedOut || (time > timeout))
+                return false;
+            elapsed = time;
+            return true;
         }
 
         /// <summary>
@@ -172,7 +177,7 @@ namespace Codebot.Raspberry
         /// </summary>
         /// <returns>Returns <c>true</c> if the pin went low before timeout has expired</returns>
         /// <param name="timeout">Maximum time in milliseconds to wait</param>
-        /// <param name="elapsed">Elapsed time in milliseconds until pin was read as low, or NaN if timeout was reached first</param>
+        /// <param name="elapsed">Optional elapsed time in milliseconds until pin was read as low, or NaN if timeout was reached first</param>
         /// <remarks>Kind must be set to Input in order to use WaitLow</remarks>
         public bool WaitLow(double timeout, out double elapsed)
         {
@@ -184,20 +189,40 @@ namespace Codebot.Raspberry
         }
 
         /// <summary>
+        /// Wait indefinately for the pin to read low.
+        /// </summary>
+        public void WaitLow()
+        {
+            if (!Read())
+                return;
+            WaitForEdge(PinEdge.Falling);
+        }
+
+        /// <summary>
         /// Wait for a high value to be read on the pin and optionally output
         /// the elapsed time.
         /// </summary>
         /// <returns>Returns <c>true</c> if the pin went high before timeout has expired</returns>
         /// <param name="timeout">Maximum time in milliseconds to wait</param>
-        /// <param name="elapsed">Elapsed time in milliseconds until pin was read as high, or NaN if timeout was reached first</param>
+        /// <param name="elapsed">Optional elapsed time in milliseconds until pin was read as high, or NaN if timeout was reached first</param>
         /// <remarks>Kind must be set to Input in order to use WaitHigh</remarks>
         public bool WaitHigh(double timeout, out double elapsed)
         {
-            return WaitRead(timeout, PinValue.High, out elapsed);
+            return WaitRead(timeout, true, out elapsed);
         }
         public bool WaitHigh(double timeout)
         {
-            return WaitRead(timeout, PinValue.High, out double elapsed);
+            return WaitRead(timeout, true, out double elapsed);
+        }
+
+        /// <summary>
+        /// Wait indefinately for the pin to read high.
+        /// </summary>
+        public void WaitHigh()
+        {
+            if (Read())
+                return;
+            WaitForEdge(PinEdge.Rising);
         }
 
         /// <summary>
@@ -205,8 +230,9 @@ namespace Codebot.Raspberry
         /// output the elapsed time.
         /// </summary>
         /// <returns>Return <c>true</c> if the edge was triggered before timeout milliseconds.</returns>
-        /// <param name="edge">The edge to trigger a the wait to end.</param>
+        /// <param name="edge">The edge to trigger completion of the wait.</param>
         /// <param name="timeout">The timeout in milliseconds after which <c>false</c> is returned.</param>
+        /// <param name="elapsed">Optional elapsed time in milliseconds until edge was triggered, or NaN if timeout was reached first</param>
         public bool WaitForEdge(PinEdge edge, double timeout, out double elapsed)
         {
             var timer = new PreciseTimer();
