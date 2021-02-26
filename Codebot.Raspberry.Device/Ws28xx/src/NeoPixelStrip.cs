@@ -18,9 +18,9 @@ namespace Codebot.Raspberry.Device
         /// </summary>
         private class PixelData
         {
-            private const int BytesPerComponent = 3;
-            private const int BytesPerPixel = BytesPerComponent * 3;
-            private static readonly byte[] lookup = new byte[256 * BytesPerComponent];
+            const int BytesPerComponent = 3;
+            const int BytesPerPixel = BytesPerComponent * 3;
+            static readonly byte[] lookup = new byte[256 * BytesPerComponent];
 
             static PixelData()
             {
@@ -38,34 +38,33 @@ namespace Codebot.Raspberry.Device
             // The NeoPixels require a 50us delay (all zeros) after. Since Spi freq is not exactly
             // as requested 100us is used here with good practical results. 100us @ 2.4Mbps and 8bit
             // data means we have to add 30 bytes of zero padding.
-            private const int ResetDelayInBytes = 30;
+            const int ResetDelayInBytes = 30;
 
-            private byte[] data;
-            public Span<byte> Data => data;
+            public byte[] Bytes { get; private set; }
 
             public void Resize(int count)
             {
-                data = new byte[count * BytesPerPixel + ResetDelayInBytes];
+                Bytes = new byte[count * BytesPerPixel + ResetDelayInBytes];
             }
 
             public void SetPixel(int index, Color color)
             {
                 var offset = index * BytesPerPixel;
-                data[offset++] = lookup[color.G * BytesPerComponent + 0];
-                data[offset++] = lookup[color.G * BytesPerComponent + 1];
-                data[offset++] = lookup[color.G * BytesPerComponent + 2];
-                data[offset++] = lookup[color.R * BytesPerComponent + 0];
-                data[offset++] = lookup[color.R * BytesPerComponent + 1];
-                data[offset++] = lookup[color.R * BytesPerComponent + 2];
-                data[offset++] = lookup[color.B * BytesPerComponent + 0];
-                data[offset++] = lookup[color.B * BytesPerComponent + 1];
-                data[offset++] = lookup[color.B * BytesPerComponent + 2];
+                Bytes[offset++] = lookup[color.G * BytesPerComponent + 0];
+                Bytes[offset++] = lookup[color.G * BytesPerComponent + 1];
+                Bytes[offset++] = lookup[color.G * BytesPerComponent + 2];
+                Bytes[offset++] = lookup[color.R * BytesPerComponent + 0];
+                Bytes[offset++] = lookup[color.R * BytesPerComponent + 1];
+                Bytes[offset++] = lookup[color.R * BytesPerComponent + 2];
+                Bytes[offset++] = lookup[color.B * BytesPerComponent + 0];
+                Bytes[offset++] = lookup[color.B * BytesPerComponent + 1];
+                Bytes[offset++] = lookup[color.B * BytesPerComponent + 2];
             }
         }
 
-        private readonly PixelData data;
-        private readonly SpiDevice device;
-        private readonly List<NeoPixel> pixels;
+        readonly PixelData data;
+        readonly SpiDevice device;
+        readonly List<NeoPixel> pixels;
 
         /// <summary>
         /// Create a new strip of count neopixels
@@ -142,7 +141,7 @@ namespace Codebot.Raspberry.Device
                     p.Changed = false;
                 }
             }
-            device.Write(data.Data);
+            device.Write(data.Bytes);
             return true;
         }
 

@@ -26,6 +26,6 @@
         /// due to multiple mechanical contacts of a switch as it settles on an 
         /// opened or closed state.
         /// </summary>
-        public bool Bounced { get; private set; }
+        public bool Bounced { get; set; }
     }
 }

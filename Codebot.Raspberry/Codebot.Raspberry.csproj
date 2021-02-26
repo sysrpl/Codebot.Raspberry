@@ -60,6 +60,10 @@
     <Compile Include="src\PinKind.cs" />
     <Compile Include="src\PinEdge.cs" />
     <Compile Include="src\PinEventHandlerArgs.cs" />
+    <Compile Include="src\PinGroup.cs" />
+    <Compile Include="src\PwmChannel.cs" />
+    <Compile Include="src\Libc.cs" />
+    <Compile Include="src\UnixFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Codebot.Raspberry.Board\Codebot.Raspberry.Board.csproj">

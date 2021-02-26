@@ -11,6 +11,7 @@ The following is a list of hardware devices in this repository:
 | DHTXX  | Sensor | Temperature and Humidity Sensor | [Link](/Codebot.Raspberry.Device/Dhtxx/README.md) |
 | HD44780  | Display | Liquid Crystal Character Display | [Link](/Codebot.Raspberry.Device/Hd44780/README.md) |
 | WS28XX  | Lighting | NeoPixel Light Emitting Diode Strip | [Link](/Codebot.Raspberry.Device/Ws28xx/README.md) |
+| Servo  | Motors | Servo Motor Controller | [Link](/Codebot.Raspberry.Device/Servo/README.md) |
 
 
 ### See also

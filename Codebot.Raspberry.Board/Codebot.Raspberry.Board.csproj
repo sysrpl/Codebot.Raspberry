@@ -76,8 +76,6 @@
     <Compile Include="src\Gpio\Drivers\InterruptSysFsDriver.cs" />
     <Compile Include="src\Gpio\Drivers\LibGpiodDriver.cs" />
     <Compile Include="src\Gpio\Drivers\SysFsDriver.cs" />
-    <Compile Include="src\Pwm\PwmChannel.cs" />
-    <Compile Include="src\Pwm\Channels\UnixPwmChannel.cs" />
     <Compile Include="src\Interop\Unix\SafeChipHandle.cs" />
     <Compile Include="src\Interop\Unix\SafeChipIteratorHandle.cs" />
     <Compile Include="src\Interop\Unix\SafeLineHandle.cs" />

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Codebot.Raspberry;
 
 namespace Tests
@@ -18,14 +17,14 @@ namespace Tests
             var right = Pi.Gpio.Pin(rightPin, PinKind.InputPullUp);
             var button = Pi.Gpio.Pin(buttonPin, PinKind.InputPullUp);
             // Connect rotate and click events
-            left.OnFallingEdge += Rotate;
+            left.OnRisingEdge += Rotate;
             button.OnRisingEdge += Click;
             // Run until the rotary encoder button is clicked
             var running = true;
             while (running)
                 Pi.Wait(10);
             // Disconnect rotate and click events
-            left.OnFallingEdge -= Rotate;
+            left.OnRisingEdge -= Rotate;
             button.OnRisingEdge -= Click;
 
             // Called on the falling edge of the left pin
@@ -33,7 +32,7 @@ namespace Tests
             {
                 if (args.Bounced)
                     return;
-                if (left.Value == right.Value)
+                if (right.Value)
                 {
                     Console.WriteLine("counterclockwise rotate");
                     position--;
@@ -55,6 +54,54 @@ namespace Tests
                 running = false;
             }
         }
+
+        static void TestRotaryEncoderGroup()
+        {
+            Console.WriteLine("Testing event driven rotary encoder group");
+            var position = 1;
+            var left = Pi.Gpio.Pin(leftPin, PinKind.InputPullUp);
+            var right = Pi.Gpio.Pin(rightPin, PinKind.InputPullUp);
+            var group = new PinGroup(left, right);
+            var button = Pi.Gpio.Pin(buttonPin, PinKind.InputPullUp);
+            // Connect rotate and click events
+            group.OnRisingEdge += Rotate;
+            button.OnRisingEdge += Click;
+            // Run until the rotary encoder button is clicked
+            var running = true;
+            while (running)
+                Pi.Wait(10);
+            // Disconnect rotate and click events
+            group.OnRisingEdge -= Rotate;
+            button.OnRisingEdge -= Click;
+
+            // Called on the falling edge of the left and right group
+            void Rotate(object sender, PinEventHandlerArgs args)
+            {
+                if (args.Bounced)
+                    return;
+                if (args.Pin == left)
+                {
+                    Console.WriteLine("counterclockwise rotate");
+                    position--;
+                }
+                else
+                {
+                    Console.WriteLine("clockwise rotate");
+                    position++;
+                }
+                Console.WriteLine("button rotate {0}", position);
+            }
+
+            // Called on the rising edge of the button pin
+            void Click(object sender, PinEventHandlerArgs args)
+            {
+                if (args.Bounced)
+                    return;
+                Console.WriteLine("click");
+                running = false;
+            }
+        }
+
 
         static void TestTimeoutWait()
         {
