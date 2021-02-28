@@ -128,6 +128,20 @@ namespace Codebot.Raspberry
             }
 
             /// <summary>
+            /// Close and dispose of all pins.
+            /// </summary>
+            public static void Close()
+            {
+                foreach (var p in pins)
+                {
+                    if (p is null)
+                        continue;
+                    if (p.Valid)
+                        p.Close();
+                }
+            }
+
+            /// <summary>
             /// Draw a diagram of the pin layout
             /// </summary>
             public static void Diagram()
@@ -191,8 +205,9 @@ namespace Codebot.Raspberry
             }
 
             /// <summary>
-            /// Get a GpioPin using its logical (Gpio) number
+            /// Get and open a GpioPin using its logical (Gpio) number.
             /// </summary>
+            /// <remarks>You can use Pin.Close() to remove a pin.</remarks>
             public static GpioPin Pin(int number)
             {
 

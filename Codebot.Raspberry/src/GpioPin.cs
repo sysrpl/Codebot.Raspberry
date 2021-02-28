@@ -25,7 +25,7 @@ namespace Codebot.Raspberry
     /// Gpio use requires these packages to be installed: gpiod libgpiod-dev 
     /// </summary>
     /// <remarks>Use Pi.Gpio to gain access to a Pin</remarks>
-    public class GpioPin
+    public class GpioPin : IDisposable
     {
         private GpioController controller;
 
@@ -454,6 +454,15 @@ namespace Codebot.Raspberry
                 foreach (var s in fallingSinks)
                     s.Disconnect();
             fallingSinks = null;
+        }
+
+        /// <summary>
+        /// Dispose releases all resources used by this object.
+        /// </summary>
+        public void Dispose()
+        {
+            if (Valid)
+                Close();
         }
     }
 }

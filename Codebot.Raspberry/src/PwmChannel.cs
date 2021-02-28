@@ -35,24 +35,24 @@ namespace Codebot.Raspberry
             disposed = true;
             var chipPath = $"/sys/class/pwm/pwmchip{chip}";
             if (!Directory.Exists(chipPath))
-                throw new IOException($"Path for pwm chip {chipPath} does not exist.");
+                throw new IOException($"Could not locate directory {chipPath}.");
             var channelPath = $"{chipPath}/pwm{channel}";
             if (!Directory.Exists(channelPath))
                 Write($"{chipPath}/export", channel.ToString());
             if (!Directory.Exists(channelPath))
-                throw new IOException($"Path for pwm channel {channelPath} does not exist.");
+                throw new IOException($"Could not locate directory {channelPath}.");
             var e = $"{channelPath}/enable";
             var p = $"{channelPath}/period";
             var d = $"{channelPath}/duty_cycle";
             if (!File.Exists(e))
-                throw new IOException($"Path for pwm enable {e} does not exist.");
+                throw new IOException($"File {e} does not exist.");
             if (!File.Exists(p))
-                throw new IOException($"Path for pwm period {p} does not exist.");
+                throw new IOException($"File {p} does not exist.");
             if (!File.Exists(d))
-                throw new IOException($"Path for pwm duty_cycle {d} does not exist.");
-            enableFile = new UnixFile(e);
-            periodFile = new UnixFile(p);
-            dutyCycleFile = new UnixFile(d);
+                throw new IOException($"File {d} does not exist.");
+            enableFile = new UnixFile(e, "w");
+            periodFile = new UnixFile(p, "w");
+            dutyCycleFile = new UnixFile(d, "w");
             disposed = false;
         }
 
@@ -101,7 +101,7 @@ namespace Codebot.Raspberry
         {
             const double EPSILON = 0.0001;
             if (period < 1)
-                throw new IOException($"Cannot enable PWM when the period is unset.");
+                throw new InvalidOperationException($"Cannot enable PwmChannel when Period is unset.");
             if (DutyCycle < EPSILON)
                 Write(dutyCycleFile, "0");
             Write(enableFile, "1");
@@ -116,7 +116,7 @@ namespace Codebot.Raspberry
         }
 
         /// <summary>
-        /// Releases all resource used by this object.
+        /// Dispose releases all resources used by this object.
         /// </summary>
         public void Dispose()
         {

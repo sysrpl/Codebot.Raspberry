@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using static Codebot.Raspberry.Libc;
 
 namespace Codebot.Raspberry
 {
@@ -91,117 +91,52 @@ namespace Codebot.Raspberry
     /// <remarks>The Raspberry Pi uses GPIO pins 14 and 15 for TX and RX</remarks>
     public sealed class SerialPort : IDisposable
     {
-        #region External library code
-        private const int O_RDWR = 0x002;
-        private const int O_NOCTTY = 0x100;
+        const uint CBAUD = 4111;
+        const uint CBAUDEX = 4096;
 
-        private const uint TCFLSH = 0x540b;
+        const uint B300 = 7;
+        const uint B1200 = 9;
+        const uint B2400 = 11;
+        const uint B4800 = 12;
+        const uint B9600 = 13;
+        const uint B19200 = 14;
+        const uint B38400 = 15;
+        const uint B57600 = 4097;
+        const uint B115200 = 4098;
+        const uint B230400 = 4099;
 
-        private const int TCIFLUSH = 0;
-        private const int TCIOFLUSH = 2;
-        private const int TCOFLUSH = 1;
-        private const int TCSANOW = 0;
+        const uint CS5 = 0;
+        const uint CS6 = 16;
+        const uint CS7 = 32;
+        const uint CS8 = 48;
 
-        private const uint CBAUD = 4111;
-        private const uint CBAUDEX = 4096;
+        const uint CSTOPB = 64;
 
-        private const uint B300 = 7;
-        private const uint B1200 = 9;
-        private const uint B2400 = 11;
-        private const uint B4800 = 12;
-        private const uint B9600 = 13;
-        private const uint B19200 = 14;
-        private const uint B38400 = 15;
-        private const uint B57600 = 4097;
-        private const uint B115200 = 4098;
-        private const uint B230400 = 4099;
+        const uint PARENB = 256;
+        const uint PARODD = 512;
 
-        private const uint CS5 = 0;
-        private const uint CS6 = 16;
-        private const uint CS7 = 32;
-        private const uint CS8 = 48;
+        const uint CLOCAL = 2048;
+        const uint CREAD = 128;
+        const uint CSIZE = 48;
+        const uint ECHO = 8;
+        const uint ECHOE = 16;
+        const uint ECHOK = 32;
+        const uint ECHONL = 64;
+        const uint ICANON = 2;
+        const uint ICRNL = 256;
+        const uint IEXTEN = 32768;
+        const uint IGNBRK = 1;
+        const uint IGNCR = 128;
+        const uint INLCR = 64;
+        const uint INPCK = 16;
+        const uint ISIG = 1;
+        const uint ISTRIP = 32;
+        const uint OCRNL = 8;
+        const uint ONLCR = 4;
+        const uint OPOST = 1;
 
-        private const uint CSTOPB = 64;
-
-        private const uint PARENB = 256;
-        private const uint PARODD = 512;
-
-        private const uint CLOCAL = 2048;
-        private const uint CREAD = 128;
-        private const uint CSIZE = 48;
-        private const uint ECHO = 8;
-        private const uint ECHOE = 16;
-        private const uint ECHOK = 32;
-        private const uint ECHONL = 64;
-        private const uint ICANON = 2;
-        private const uint ICRNL = 256;
-        private const uint IEXTEN = 32768;
-        private const uint IGNBRK = 1;
-        private const uint IGNCR = 128;
-        private const uint INLCR = 64;
-        private const uint INPCK = 16;
-        private const uint ISIG = 1;
-        private const uint ISTRIP = 32;
-        private const uint OCRNL = 8;
-        private const uint ONLCR = 4;
-        private const uint OPOST = 1;
-
-        private const uint VTIME = 6;
-        private const uint VMIN = 7;
-
-        [StructLayout(LayoutKind.Explicit)]
-        private struct TermiosStruct
-        {
-            [MarshalAs(UnmanagedType.U4)]
-            [FieldOffset(0)]
-            public uint c_iflag;
-
-            [MarshalAs(UnmanagedType.U4)]
-            [FieldOffset(4)]
-            public uint c_oflag;
-
-            [MarshalAs(UnmanagedType.U4)]
-            [FieldOffset(8)]
-            public uint c_cflag;
-
-            [MarshalAs(UnmanagedType.U4)]
-            [FieldOffset(12)]
-            public uint c_lflag;
-
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 36)]
-            [FieldOffset(16)]
-            public byte[] c_cc;
-
-            [MarshalAs(UnmanagedType.U4)]
-            [FieldOffset(52)]
-            public uint c_ispeed;
-
-            [MarshalAs(UnmanagedType.U4)]
-            [FieldOffset(56)]
-            public uint c_ospeed;
-        }
-
-        [DllImport("libc", EntryPoint = "open")]
-        private static extern int ExternalFileOpen(string path, int flags);
-
-        [DllImport("libc", EntryPoint = "close")]
-        static private extern int ExternalFileClose(int fd);
-
-        [DllImport("libc", EntryPoint = "write")]
-        private static extern int ExternalWrite(int fd, byte[] buffer, int numBytes);
-
-        [DllImport("libc", EntryPoint = "read")]
-        private static extern int ExternalRead(int fd, byte[] buffer, int numBytes);
-
-        [DllImport("libc", EntryPoint = "ioctl")]
-        private static extern int ExternalIoCtl(int fd, uint request, int value);
-
-        [DllImport("libc", EntryPoint = "tcgetattr")]
-        private static extern int ExternalTCGetAttr(int fd, ref TermiosStruct term);
-
-        [DllImport("libc", EntryPoint = "tcsetattr")]
-        private static extern int ExternalTCSetAttr(int fd, int actions, ref TermiosStruct term);
-        #endregion
+        const uint VTIME = 6;
+        const uint VMIN = 7;
 
         public const int Baud300 = 300;
         public const int Baud1200 = 1200;
@@ -255,7 +190,7 @@ namespace Codebot.Raspberry
                 return false;
             if (!File.Exists(device))
                 return false;
-            port = ExternalFileOpen(device, O_RDWR | O_NOCTTY);
+            port = open(device, O_RDWR | O_NOCTTY);
             if (IsClosed)
                 return false;
             UpdatePort(options);
@@ -269,7 +204,7 @@ namespace Codebot.Raspberry
         private void UpdatePort(SerialPortOptions options)
         {
             var term = new TermiosStruct();
-            ExternalTCGetAttr(port, ref term);
+            tcgetattr(port, ref term);
             term.c_cflag |= CLOCAL | CREAD;
             term.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL | ISIG | IEXTEN);
             term.c_oflag &= ~(OPOST | ONLCR | OCRNL);
@@ -344,7 +279,7 @@ namespace Codebot.Raspberry
                 term.c_cflag |= CSTOPB;
             term.c_cc[VMIN] = options.Min;
             term.c_cc[VTIME] = options.Timeout;
-            ExternalTCSetAttr(port, TCSANOW, ref term);
+            tcsetattr(port, TCSANOW, ref term);
         }
 
         /// <summary>
@@ -356,7 +291,7 @@ namespace Codebot.Raspberry
                 return false;
             var p = port;
             port = 0;
-            ExternalFileClose(p);
+            close(p);
             return true;
         }
 
@@ -370,13 +305,13 @@ namespace Codebot.Raspberry
             switch (direction)
             {
                 case FlushDirection.Input:
-                    ExternalIoCtl(port, TCFLSH, TCIFLUSH);
+                    ioctl(port, TCFLSH, TCIFLUSH);
                     break;
                 case FlushDirection.Output:
-                    ExternalIoCtl(port, TCFLSH, TCOFLUSH);
+                    ioctl(port, TCFLSH, TCOFLUSH);
                     break;
                 case FlushDirection.Both:
-                    ExternalIoCtl(port, TCFLSH, TCIOFLUSH);
+                    ioctl(port, TCFLSH, TCIOFLUSH);
                     break;
             }
         }
@@ -396,7 +331,7 @@ namespace Codebot.Raspberry
         public void WriteBytes(byte[] data)
         {
             if (IsOpened)
-                ExternalWrite(port, data, data.Length);
+                write(port, data, data.Length);
         }
 
         /// <summary>
@@ -411,7 +346,7 @@ namespace Codebot.Raspberry
         {
             if (IsClosed)
                 return;
-            Task.Run(() => ExternalRead(port, buffer, buffer.Length))
+            Task.Run(() => read(port, buffer, buffer.Length))
                 .ContinueWith(task =>
                 {
                     if (task.IsCompleted && !(task.IsCanceled || task.IsFaulted))
@@ -440,7 +375,7 @@ namespace Codebot.Raspberry
         {
             if (IsClosed)
                 return;
-            Task.Run(() => ExternalRead(port, buffer, buffer.Length))
+            Task.Run(() => read(port, buffer, buffer.Length))
                 .ContinueWith(task =>
                 {
                     if (task.IsCompleted && !(task.IsCanceled || task.IsFaulted))
