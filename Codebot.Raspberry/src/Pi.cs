@@ -15,16 +15,10 @@ namespace Codebot.Raspberry
 
         public static double Now => now.ElapsedMilliseconds;
 
-        static void Init()
-        {
-            now = new PreciseTimer();
-            WaitMicroseconds(1);
-            var m = now.ElapsedMicroseconds;
-        }
-
         static Pi()
         {
-            Init();
+            now = new PreciseTimer();
+            PreciseTimer.Wait(1);
         }
 
         /// <summary>
@@ -32,7 +26,7 @@ namespace Codebot.Raspberry
         /// </summary>
         public static double Nanoseconds(double nanoseconds)
         {
-            return nanoseconds / 1000000d;
+            return nanoseconds / 1_000_000d;
         }
 
         /// <summary>
@@ -40,7 +34,7 @@ namespace Codebot.Raspberry
         /// </summary>
         public static double Microseconds(double microseconds)
         {
-            return microseconds / 1000d;
+            return microseconds / 1_000d;
         }
 
         /// <summary>
@@ -67,16 +61,7 @@ namespace Codebot.Raspberry
         /// </summary>
         public static void Wait(double milliseconds)
         {
-            var timer = new PreciseTimer();
-            double seconds = milliseconds / 1000;
-            while (seconds - timer.ElapsedSeconds > 1)
-                System.Threading.Thread.Sleep(100);
-            while (seconds - timer.ElapsedSeconds > 0.1)
-                System.Threading.Thread.Sleep(10);
-            while (seconds - timer.ElapsedSeconds > 0.01)
-                System.Threading.Thread.Sleep(1);
-            while (seconds - timer.ElapsedSeconds > 0)
-                { }
+            PreciseTimer.Wait(milliseconds);
         }
 
         /// <summary>
@@ -111,7 +96,6 @@ namespace Codebot.Raspberry
 
             static Gpio()
             {
-                Pi.Init();
                 controller = new GpioController(PinNumberingScheme.Logical);
                 pins = new GpioPin[30];
                 for (int i = 0; i < pins.Length; i++)

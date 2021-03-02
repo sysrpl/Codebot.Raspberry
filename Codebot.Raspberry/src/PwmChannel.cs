@@ -38,7 +38,10 @@ namespace Codebot.Raspberry
                 throw new IOException($"Could not locate directory {chipPath}.");
             var channelPath = $"{chipPath}/pwm{channel}";
             if (!Directory.Exists(channelPath))
+            {
                 Write($"{chipPath}/export", channel.ToString());
+                Pi.Wait(100);
+            }
             if (!Directory.Exists(channelPath))
                 throw new IOException($"Could not locate directory {channelPath}.");
             var e = $"{channelPath}/enable";
@@ -59,7 +62,7 @@ namespace Codebot.Raspberry
         ulong period;
 
         /// <summary>
-        /// Gets or sets the period of time for each cycle.
+        /// Gets or sets the period in nanosecponds of time for each cycle.
         /// </summary>
         public ulong Period
         {
@@ -76,7 +79,7 @@ namespace Codebot.Raspberry
         double dutyCycle;
 
         /// <summary>
-        /// Gets or sets the period of time for each cycle.
+        /// Gets or sets the duty cycle as a fraction of the period.
         /// </summary>
         public double DutyCycle
         {

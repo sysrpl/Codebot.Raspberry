@@ -114,5 +114,62 @@ namespace Codebot.Raspberry
         [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "tcsetattr")]
         public static extern int tcsetattr(int fd, int actions, ref TermiosStruct term);
 
+        public const int CLOCK_REALTIME = 0;
+        public const int CLOCK_MONOTONIC = 1;
+        public const int CLOCK_PROCESS_CPUTIME_ID = 2;
+        public const int CLOCK_THREAD_CPUTIME_ID = 3;
+        public const int CLOCK_MONOTONIC_RAW = 4;
+
+        public struct timespec
+        {
+            public IntPtr tv_sec;
+            public IntPtr tv_nsec;
+
+            public static timespec Now()
+            {
+                clock_gettime(CLOCK_MONOTONIC_RAW, out timespec n);
+                return n;
+            }
+
+            public static timespec Now(timespec start)
+            {
+                clock_gettime(CLOCK_MONOTONIC_RAW, out timespec n);
+                n.tv_sec = IntPtr.Subtract(n.tv_sec, (int)start.tv_sec);
+                n.tv_nsec = IntPtr.Subtract(n.tv_nsec, (int)start.tv_nsec);
+                return n;
+            }
+
+            public static timespec operator +(timespec a, timespec b)
+            {
+                return new timespec()
+                {
+                    tv_sec = IntPtr.Add(a.tv_sec, (int)b.tv_sec),
+                    tv_nsec = IntPtr.Add(a.tv_nsec, (int)b.tv_nsec)
+                };
+            }
+
+            public static timespec operator -(timespec a, timespec b)
+            {
+                return new timespec()
+                {
+                    tv_sec = IntPtr.Subtract(a.tv_sec, (int)b.tv_sec),
+                    tv_nsec = IntPtr.Subtract(a.tv_nsec, (int)b.tv_nsec)
+                };
+            }
+
+            public static explicit operator double(timespec a)
+            {
+                return (ulong)a.tv_sec * 1000d + (ulong)a.tv_nsec / 1_000_000d;
+            }
+        }
+
+        [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "nanosleep")]
+        public static extern int nanosleep(ref timespec req, ref timespec rem);
+
+        [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "nanosleep")]
+        public static extern int nanosleep(ref timespec req, IntPtr nullptr);
+
+        [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "clock_gettime")]
+        public static extern int clock_gettime(int clk_id, out timespec tp);
     }
 }

@@ -54,6 +54,7 @@
     <Compile Include="src\WeatherTest.cs" />
     <Compile Include="src\EventTest.cs" />
     <Compile Include="src\ServoTest.cs" />
+    <Compile Include="src\SleepTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Codebot.Raspberry.Board\Codebot.Raspberry.Board.csproj">
