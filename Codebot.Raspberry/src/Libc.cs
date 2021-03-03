@@ -125,6 +125,12 @@ namespace Codebot.Raspberry
             public IntPtr tv_sec;
             public IntPtr tv_nsec;
 
+            /*public static double NowMs()
+            {
+                clock_gettime(CLOCK_MONOTONIC_RAW, out timespec n);
+                return (int)n.tv_sec * 1000d + (int)n.tv_nsec / 1_000_000d;
+            }
+
             public static timespec Now()
             {
                 clock_gettime(CLOCK_MONOTONIC_RAW, out timespec n);
@@ -161,6 +167,19 @@ namespace Codebot.Raspberry
             {
                 return (ulong)a.tv_sec * 1000d + (ulong)a.tv_nsec / 1_000_000d;
             }
+
+            public static explicit operator timespec(double a)
+            {
+                if (a < 0d)
+                    return new timespec();
+                var s = (int)a;
+                var n = (int)((a - s) * 1_000_000d);
+                return new timespec()
+                {
+                    tv_sec = IntPtr.Add(IntPtr.Zero, s),
+                    tv_nsec = IntPtr.Add(IntPtr.Zero, n)
+                };
+            }*/
         }
 
         [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "nanosleep")]
