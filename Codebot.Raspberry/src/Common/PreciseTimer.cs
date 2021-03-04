@@ -56,26 +56,26 @@ namespace Codebot.Raspberry
             if (milliseconds < WaitResolution)
             {
                 while (milliseconds - Stopwatch.GetTimestamp() / frequency * 1000d + start > 0d)
-                { }
+                  { }
                 return;
             }
             timespec t;
             t.tv_sec = IntPtr.Zero;
             t.tv_nsec = (IntPtr)500_000_000;
             while (milliseconds - Stopwatch.GetTimestamp() / frequency * 1000d + start > 1_000_000_000)
-                nanosleep(ref t, IntPtr.Zero);
+                clock_nanosleep(CLOCK_MONOTONIC_RAW, 0, ref t, IntPtr.Zero);
             t.tv_nsec = (IntPtr)50_000_000;
             while (milliseconds - Stopwatch.GetTimestamp() / frequency * 1000d + start > 100_000_000)
-                nanosleep(ref t, IntPtr.Zero);
+                clock_nanosleep(CLOCK_MONOTONIC_RAW, 0, ref t, IntPtr.Zero);
             t.tv_nsec = (IntPtr)5_000_000;
             while (milliseconds - Stopwatch.GetTimestamp() / frequency * 1000d + start > 10_000_000)
-                nanosleep(ref t, IntPtr.Zero);
+                clock_nanosleep(CLOCK_MONOTONIC_RAW, 0, ref t, IntPtr.Zero);
             t.tv_nsec = (IntPtr)500_000;
             while (milliseconds - Stopwatch.GetTimestamp() / frequency * 1000d + start > 1_000_000)
-                nanosleep(ref t, IntPtr.Zero);
-            t.tv_nsec = (IntPtr)500;
+                clock_nanosleep(CLOCK_MONOTONIC_RAW, 0, ref t, IntPtr.Zero);
+            t.tv_nsec = (IntPtr)1_000;
             while (milliseconds - Stopwatch.GetTimestamp() / frequency * 1000d + start > WaitResolution)
-                nanosleep(ref t, IntPtr.Zero);
+                clock_nanosleep(CLOCK_MONOTONIC_RAW, 0, ref t, IntPtr.Zero);
             while (milliseconds - Stopwatch.GetTimestamp() / frequency * 1000d + start > 0d)
                 { }
         }

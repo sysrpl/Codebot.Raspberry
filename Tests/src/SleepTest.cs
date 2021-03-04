@@ -1,5 +1,6 @@
 ﻿using System;
 using Codebot.Raspberry;
+using static Codebot.Raspberry.Libc;
 
 namespace Tests
 {
@@ -52,6 +53,7 @@ namespace Tests
             t = PreciseTimer.Now - t;
             Console.WriteLine("wait 100ns = {0:0.0000}", t);
         }
+
 
         public static void TimerElapsedTest()
         {
@@ -115,7 +117,9 @@ namespace Tests
 
         public static void Run()
         {
-            TimerElapsedTest();
+            Console.WriteLine("nanosleep");
+            for (var i = 0; i < 5; i++)
+                TestPreciseWait();
+            }
         }
-    }
 }

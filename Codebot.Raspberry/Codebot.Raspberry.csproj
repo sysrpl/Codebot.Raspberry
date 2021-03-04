@@ -62,8 +62,8 @@
     <Compile Include="src\PinEventHandlerArgs.cs" />
     <Compile Include="src\PinGroup.cs" />
     <Compile Include="src\PwmChannel.cs" />
-    <Compile Include="src\Libc.cs" />
-    <Compile Include="src\UnixFile.cs" />
+    <Compile Include="src\Interop\UnixFile.cs" />
+    <Compile Include="src\Interop\Libc.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Codebot.Raspberry.Board\Codebot.Raspberry.Board.csproj">
@@ -73,6 +73,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\Interop\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
