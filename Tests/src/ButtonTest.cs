@@ -5,7 +5,7 @@ namespace Tests
 {
     public static class ButtonTest
     {
-        public static void Run()
+        static void TestPolling()
         {
             var ledNumber = 27;
             var buttonNumber = 17;
@@ -40,6 +40,32 @@ namespace Tests
             {
                 led.Write(false);
             }
+
+        }
+
+        static void TesButtonEvent()
+        {
+            var buttonNumber = 17;
+            var i = 0;
+            Console.WriteLine($"Button event test on GPIO {buttonNumber}");
+            var button = Pi.Gpio.Pin(buttonNumber);
+            button.Kind = PinKind.InputPullUp;
+            button.OnRisingEdge += Click;
+            while (i < 10)
+                Pi.Wait(100);
+            button.OnRisingEdge -= Click;
+
+            void Click(object sender, PinEventHandlerArgs e)
+            {
+                if (e.Bounced)
+                    return;
+                Console.WriteLine($"Click {i++}");
+            }
+        }
+
+        public static void Run()
+        {
+            TesButtonEvent();
         }
     }
 }
