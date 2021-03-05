@@ -13,42 +13,33 @@ namespace Codebot.Raspberry
     {
         const double EPSILON = 0.000_000_1d;
         static readonly double frequency;
+        static readonly long waitNanoseconds;
 
         static PreciseTimer()
         {
             frequency = Stopwatch.Frequency;
-            var t = new timespec()
-            {
-                tv_sec = IntPtr.Zero,
-                tv_nsec = (IntPtr)100_000
-            };
+            timespec t;
+            t.tv_sec = IntPtr.Zero;
+            t.tv_nsec = (IntPtr)10_000_1000;
             nanosleep(ref t, IntPtr.Zero);
-            t.tv_nsec = (IntPtr)1_000;
-            for (var i = 0; i < 10; i++)
-                nanosleep(ref t, IntPtr.Zero);
-            timespec n;
-            double a, b, c;
+            t.tv_nsec = (IntPtr)10;
+            for (var i =0; i < 10; i++)
+                clock_nanosleep(CLOCK_MONOTONIC_RAW, 0, ref t, IntPtr.Zero);
+            double n;
             for (var i = 0; i < 10; i++)
             {
-                clock_gettime(CLOCK_MONOTONIC_RAW, out n);
-                a = (int)n.tv_sec * 1000d + (int)n.tv_nsec / 1_000_000d;
-                nanosleep(ref t, IntPtr.Zero);
-                clock_gettime(CLOCK_MONOTONIC_RAW, out n);
-                b = (int)n.tv_sec * 1000d + (int)n.tv_nsec / 1_000_000d;
-                c = b - a;
-                if (c > WaitResolution)
-                    WaitResolution = c;
+                n = Stopwatch.GetTimestamp() / frequency * 1000d;
+                clock_nanosleep(CLOCK_MONOTONIC_RAW, 0, ref t, IntPtr.Zero);
+                n = Stopwatch.GetTimestamp() / frequency * 1000d - n;
+                if (n > WaitResolution)
+                    WaitResolution = n;
             }
-            WaitResolution *= 1.5d;
+            WaitResolution *= 2;
+            waitNanoseconds = (long)(WaitResolution * 1_000_000);
         }
 
         /// <summary>
-        /// Now is the current precise time in milliseconds.
-        /// </summary>
-        public static double Now => Stopwatch.GetTimestamp() / frequency * 1000d;
-
-        /// <summary>
-        /// Wait a precise number of specified milliseconds.
+        /// Wait the specified number of milliseconds.
         /// </summary>
         public static void Wait(double milliseconds)
         {
@@ -56,7 +47,7 @@ namespace Codebot.Raspberry
             if (milliseconds < WaitResolution)
             {
                 while (milliseconds - Stopwatch.GetTimestamp() / frequency * 1000d + start > 0d)
-                  { }
+                { }
                 return;
             }
             timespec t;
@@ -73,11 +64,11 @@ namespace Codebot.Raspberry
             t.tv_nsec = (IntPtr)500_000;
             while (milliseconds - Stopwatch.GetTimestamp() / frequency * 1000d + start > 1_000_000)
                 clock_nanosleep(CLOCK_MONOTONIC_RAW, 0, ref t, IntPtr.Zero);
-            t.tv_nsec = (IntPtr)1_000;
+            t.tv_nsec = (IntPtr)waitNanoseconds;
             while (milliseconds - Stopwatch.GetTimestamp() / frequency * 1000d + start > WaitResolution)
                 clock_nanosleep(CLOCK_MONOTONIC_RAW, 0, ref t, IntPtr.Zero);
             while (milliseconds - Stopwatch.GetTimestamp() / frequency * 1000d + start > 0d)
-                { }
+            { }
         }
 
         /// <summary>
@@ -130,10 +121,16 @@ namespace Codebot.Raspberry
         /// </summary>
         public static double WaitResolution { get; private set; }
 
+        /// <summary>
+        /// The absolute number of milliseconds passed since the start of 
+        /// the epoch.
+        /// </summary>
+        public static double Now { get => Stopwatch.GetTimestamp() / frequency * 1000d; }
+
         double start;
 
         /// <summary>
-        /// Initializes a new precise timer.
+        /// Initializes a new PreciseTimer.
         /// </summary>
         public PreciseTimer()
         {
@@ -157,22 +154,22 @@ namespace Codebot.Raspberry
         /// <summary>
         /// The number of seconds since the last reset.
         /// </summary>
-        public double ElapsedSeconds { get => Stopwatch.GetTimestamp() / frequency - start; }
+        public double ElapsedSeconds { get => (Stopwatch.GetTimestamp() - start) / frequency; }
 
         /// <summary>
         /// The number of milliseconds since the last reset.
         /// </summary>
-        public double ElapsedMilliseconds { get => (Stopwatch.GetTimestamp() / frequency - start) * 1_000d; }
+        public double ElapsedMilliseconds { get => ElapsedSeconds * 1000d; }
 
         /// <summary>
         /// The number of microseconds since the last reset.
         /// </summary>
-        public double ElapsedMicroseconds { get => (Stopwatch.GetTimestamp() / frequency - start) * 1_000_000d; }
+        public double ElapsedMicroseconds { get => ElapsedMilliseconds * 1000d; }
 
         /// <summary>
         /// The number of nanoseconds since the last reset.
         /// </summary>
-        public double ElapsedNanoseconds { get => (Stopwatch.GetTimestamp() / frequency - start) * 1_000_000_000d; }
+        public double ElapsedNanoseconds { get => ElapsedMicroseconds * 1000d; }
 
         void ElapseTask(long id, double mark, double interval)
         {
@@ -184,6 +181,7 @@ namespace Codebot.Raspberry
                     OnElapsed(this, EventArgs.Empty);
                 else
                     break;
+
             }
         }
 

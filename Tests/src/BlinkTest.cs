@@ -11,7 +11,7 @@ namespace Tests
             Console.WriteLine($"LED Blink Test on GPIO {pinNumber}");
             var pin = Pi.Gpio.Pin(pinNumber);
             pin.Kind = PinKind.Output;
-            int onMilliseconds = 2000;
+            int onMilliseconds = 1000;
             int offMilliseconds = 2000;
             try
             {

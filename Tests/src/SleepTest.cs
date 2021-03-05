@@ -1,6 +1,5 @@
 ﻿using System;
 using Codebot.Raspberry;
-using static Codebot.Raspberry.Libc;
 
 namespace Tests
 {
@@ -45,7 +44,7 @@ namespace Tests
             PreciseTimer.Wait(1);
             t = PreciseTimer.Now;
             PreciseTimer.Wait(0.001);
-            t = PreciseTimer.Now- t;
+            t = PreciseTimer.Now - t;
             Console.WriteLine("wait 1μs = {0:0.0000}", t);
             PreciseTimer.Wait(1);
             t = PreciseTimer.Now;
@@ -120,6 +119,6 @@ namespace Tests
             Console.WriteLine("nanosleep");
             for (var i = 0; i < 5; i++)
                 TestPreciseWait();
-            }
         }
+    }
 }
