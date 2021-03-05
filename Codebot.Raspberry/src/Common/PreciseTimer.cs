@@ -159,17 +159,17 @@ namespace Codebot.Raspberry
         /// <summary>
         /// The number of milliseconds since the last reset.
         /// </summary>
-        public double ElapsedMilliseconds { get => ElapsedSeconds * 1000d; }
+        public double ElapsedMilliseconds { get => (Stopwatch.GetTimestamp() - start) / frequency * 1000d; }
 
         /// <summary>
         /// The number of microseconds since the last reset.
         /// </summary>
-        public double ElapsedMicroseconds { get => ElapsedMilliseconds * 1000d; }
+        public double ElapsedMicroseconds { get => (Stopwatch.GetTimestamp() - start) / frequency * 1_000_000d; }
 
         /// <summary>
         /// The number of nanoseconds since the last reset.
         /// </summary>
-        public double ElapsedNanoseconds { get => ElapsedMicroseconds * 1000d; }
+        public double ElapsedNanoseconds { get => (Stopwatch.GetTimestamp() - start) / frequency * 1_000_000_000d; }
 
         void ElapseTask(long id, double mark, double interval)
         {
@@ -188,7 +188,7 @@ namespace Codebot.Raspberry
         /// <summary>
         /// The number of milliseconds to ellaspe before OnElapsed is invoked.
         /// </summary>
-        public double Interval { get; set;  }
+        public double Interval { get; set; }
 
         Task task;
         bool enabled;
