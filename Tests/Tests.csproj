@@ -55,6 +55,7 @@
     <Compile Include="src\EventTest.cs" />
     <Compile Include="src\ServoTest.cs" />
     <Compile Include="src\SleepTest.cs" />
+    <Compile Include="src\StepperTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Codebot.Raspberry.Board\Codebot.Raspberry.Board.csproj">
@@ -72,6 +73,10 @@
     <ProjectReference Include="..\Codebot.Raspberry.Device\Servo\Servo.csproj">
       <Project>{E31D52E7-86D3-4818-A1E9-B28F4645C7A6}</Project>
       <Name>Servo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Codebot.Raspberry.Device\Uln2003\Uln2003.csproj">
+      <Project>{53991FC3-82D3-4C06-90D8-80D7E1B20068}</Project>
+      <Name>Uln2003</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

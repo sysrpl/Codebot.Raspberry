@@ -30,7 +30,7 @@ namespace Codebot.Raspberry.Device
 #if timer
             enabled = false;
             timerExpired = false;
-            timer = new Timer(1000)
+            timer = new Timer(2000)
             {
                 AutoReset = false,
                 Enabled = false

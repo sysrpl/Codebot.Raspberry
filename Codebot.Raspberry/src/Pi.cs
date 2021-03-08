@@ -104,10 +104,7 @@ namespace Codebot.Raspberry
 
             static internal void Close(int number)
             {
-                if (number < 0)
-                    number = 0;
-                if (number > pins.Length - 1)
-                    number = pins.Length - 1;
+                controller.ClosePin(number);
                 pins[number] = null;
             }
 
