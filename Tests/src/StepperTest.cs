@@ -12,23 +12,6 @@ namespace Tests
             return new Uln2003(22, 27, 17, 4);
         }
 
-        static void SpeedTest()
-        {
-            Console.WriteLine("Stepper motor RPM test");
-            using (var motor = MotorCreate())
-            {
-                motor.RPM = 15;
-                int i = 0;
-                while (i < 1000)
-                {
-                    Console.WriteLine($"rotation {i++}, motor at {motor.Position / -4096d:0.0000}");
-                    motor.MovePosition(motor.SPR);
-                    motor.Wait();
-                    Pi.Wait(3000);
-                }
-            }
-        }
-
         static void MoveTest()
         {
             Console.WriteLine("Stepper motor rotate by input test");
@@ -50,6 +33,23 @@ namespace Tests
         }
 
         static void RepeatTest()
+        {
+            Console.WriteLine("Stepper motor RPM test");
+            using (var motor = MotorCreate())
+            {
+                motor.RPM = 15;
+                int i = 0;
+                while (i < 1000)
+                {
+                    Console.WriteLine($"rotation {i++}, motor at {motor.Position / -4096d:0.0000}");
+                    motor.MovePosition(motor.SPR);
+                    motor.Wait();
+                    Pi.Wait(3000);
+                }
+            }
+        }
+
+        static void SpeedTest()
         {
             Console.WriteLine("Stepper motor repeatability test");
             using (var motor = MotorCreate())
@@ -83,4 +83,3 @@ namespace Tests
         }
     }
 }
-
