@@ -10,13 +10,13 @@ namespace Codebot.Raspberry.Device
     /// </summary>
     public enum StepperMode
     {
-        /// <summary>Half step mode</summary>
+        /// <summary>Half step mode medium torque</summary>
         HalfStep,
 
-        /// <summary>Full step mode (single phase)</summary>
+        /// <summary>Full step mode (single phase) least torque</summary>
         FullStepSinglePhase,
 
-        /// <summary>Full step mode (dual phase)</summary>
+        /// <summary>Full step mode (dual phase) most torque</summary>
         FullStepDualPhase
     }
 
