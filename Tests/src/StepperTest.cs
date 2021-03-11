@@ -41,8 +41,8 @@ namespace Tests
                 int i = 0;
                 while (i < 1000)
                 {
-                    Console.WriteLine($"rotation {i++}, motor at {motor.Position / -4096d:0.0000}");
-                    motor.MovePosition(motor.SPR);
+                    Console.WriteLine($"rotation {i++}, motor at {motor.Step / -4096d:0.0000}");
+                    motor.MovePosiStepor.SPR);
                     motor.Wait();
                     Pi.Wait(3000);
                 }

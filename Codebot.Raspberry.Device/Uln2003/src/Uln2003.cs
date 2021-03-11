@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+#pragma warning disable RECS0082 // Parameter has the same name as a member and hides it
 
 namespace Codebot.Raspberry.Device
 {
@@ -78,6 +80,7 @@ namespace Codebot.Raspberry.Device
             currentSequence = halfStepSequence;
             engineStep = 0;
             stepId = 0;
+            nextSteps = new List<StepItem>();
             StepTask = null;
         }
 
@@ -130,125 +133,259 @@ namespace Codebot.Raspberry.Device
         }
 
         /// <summary>
-        /// Get the current step task created by position or angle members.
+        /// Get the current step task created by step or angle members.
         /// </summary>
         /// <remarks>The stop or wait methods will set this property to null.</remarks>
         public Task StepTask { get; private set; }
 
+        struct StepItem
+        {
+            public long Count;
+            public double Delay;
+            public double RPM;
+        }
+
+        List<StepItem> nextSteps;
         long stepId;
 
-        async Task InternalStep(long count)
+        async Task InternalStepAsync(long count)
         {
             const double milliseconds = 60_000d;
-            Stop();
             var id = stepId;
-            var target = position + count;
+            var target = step + count;
             await PreciseTimer.Every(milliseconds / SPR / RPM, TakeStep);
 
             bool TakeStep()
             {
-                if (position == target)
-                    return false;
                 if (id != stepId)
                     return false;
+                if (step == target)
+                {
+                    ContinueStep(id);
+                    return false;
+                }
                 if (count > 0)
                 {
-                    engineStep = engineStep - 1 < 1 ? 8 : engineStep - 1;
-                    position++;
+                    engineStep = engineStep + 1 > 8 ? 1 : engineStep + 1;
+                    step++;
                 }
                 else
                 {
-                    engineStep = engineStep + 1 > 8 ? 1 : engineStep + 1;
-                    position--;
+                    engineStep = engineStep - 1 < 1 ? 8 : engineStep - 1;
+                    step--;
                 }
                 for (var i = 0; i < pins.Length; i++)
                     pins[i].Value = currentSequence[i, engineStep - 1];
-                return position != target;
+                return step != target;
+            }
+        }
+
+        void ContinueStep(long id)
+        {
+            if (id == stepId)
+                OnStepComplete(this, EventArgs.Empty);
+            lock (this)
+            {
+                if (id != stepId)
+                {
+                    nextSteps.Clear();
+                    return;
+                }
+                if (nextSteps.Count < 1)
+                    return;
+                var stepItem = nextSteps[0];
+                nextSteps.RemoveAt(0);
+                if (stepItem.Delay > 0)
+                    PreciseTimer.Wait(stepItem.Delay);
+                if (id != stepId)
+                {
+                    nextSteps.Clear();
+                    return;
+                }
+                if (stepItem.RPM > 0)
+                    RPM = stepItem.RPM;
+                stepId++;
+                StepTask = InternalStepAsync(stepItem.Count);
+            }
+        }
+
+        void FirstStep(long count)
+        {
+            Stop();
+            StepTask = InternalStepAsync(count);
+        }
+
+        void NextStep(long count, double delay, double rpm)
+        {
+            lock (this)
+            {
+                if (IsStepping)
+                {
+                    var item = new StepItem()
+                    {
+                        Count = count,
+                        Delay = delay,
+                        RPM = rpm
+                    };
+                    nextSteps.Add(item);
+                }
+                else
+                    StepTask = InternalStepAsync(count);
             }
         }
 
         /// <summary>
-        /// Stop the motor cancelling any current step task.
+        /// Stop the motor cancelling any current or pending step tasks.
         /// </summary>
         public void Stop()
         {
-            stepId++;
-            StepTask?.Wait();
-            StepTask = null;
-            foreach (var p in pins)
-                p.Value = false;
+            lock (this)
+            {
+                stepId++;
+                StepTask?.Wait();
+                StepTask = null;
+                foreach (var p in pins)
+                    p.Value = false;
+                nextSteps.Clear();
+            }
         }
 
         /// <summary>
-        /// Wait for any current step task to complete.
+        /// IsStepping is true if the motor is processing step taks.
+        /// </summary>
+        public bool IsStepping
+        {
+            get
+            {
+                var b = StepTask?.IsCompleted;
+                return !(b.HasValue && b.Value);
+            }
+        }
+
+        /// <summary>
+        /// Wait for any current or pending step tasks to complete.
         /// </summary>
         public void Wait()
         {
             StepTask?.Wait();
             StepTask = null;
+            var i = 0;
+            while (true)
+            {
+                lock (this)
+                    i = nextSteps.Count;
+                if (i == 0)
+                    break;
+                PreciseTimer.Wait(1);
+            }
+            StepTask?.Wait();
+            StepTask = null;
         }
 
-        long position;
+        long step;
 
         /// <summary>
         /// Gets or sets the rotational step position of the motor.
         /// </summary>
-        public long Position
+        /// <remarks>Setting a value cancels the current and any pending step tasks.</remarks>
+        public long Step
         {
-            get => position;
+            get => step;
             set
             {
                 Stop();
-                var p = value - position;
-                StepTask = InternalStep(p);
+                var p = value - step;
+                FirstStep(p);
             }
         }
 
         /// <summary>
-        /// Gets or sets the rotation angle in degrees of the motor.
+        /// Gets or sets the rotational angle in degrees of the motor.
         /// </summary>
+        /// <remarks>Setting a value cancels the current and any pending step tasks.</remarks>
         public double Angle
         {
-            get => (double)position / SPR * 360d;
+            get => (double)step / SPR * 360d;
             set
             {
                 Stop();
-                var a = (long)(value / 360d * SPR) - position;
-                StepTask = InternalStep(a);
+                var a = (long)(value / 360d * SPR) - step;
+                FirstStep(a);
             }
         }
 
         /// <summary>
-        /// Move the motor by a relative position.
+        /// Move the motor by a relative step.
         /// </summary>
-        /// <param name="p">The relative steps to rotate.</param>
-        /// <returns>Returns a task that can be waited or cancelled using the stop method.</returns>
-        public Task MovePosition(long p)
+        /// <param name="step">The relative steps to rotate.</param>
+        /// <remarks>Calling this method cancels the current and any pending step tasks.</remarks>
+        public Uln2003 MoveStep(long step)
         {
-            StepTask = InternalStep(p);
-            return StepTask;
+            FirstStep(step);
+            return this;
         }
 
         /// <summary>
         /// Move the motor by a relative angle.
         /// </summary>
-        /// <param name="a">The relative angle to rotate.</param>
-        /// <returns>Returns a task that can be waited or cancelled using the stop method.</returns>
-        public Task MoveAngle(double a)
+        /// <param name="angle">The relative angle to rotate.</param>
+        /// <remarks>Calling this method cancels the current and any pending step tasks.</remarks>
+        public Uln2003 MoveAngle(double angle)
         {
-            var p = (long)(a / 360d * SPR);
-            StepTask = InternalStep(p);
-            return StepTask;
+            var p = (long)(angle / 360d * SPR);
+            FirstStep(p);
+            return this;
         }
 
         /// <summary>
-        /// Stops the motor and resets the position and angle values to zero.
+        /// Add a relative step command to a queue of step tasks.
         /// </summary>
+        /// <param name="step">The relative steps to rotate after the current step completes.</param>
+        /// <param name="delay">The delay in milliseconds between previous step and the command being issued.</param>
+        /// <param name="rpm">The RPM  when the rotating command runs.</param>
+        public Uln2003 ThenStep(long step, double delay = 0, double rpm = 0)
+        {
+            NextStep(step, delay, rpm);
+            return this;
+        }
+
+        /// <summary>
+        /// Add a relative angle command to a queue of step tasks.
+        /// </summary>
+        /// <param name="angle">The relative angle to rotate after the current step completes.</param>
+        /// <param name="delay">The delay in milliseconds between previous step and the command being issued.</param>
+        /// <param name="rpm">The RPM  when the rotating command runs.</param>
+        public Uln2003 ThenAngle(double angle, double delay = 0, double rpm = 0)
+        {
+            var p = (long)(angle / 360d * SPR);
+            NextStep(step, delay, rpm);
+            return this;
+        }
+
+        /// <summary>
+        /// Stops the motor and resets the step and angle values to zero.
+        /// </summary>
+        /// <remarks>Calling this method cancels the current and any pending step tasks</remarks>
         public void Zero()
         {
             Stop();
-            position = 0;
+            step = 0;
         }
+
+        /// <summary>
+        /// Calculate the closest exact angle supported by the stepping mode, 
+        /// </summary>
+        /// <param name="angle">The angle to find aligning with the closest step.</param>
+        public double Closest(double angle)
+        {
+            var p = (long)(angle / 360d * SPR);
+            return (double)p / SPR * 360d;
+        }
+
+        /// <summary>
+        /// Occurs when on a step task completes.
+        /// </summary>
+        public event EventHandler<EventArgs> OnStepComplete;
 
         public void Dispose()
         {
