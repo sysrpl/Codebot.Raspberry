@@ -32,6 +32,37 @@ namespace Tests
             }
         }
 
+        static void MotorThenAngleTest()
+        {
+            const double delay = 2000;
+
+            Console.WriteLine("Stepper motor then angle test");
+            using (var motor = MotorCreate())
+            {
+                motor.OnStepTaskComplete += TaskComplete;
+                int i = 0;
+                while (i++ < 1000)
+                {
+                    Console.WriteLine($"Then angle test itteration {i}");
+                    motor
+                        .MoveAngle(0)
+                        .ThenAngle(30, StepperMove.Absolute, delay, 2)
+                        .ThenAngle(90, StepperMove.Absolute, delay, 2)
+                        .ThenAngle(-90, StepperMove.Absolute, delay, 10)
+                        .ThenAngle(180, StepperMove.Absolute, delay, 15);
+                    for (var j = 0; j < 9; j++)
+                        motor.ThenAngle(10, StepperMove.Relative, delay, 12.5);
+                    motor.Wait(delay);
+                }
+                motor.MoveAngle(0).Wait();
+
+                void TaskComplete(object sender, EventArgs e)
+                {
+                    Console.WriteLine($"motor at angle {motor.Angle}");
+                }
+            }
+        }
+
         static void RepeatTest()
         {
             Console.WriteLine("Stepper motor RPM test");
@@ -39,10 +70,10 @@ namespace Tests
             {
                 motor.RPM = 15;
                 int i = 0;
-                while (i < 1000)
+                while (i < 5)
                 {
-                    Console.WriteLine($"rotation {i++}, motor at {motor.Step / -4096d:0.0000}");
-                    motor.MovePosiStepor.SPR);
+                    Console.WriteLine($"rotation {i++}, motor at {motor.Position / -4096d:0.0000}");
+                    motor.MoveAngle(360);
                     motor.Wait();
                     Pi.Wait(3000);
                 }
@@ -79,7 +110,7 @@ namespace Tests
         public static void Run()
         {
             MoveTest();
-            RepeatTest();
+            MotorThenAngleTest();
         }
     }
 }

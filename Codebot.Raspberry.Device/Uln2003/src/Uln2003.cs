@@ -23,6 +23,18 @@ namespace Codebot.Raspberry.Device
     }
 
     /// <summary>
+    /// The stepper move enumeration is used to set the motor angle or position 
+    /// in absolute or relative unts.
+    /// </summary>
+    public enum StepperMove
+    {
+        /// <summary>Use absolute units measured from the zero position.</summary>
+        Absolute,
+        /// <summary>Use relative units measured from the current position.</summary>
+        Relative
+    }
+
+    /// <summary>
     /// This class is for controlling stepper motors that are controlled by a 4 pin controller board.
     /// </summary>
     /// <remarks>It is tested and developed using the 28BYJ-48 stepper motor and the ULN2003 driver board.</remarks>
@@ -141,6 +153,7 @@ namespace Codebot.Raspberry.Device
         struct StepItem
         {
             public long Count;
+            public StepperMove Move;
             public double Delay;
             public double RPM;
         }
@@ -176,14 +189,14 @@ namespace Codebot.Raspberry.Device
                 }
                 for (var i = 0; i < pins.Length; i++)
                     pins[i].Value = currentSequence[i, engineStep - 1];
-                return step != target;
+                return true;
             }
         }
 
         void ContinueStep(long id)
         {
-            if (id == stepId)
-                OnStepComplete(this, EventArgs.Empty);
+            if (id == stepId && !(OnStepTaskComplete is null))
+                OnStepTaskComplete(this, EventArgs.Empty);
             lock (this)
             {
                 if (id != stepId)
@@ -193,19 +206,20 @@ namespace Codebot.Raspberry.Device
                 }
                 if (nextSteps.Count < 1)
                     return;
-                var stepItem = nextSteps[0];
+                var item = nextSteps[0];
                 nextSteps.RemoveAt(0);
-                if (stepItem.Delay > 0)
-                    PreciseTimer.Wait(stepItem.Delay);
+                if (item.Delay > 0)
+                    PreciseTimer.Wait(item.Delay);
                 if (id != stepId)
                 {
                     nextSteps.Clear();
                     return;
                 }
-                if (stepItem.RPM > 0)
-                    RPM = stepItem.RPM;
+                if (item.RPM > 0)
+                    RPM = item.RPM;
                 stepId++;
-                StepTask = InternalStepAsync(stepItem.Count);
+                var count = item.Move == StepperMove.Relative ? item.Count : item.Count - step;
+                StepTask = InternalStepAsync(count);
             }
         }
 
@@ -215,22 +229,20 @@ namespace Codebot.Raspberry.Device
             StepTask = InternalStepAsync(count);
         }
 
-        void NextStep(long count, double delay, double rpm)
+        void NextStep(long count, StepperMove move, double delay, double rpm)
         {
             lock (this)
             {
-                if (IsStepping)
+                var item = new StepItem()
                 {
-                    var item = new StepItem()
-                    {
-                        Count = count,
-                        Delay = delay,
-                        RPM = rpm
-                    };
-                    nextSteps.Add(item);
-                }
-                else
-                    StepTask = InternalStepAsync(count);
+                    Count = count,
+                    Move = move,
+                    Delay = delay,
+                    RPM = rpm
+                };
+                nextSteps.Add(item);
+                if (!IsStepping)
+                    StepTask = InternalStepAsync(0);
             }
         }
 
@@ -251,21 +263,19 @@ namespace Codebot.Raspberry.Device
         }
 
         /// <summary>
-        /// IsStepping is true if the motor is processing step taks.
+        /// IsStepping is true if the motor is processing a step task.
         /// </summary>
         public bool IsStepping
         {
-            get
-            {
-                var b = StepTask?.IsCompleted;
-                return !(b.HasValue && b.Value);
-            }
+            get => !(StepTask is null) && !StepTask.IsCompleted;
         }
 
         /// <summary>
         /// Wait for any current or pending step tasks to complete.
+        /// <param name="milliseconds">Optionally add some milliseconds to the 
+        /// end of the wait time.</param>
         /// </summary>
-        public void Wait()
+        public void Wait(double milliseconds = 0)
         {
             StepTask?.Wait();
             StepTask = null;
@@ -280,15 +290,17 @@ namespace Codebot.Raspberry.Device
             }
             StepTask?.Wait();
             StepTask = null;
+            if (milliseconds > 0)
+                PreciseTimer.Wait(milliseconds);
         }
 
         long step;
 
         /// <summary>
-        /// Gets or sets the rotational step position of the motor.
+        /// Gets or sets absolute position of the motor.
         /// </summary>
         /// <remarks>Setting a value cancels the current and any pending step tasks.</remarks>
-        public long Step
+        public long Position
         {
             get => step;
             set
@@ -300,7 +312,7 @@ namespace Codebot.Raspberry.Device
         }
 
         /// <summary>
-        /// Gets or sets the rotational angle in degrees of the motor.
+        /// Gets or sets the absolute rotational angle in degrees of the motor.
         /// </summary>
         /// <remarks>Setting a value cancels the current and any pending step tasks.</remarks>
         public double Angle
@@ -309,56 +321,80 @@ namespace Codebot.Raspberry.Device
             set
             {
                 Stop();
-                var a = (long)(value / 360d * SPR) - step;
-                FirstStep(a);
+                var p = (long)(value / 360d * SPR) - step;
+                FirstStep(p);
             }
         }
 
         /// <summary>
-        /// Move the motor by a relative step.
+        /// Move the motor by a relative position.
         /// </summary>
-        /// <param name="step">The relative steps to rotate.</param>
+        /// <param name="position">The relative position to rotate.</param>
+        /// <param name="move">Move to an absolute or relative position.</param>
+        /// <param name="rpm">The optional RPM to during the move.</param>
         /// <remarks>Calling this method cancels the current and any pending step tasks.</remarks>
-        public Uln2003 MoveStep(long step)
+        public Uln2003 MovePosition(long position, StepperMove move = StepperMove.Absolute, 
+            double rpm = 0)
         {
-            FirstStep(step);
+            if (rpm > 0)
+                RPM = rpm;
+            if (move == StepperMove.Absolute)
+                Position = position;
+            else
+                FirstStep(position);
             return this;
         }
 
         /// <summary>
         /// Move the motor by a relative angle.
         /// </summary>
-        /// <param name="angle">The relative angle to rotate.</param>
+        /// <param name="angle">The angle to rotate.</param>
+        /// <param name="move">Move to an absolute or relative rotational angle.</param>
+        /// <param name="rpm">The optional RPM to during the move.</param>
         /// <remarks>Calling this method cancels the current and any pending step tasks.</remarks>
-        public Uln2003 MoveAngle(double angle)
+        public Uln2003 MoveAngle(double angle, StepperMove move = StepperMove.Absolute,
+            double rpm = 0)
         {
-            var p = (long)(angle / 360d * SPR);
-            FirstStep(p);
+            if (rpm > 0)
+                RPM = rpm;
+            if (move == StepperMove.Absolute)
+                Angle = angle;
+            else
+            {
+                var position = (long)(angle / 360d * SPR);
+                FirstStep(position);
+            }
             return this;
         }
 
         /// <summary>
-        /// Add a relative step command to a queue of step tasks.
+        /// Add a position command to a queue of step tasks.
         /// </summary>
-        /// <param name="step">The relative steps to rotate after the current step completes.</param>
-        /// <param name="delay">The delay in milliseconds between previous step and the command being issued.</param>
-        /// <param name="rpm">The RPM  when the rotating command runs.</param>
-        public Uln2003 ThenStep(long step, double delay = 0, double rpm = 0)
+        /// <param name="position">The absolute position to rotate after the current step completes.</param>
+        /// <param name="move">Move to an absolute or relative position.</param>
+        /// <param name="delay">The optional delay in milliseconds between previous step and the command being issued.</param>
+        /// <param name="rpm">The optional RPM to use when the command is processed.</param>
+        /// <remarks>If no step task exists then a zero step task will be added first.</remarks>
+        public Uln2003 ThenPosition(long position, StepperMove move = StepperMove.Absolute, 
+            double delay = 0, double rpm = 0)
         {
-            NextStep(step, delay, rpm);
+            NextStep(position, move, delay, rpm);
             return this;
         }
 
         /// <summary>
-        /// Add a relative angle command to a queue of step tasks.
+        /// Add an angle command to a queue of step tasks.
         /// </summary>
-        /// <param name="angle">The relative angle to rotate after the current step completes.</param>
-        /// <param name="delay">The delay in milliseconds between previous step and the command being issued.</param>
-        /// <param name="rpm">The RPM  when the rotating command runs.</param>
-        public Uln2003 ThenAngle(double angle, double delay = 0, double rpm = 0)
+        /// <param name="angle">The absolute angle to rotate after the current step completes.</param>
+        /// <param name="move">Move to an absolute or relative rotational angle.</param>
+        /// <param name="delay">The optional delay in milliseconds between previous step and the command being issued.</param>
+        /// <param name="rpm">The optional RPM to use when the command is processed.</param>
+        /// <remarks>If no step task exists then a zero step task will be added first.</remarks>
+        public Uln2003 ThenAngle(double angle, StepperMove move = StepperMove.Absolute, 
+            double delay = 0, double rpm = 0)
         {
-            var p = (long)(angle / 360d * SPR);
-            NextStep(step, delay, rpm);
+            var position = (long)(angle / 360d * SPR);
+            NextStep(position, move, delay, rpm);
             return this;
         }
 
@@ -385,7 +421,7 @@ namespace Codebot.Raspberry.Device
         /// <summary>
         /// Occurs when on a step task completes.
         /// </summary>
-        public event EventHandler<EventArgs> OnStepComplete;
+        public event EventHandler<EventArgs> OnStepTaskComplete;
 
         public void Dispose()
         {
