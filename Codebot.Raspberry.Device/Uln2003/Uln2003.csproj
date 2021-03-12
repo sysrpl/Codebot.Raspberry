@@ -28,7 +28,9 @@
     <Folder Include="src\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\Uln2003.cs" />
+    <Compile Include="src\StepperMotor.cs" />
+    <Compile Include="src\IStepperDriver.cs" />
+    <Compile Include="src\UnipoleDriver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

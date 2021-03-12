@@ -6,23 +6,6 @@ using System.Threading.Tasks;
 namespace Codebot.Raspberry.Device
 {
     /// <summary>
-    /// The 28BYJ-48 motor has 512 full engine rotations to rotate the drive shaft once.
-    /// In half-step mode these are 8 x 512 = 4096 steps for a full rotation.
-    /// In full-step mode these are 4 x 512 = 2048 steps for a full rotation.
-    /// </summary>
-    public enum StepperMode
-    {
-        /// <summary>Half step mode medium torque</summary>
-        HalfStep,
-
-        /// <summary>Full step mode (single phase) least torque</summary>
-        FullStepSinglePhase,
-
-        /// <summary>Full step mode (dual phase) most torque</summary>
-        FullStepDualPhase
-    }
-
-    /// <summary>
     /// The stepper move enumeration is used to set the motor angle or position 
     /// in absolute or relative unts.
     /// </summary>
@@ -35,62 +18,59 @@ namespace Codebot.Raspberry.Device
     }
 
     /// <summary>
-    /// This class is for controlling stepper motors that are controlled by a 4 pin controller board.
+    /// 
+    /// The stepper motor class controlls stepper motors with the aide of a driver.
+    /// 
+    /// Stepper motor ThenAngle / ThenPosition commands can be chained to form a series 
+    /// 
+    /// of async rotations in succession. These methods use the following parameters:
+    /// 
+    /// unit:  Angle or position. Angle rotates in degrees and position rotates in steps.
+    ///        When unit is a negative value the motor runs in the reverse direction.
+    /// 
+    /// move:  Optional absolute or relative. Absolute rotate the motor to an absolute 
+    ///        angle or position while relative moves the motor in relation to its  
+    ///        previous angle or position. The default is absolute.
+    /// 
+    /// delay: Optional pause in milliseconds before beginning the next step commands.
+    ///        The default is no delay.
+    /// 
+    /// rpm:   Optional rotations per second speed to use when executing the step commands.
+    ///        Increasing the rpm decreases the delay between individual steps, and
+    ///        decreasing the rpm increases the delay between individual steps. The
+    ///        default is to not change and use the previous rpm.
+    /// 
+    /// You can wait for a single or chain of async rotations to complete using
+    /// the motor.Wait() method, or stop them immediately using motor.Stop().
+    /// 
+    /// The OnStepTaskComplete event is triggered any time any single step command
+    /// completes. Using motor.MoveAngle(90).ThenAngle(0) results in OnStepTaskComplete
+    /// being invoked two times. Once at 90 degrees, and once again at 0 degrees.
+    /// 
     /// </summary>
-    /// <remarks>It is tested and developed using the 28BYJ-48 stepper motor and the ULN2003 driver board.</remarks>
-    public class Uln2003 : IDisposable
+    public class StepperMotor : IDisposable
     {
-        static readonly bool[,] halfStepSequence = {
-            { true, true, false, false, false, false, false, true },
-            { false, true, true, true, false, false, false, false },
-            { false, false, false, true, true, true, false, false },
-            { false, false, false, false, false, true, true, true }
-        };
 
-        static readonly bool[,] fullStepSinglePhaseSequence = {
-            { true, false, false, false, true, false, false, false },
-            { false, true, false, false, false, true, false, false },
-            { false, false, true, false, false, false, true, false },
-            { false, false, false, true, false, false, false, true }
-        };
-
-        static readonly bool[,] fullStepDualPhaseSequence = {
-            { true, false, false, true, true, false, false, true },
-            { true, true, false, false, true, true, false, false },
-            { false, true, true, false, false, true, true, false },
-            { false, false, true, true, false, false, true, true }
-        };
-
-        const int halfSteps = 4096;
         const double minDelay = 0.2d;
-        const double minRPM = 1d / (halfSteps * minDelay / 60d);
+        const double minRPM = 0.1; // 1d / (halfSteps * minDelay / 60d);
 
-        GpioPin[] pins;
-        StepperMode mode;
-        long engineStep;
-        bool[,] currentSequence;
+        IStepperDriver driver;
+        int direction;
+        int mode;
 
         /// <summary>
-        /// Initialize a Uln2003 class.
+        /// Initialize a stepper motor given a driver.
         /// </summary>
-        /// <param name="pin1">The Gpio pin number connected to IN1 on the driver board.</param>
-        /// <param name="pin2">The Gpio pin number connected to IN2 on the driver board.</param>
-        /// <param name="pin3">The Gpio pin number connected to IN3 on the driver board.</param>
-        /// <param name="pin4">The Gpio pin number connected to IN4 on the driver board.</param>
-        public Uln2003(int pin1, int pin2, int pin3, int pin4)
+        /// <param name="stepperDriver">The stepp driver connected to the motor.</param>
+        public StepperMotor(IStepperDriver stepperDriver)
         {
-            pins = new GpioPin[]
-            {
-                Pi.Gpio.Pin(pin1, PinKind.Output),
-                Pi.Gpio.Pin(pin2, PinKind.Output),
-                Pi.Gpio.Pin(pin3, PinKind.Output),
-                Pi.Gpio.Pin(pin4, PinKind.Output)
-            };
-            SPR = halfSteps;
+            direction = 1;
+            mode = 0;
+            driver = stepperDriver;
+            driver.SetDirection(direction);
+            driver.SetMode(mode);
+            SPR = driver.GetSPR();
             RPM = 10;
-            mode = StepperMode.HalfStep;
-            currentSequence = halfStepSequence;
-            engineStep = 0;
             stepId = 0;
             nextSteps = new List<StepItem>();
             StepTask = null;
@@ -117,7 +97,7 @@ namespace Codebot.Raspberry.Device
         /// Gets or sets the stepper's mode.
         /// </summary>
         /// <remarks>Setting this property causing the motor to stop any current motion.</remarks>
-        public StepperMode Mode
+        public int Mode
         {
             get => mode;
             set
@@ -126,21 +106,8 @@ namespace Codebot.Raspberry.Device
                 if (mode == value)
                     return;
                 mode = value;
-                switch (mode)
-                {
-                    case StepperMode.HalfStep:
-                        currentSequence = halfStepSequence;
-                        SPR = halfSteps;
-                        break;
-                    case StepperMode.FullStepSinglePhase:
-                        currentSequence = fullStepSinglePhaseSequence;
-                        SPR = halfSteps / 2;
-                        break;
-                    case StepperMode.FullStepDualPhase:
-                        currentSequence = fullStepDualPhaseSequence;
-                        SPR = halfSteps / 2;
-                        break;
-                }
+                driver.SetMode(value);
+                SPR = driver.GetSPR();
             }
         }
 
@@ -166,6 +133,16 @@ namespace Codebot.Raspberry.Device
             const double milliseconds = 60_000d;
             var id = stepId;
             var target = step + count;
+            if (count > 0 && direction < 0)
+            {
+                direction = 1;
+                driver.SetDirection(direction);
+            }
+            else if (count < 0 && direction > 0)
+            {
+                direction = -1;
+                driver.SetDirection(direction);
+            }
             await PreciseTimer.Every(milliseconds / SPR / RPM, TakeStep);
 
             bool TakeStep()
@@ -178,17 +155,10 @@ namespace Codebot.Raspberry.Device
                     return false;
                 }
                 if (count > 0)
-                {
-                    engineStep = engineStep + 1 > 8 ? 1 : engineStep + 1;
                     step++;
-                }
                 else
-                {
-                    engineStep = engineStep - 1 < 1 ? 8 : engineStep - 1;
                     step--;
-                }
-                for (var i = 0; i < pins.Length; i++)
-                    pins[i].Value = currentSequence[i, engineStep - 1];
+                driver.Step();
                 return true;
             }
         }
@@ -256,8 +226,6 @@ namespace Codebot.Raspberry.Device
                 stepId++;
                 StepTask?.Wait();
                 StepTask = null;
-                foreach (var p in pins)
-                    p.Value = false;
                 nextSteps.Clear();
             }
         }
@@ -333,7 +301,7 @@ namespace Codebot.Raspberry.Device
         /// <param name="move">Move to an absolute or relative position.</param>
         /// <param name="rpm">The optional RPM to during the move.</param>
         /// <remarks>Calling this method cancels the current and any pending step tasks.</remarks>
-        public Uln2003 MovePosition(long position, StepperMove move = StepperMove.Absolute, 
+        public StepperMotor MovePosition(long position, StepperMove move = StepperMove.Absolute, 
             double rpm = 0)
         {
             if (rpm > 0)
@@ -352,7 +320,7 @@ namespace Codebot.Raspberry.Device
         /// <param name="move">Move to an absolute or relative rotational angle.</param>
         /// <param name="rpm">The optional RPM to during the move.</param>
         /// <remarks>Calling this method cancels the current and any pending step tasks.</remarks>
-        public Uln2003 MoveAngle(double angle, StepperMove move = StepperMove.Absolute,
+        public StepperMotor MoveAngle(double angle, StepperMove move = StepperMove.Absolute,
             double rpm = 0)
         {
             if (rpm > 0)
@@ -375,7 +343,7 @@ namespace Codebot.Raspberry.Device
         /// <param name="delay">The optional delay in milliseconds between previous step and the command being issued.</param>
         /// <param name="rpm">The optional RPM to use when the command is processed.</param>
         /// <remarks>If no step task exists then a zero step task will be added first.</remarks>
-        public Uln2003 ThenPosition(long position, StepperMove move = StepperMove.Absolute, 
+        public StepperMotor ThenPosition(long position, StepperMove move = StepperMove.Absolute, 
             double delay = 0, double rpm = 0)
         {
             NextStep(position, move, delay, rpm);
@@ -390,7 +358,7 @@ namespace Codebot.Raspberry.Device
         /// <param name="delay">The optional delay in milliseconds between previous step and the command being issued.</param>
         /// <param name="rpm">The optional RPM to use when the command is processed.</param>
         /// <remarks>If no step task exists then a zero step task will be added first.</remarks>
-        public Uln2003 ThenAngle(double angle, StepperMove move = StepperMove.Absolute, 
+        public StepperMotor ThenAngle(double angle, StepperMove move = StepperMove.Absolute, 
             double delay = 0, double rpm = 0)
         {
             var position = (long)(angle / 360d * SPR);
@@ -425,12 +393,11 @@ namespace Codebot.Raspberry.Device
 
         public void Dispose()
         {
-            if (pins is null)
+            if (driver is null)
                 return;
             Stop();
-            foreach (var p in pins)
-                p.Close();
-            pins = null;
+            driver.Dispose();
+            driver = null;
         }
     }
 }

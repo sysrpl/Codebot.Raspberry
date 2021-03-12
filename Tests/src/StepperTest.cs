@@ -6,12 +6,6 @@ namespace Tests
 {
     public static class StepperTest
     {
-
-        static Uln2003 MotorCreate()
-        {
-            return new Uln2003(22, 27, 17, 4);
-        }
-
         static void MoveTest()
         {
             Console.WriteLine("Stepper motor rotate by input test");
@@ -30,6 +24,12 @@ namespace Tests
                         break;
                 }
             }
+        }
+
+        static StepperMotor MotorCreate()
+        {
+            var driver = new UnipoleDriver(22, 27, 17, 4);
+            return new StepperMotor(driver);
         }
 
         static void MotorThenAngleTest()
