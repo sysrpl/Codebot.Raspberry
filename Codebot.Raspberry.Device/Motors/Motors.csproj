@@ -4,7 +4,7 @@
     <ProjectGuid>{53991FC3-82D3-4C06-90D8-80D7E1B20068}</ProjectGuid>
     <OutputType>Library</OutputType>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <RootNamespace>Uln2003</RootNamespace>
+    <RootNamespace>Codebot.Raspberry.Device</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>

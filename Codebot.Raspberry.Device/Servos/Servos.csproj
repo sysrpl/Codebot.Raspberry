@@ -5,8 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{E31D52E7-86D3-4818-A1E9-B28F4645C7A6}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Servo</RootNamespace>
-    <AssemblyName>Servo</AssemblyName>
+    <RootNamespace>Codebot.Raspberry.Device</RootNamespace>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

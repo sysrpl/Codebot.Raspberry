@@ -6,16 +6,16 @@
     /// for a full rotation. In full step modes these are 4 x 512 = 2048 steps for
     /// a full rotation.
     /// </summary>
-    public enum UnipoleMode
+    public static class UnipoleMode
     {
         /// <summary>Half step mode medium torque</summary>
-        HalfStep = 0,
+        public const int HalfStep = 0;
 
         /// <summary>Full step mode (single phase) least torque</summary>
-        FullStepSinglePhase = 1,
+        public const int FullStepSinglePhase = 1;
 
         /// <summary>Full step mode (dual phase) most torque</summary>
-        FullStepDualPhase = 2
+        public const int FullStepDualPhase = 2;
     }
 
     /// <summary>
@@ -33,21 +33,21 @@
         int direction;
         bool[,] modeData;
 
-        static readonly bool[,] halfStepMode = {
+        static readonly bool[,] halfStepData = {
             { true, true, false, false, false, false, false, true },
             { false, true, true, true, false, false, false, false },
             { false, false, false, true, true, true, false, false },
             { false, false, false, false, false, true, true, true }
         };
 
-        static readonly bool[,] singlePhaseMode = {
+        static readonly bool[,] singlePhaseData = {
             { true, false, false, false, true, false, false, false },
             { false, true, false, false, false, true, false, false },
             { false, false, true, false, false, false, true, false },
             { false, false, false, true, false, false, false, true }
         };
 
-        static readonly bool[,] dualPhaseMode = {
+        static readonly bool[,] dualPhaseData = {
             { true, false, false, true, true, false, false, true },
             { true, true, false, false, true, true, false, false },
             { false, true, true, false, false, true, true, false },
@@ -71,7 +71,7 @@
             step = 0;
             mode = 0;
             direction = 1;
-            modeData = halfStepMode;
+            modeData = halfStepData;
         }
 
         public void Step()
@@ -97,34 +97,34 @@
             }
         }
 
-        public void SetDirection(int direction)
+        public void SetDirection(int value)
         {
-            this.direction = direction < 0 ? -1 : 1;
+            direction = value < 0 ? -1 : 1;
         }
 
-        public void SetMode(int mode)
+        public void SetMode(int value)
         {
-            switch (mode)
+            switch (value)
             {
                 case 1:
-                    modeData = singlePhaseMode;
-                    this.mode = mode;
+                    modeData = singlePhaseData;
+                    mode = value;
                     break;
                 case 2:
-                    modeData = dualPhaseMode;
-                    this.mode = mode;
+                    modeData = dualPhaseData;
+                    mode = value;
                     break;
                 default:
-                    modeData = halfStepMode;
-                    this.mode = 0;
+                    modeData = halfStepData;
+                    mode = 0;
                     break;
             }
         }
 
-        public void SetEnable(bool enable)
+        public void SetEnable(bool value)
         {
             for (var i = 0; i < pins.Length; i++)
-                pins[i].Value = enable && modeData[i, step];
+                pins[i].Value = value && modeData[i, step];
         }
 
         public void Dispose()

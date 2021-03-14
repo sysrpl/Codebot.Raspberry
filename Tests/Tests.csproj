@@ -70,13 +70,13 @@
       <Project>{C58D3CA2-D62E-4C81-B732-008E935F07D0}</Project>
       <Name>Dhtxx</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Codebot.Raspberry.Device\Servo\Servo.csproj">
-      <Project>{E31D52E7-86D3-4818-A1E9-B28F4645C7A6}</Project>
-      <Name>Servo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Codebot.Raspberry.Device\Uln2003\Uln2003.csproj">
+    <ProjectReference Include="..\Codebot.Raspberry.Device\Motors\Motors.csproj">
       <Project>{53991FC3-82D3-4C06-90D8-80D7E1B20068}</Project>
-      <Name>Uln2003</Name>
+      <Name>Motors</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Codebot.Raspberry.Device\Servos\Servos.csproj">
+      <Project>{E31D52E7-86D3-4818-A1E9-B28F4645C7A6}</Project>
+      <Name>Servos</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

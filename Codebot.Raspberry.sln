@@ -15,9 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hd44780", "Codebot.Raspberr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ws28xx", "Codebot.Raspberry.Device\Ws28xx\Ws28xx.csproj", "{9ED5DB2F-CE14-4298-82CF-AEA459D85992}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Servo", "Codebot.Raspberry.Device\Servo\Servo.csproj", "{E31D52E7-86D3-4818-A1E9-B28F4645C7A6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Servos", "Codebot.Raspberry.Device\Servos\Servos.csproj", "{E31D52E7-86D3-4818-A1E9-B28F4645C7A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uln2003", "Codebot.Raspberry.Device\Uln2003\Uln2003.csproj", "{53991FC3-82D3-4C06-90D8-80D7E1B20068}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Motors", "Codebot.Raspberry.Device\Motors\Motors.csproj", "{53991FC3-82D3-4C06-90D8-80D7E1B20068}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
