@@ -31,6 +31,8 @@
     <Compile Include="src\StepperMotor.cs" />
     <Compile Include="src\IStepperDriver.cs" />
     <Compile Include="src\UnipoleDriver.cs" />
+    <Compile Include="src\StepperMove.cs" />
+    <Compile Include="src\BipoleDriver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

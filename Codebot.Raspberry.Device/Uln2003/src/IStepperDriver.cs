@@ -11,11 +11,11 @@ namespace Codebot.Raspberry.Device
         // Move the motor one step.
         void Step();
         // Set the direction of the movement. Either forward (1) or backwards (-1);
-        void SetDirection(int direction);
+        void SetDirection(int value);
         // Set the stepper mode, defaults to zero.
-        void SetMode(int mode);
+        void SetMode(int value);
         // Enable or disable the magnetic stepper motor coils.
-        void SetEnable(bool enable);
+        void SetEnable(bool value);
         // Retrieve the number of steps per rotation for the current mode.
         int GetSPR();
     }

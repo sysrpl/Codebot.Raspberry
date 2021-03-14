@@ -6,9 +6,19 @@ namespace Tests
 {
     public static class StepperTest
     {
+        static StepperMotor MotorCreate()
+        {
+            // var driver = new UnipoleDriver(22, 27, 17, 4);
+            var driver = new BipoleDriver(1.8d, 13, 19, 6, 16, 20, 21);
+            return new StepperMotor(driver)
+            {
+                Mode = BipoleMode.QuarterStep
+            };
+        }
+
         static void MoveTest()
         {
-            Console.WriteLine("Stepper motor rotate by input test");
+            Console.WriteLine("Stepper motor rotate by input test half step");
             using (var motor = MotorCreate())
             {
                 motor.RPM = 15;
@@ -26,17 +36,11 @@ namespace Tests
             }
         }
 
-        static StepperMotor MotorCreate()
-        {
-            var driver = new UnipoleDriver(22, 27, 17, 4);
-            return new StepperMotor(driver);
-        }
-
         static void MotorThenAngleTest()
         {
             const double delay = 2000;
 
-            Console.WriteLine("Stepper motor then angle test");
+            Console.WriteLine("Stepper motor then angle test with driver half step");
             using (var motor = MotorCreate())
             {
                 motor.OnStepTaskComplete += TaskComplete;
@@ -46,15 +50,16 @@ namespace Tests
                     Console.WriteLine($"Then angle test itteration {i}");
                     motor
                         .MoveAngle(0)
-                        .ThenAngle(30, StepperMove.Absolute, delay, 2)
-                        .ThenAngle(90, StepperMove.Absolute, delay, 2)
-                        .ThenAngle(-90, StepperMove.Absolute, delay, 10)
-                        .ThenAngle(180, StepperMove.Absolute, delay, 15);
+                        .ThenAngle(30, StepperMove.Absolute, delay, 100)
+                        .ThenAngle(90, StepperMove.Absolute, delay, 100)
+                        .ThenAngle(-90, StepperMove.Absolute, delay, 200)
+                        .ThenAngle(180, StepperMove.Absolute, delay, 150);
                     for (var j = 0; j < 9; j++)
-                        motor.ThenAngle(10, StepperMove.Relative, delay, 12.5);
+                        motor.ThenAngle(10, StepperMove.Relative, delay, 125);
                     motor.Wait(delay);
                 }
                 motor.MoveAngle(0).Wait();
+                motor.OnStepTaskComplete -= TaskComplete;
 
                 void TaskComplete(object sender, EventArgs e)
                 {
@@ -63,54 +68,35 @@ namespace Tests
             }
         }
 
-        static void RepeatTest()
+        static void SpeedTest()
         {
             Console.WriteLine("Stepper motor RPM test");
             using (var motor = MotorCreate())
             {
-                motor.RPM = 15;
+                motor.RPM = 29;
+                double a, b;
                 int i = 0;
-                while (i < 5)
+                int j = 0;
+                while (motor.RPM < 200)
                 {
-                    Console.WriteLine($"rotation {i++}, motor at {motor.Position / -4096d:0.0000}");
-                    motor.MoveAngle(360);
-                    motor.Wait();
-                    Pi.Wait(3000);
+                    Console.WriteLine($"");
+                    Console.WriteLine($"rotation {++i}, motor at RPM {++motor.RPM}");
+                    a = PreciseTimer.Now;
+                    motor.MoveAngle(360 * ++j).Wait();
+                    a = PreciseTimer.Now - a;
+                    b = 60d / motor.RPM * 1000d;
+                    Console.WriteLine($"actual time {a:0.000}ms, expected time {b:0.000}ms, difference {b - a:0.000}");
+                    a = a / motor.SPR;
+                    b = b / motor.SPR;
+                    Console.WriteLine($"actual step time {a:0.000}ms, expected step time {b:0.000}ms");
+                    Pi.Wait(1000);
                 }
-            }
-        }
-
-        static void SpeedTest()
-        {
-            Console.WriteLine("Stepper motor repeatability test");
-            using (var motor = MotorCreate())
-            {
-                var running = true;
-
-                var task = PreciseTimer.Every(1000, () =>
-                {
-                    Console.WriteLine("motor angle = {0:0.0}°", motor.Angle % 360d);
-                    return running;
-                });
-
-                int i = 10;
-                while (running)
-                {
-                    motor.RPM = i++;
-                    Console.WriteLine("{0} RPM", motor.RPM);
-                    motor.Angle += 180;
-                    motor.Wait();
-                    running = i < 21;
-                }
-
-                task.Wait();
             }
         }
 
         public static void Run()
         {
-            MoveTest();
-            MotorThenAngleTest();
+            SpeedTest();
         }
     }
 }

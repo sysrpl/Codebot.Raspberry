@@ -6,18 +6,6 @@ using System.Threading.Tasks;
 namespace Codebot.Raspberry.Device
 {
     /// <summary>
-    /// The stepper move enumeration is used to set the motor angle or position 
-    /// in absolute or relative unts.
-    /// </summary>
-    public enum StepperMove
-    {
-        /// <summary>Use absolute units measured from the zero position.</summary>
-        Absolute,
-        /// <summary>Use relative units measured from the current position.</summary>
-        Relative
-    }
-
-    /// <summary>
     /// 
     /// The stepper motor class controlls stepper motors with the aide of a driver.
     /// 
@@ -57,16 +45,18 @@ namespace Codebot.Raspberry.Device
         IStepperDriver driver;
         int direction;
         int mode;
+        double rpm;
 
         /// <summary>
         /// Initialize a stepper motor given a driver.
         /// </summary>
-        /// <param name="stepperDriver">The stepp driver connected to the motor.</param>
+        /// <param name="stepperDriver">The stepper driver connected to the motor.</param>
         public StepperMotor(IStepperDriver stepperDriver)
         {
             direction = 1;
             mode = 0;
             driver = stepperDriver;
+            driver.SetEnable(true);
             driver.SetDirection(direction);
             driver.SetMode(mode);
             SPR = driver.GetSPR();
@@ -77,14 +67,6 @@ namespace Codebot.Raspberry.Device
         }
 
         /// <summary>
-        /// Gets the number of steps per 360° rotation.
-        /// </summary>
-        /// <remarks>This property is derived from the stepper mode.</remarks>
-        public int SPR { get; private set; }
-
-        double rpm;
-
-        /// <summary>
         /// Gets or sets the rotational speed as calculated by 360° rotations per minute.
         /// </summary>
         public double RPM
@@ -92,6 +74,12 @@ namespace Codebot.Raspberry.Device
             get => rpm;
             set => rpm = value < minRPM ? minRPM : value;
         }
+
+        /// <summary>
+        /// Gets the number of steps per 360° rotation.
+        /// </summary>
+        /// <remarks>This property is derived from the stepper mode.</remarks>
+        public int SPR { get; private set; }
 
         /// <summary>
         /// Gets or sets the stepper's mode.
@@ -154,7 +142,7 @@ namespace Codebot.Raspberry.Device
                     ContinueStep(id);
                     return false;
                 }
-                if (count > 0)
+                if (direction > 0)
                     step++;
                 else
                     step--;
