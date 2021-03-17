@@ -12,7 +12,7 @@ namespace Tests
             var driver = new BipoleDriver(1.8d, 13, 19, 6, 16, 20, 21);
             return new StepperMotor(driver)
             {
-                Mode = BipoleMode.QuarterStep
+                Mode = BipoleMode.SixteenthStep
             };
         }
 
@@ -96,7 +96,9 @@ namespace Tests
 
         public static void Run()
         {
-            SpeedTest();
+            MoveTest();
+            MotorThenAngleTest();
+            // SpeedTest();
         }
     }
 }
