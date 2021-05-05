@@ -148,7 +148,7 @@ namespace Codebot.Raspberry
                 Enabled = true;
             }
             else
-                start = Now;
+                start = Stopwatch.GetTimestamp();
         }
 
         /// <summary>

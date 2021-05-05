@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Codebot.Raspberry.Board;
-using Codebot.Raspberry.Common;
 
 namespace Codebot.Raspberry
 {
@@ -54,7 +53,7 @@ namespace Codebot.Raspberry
         /// The time in millisecond to assume under which limit an input event 
         /// was a bounce rather than a legitimate voltage rise or fall.
         /// </summary>
-        public double BounceDelay { get; set; } = 30;
+        public double BounceDelay { get; set; } = 100;
 
         /// <summary>
         /// The logical (Gpio) number of this pin.
