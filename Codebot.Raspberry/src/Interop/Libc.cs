@@ -64,33 +64,31 @@ namespace Codebot.Raspberry
         [StructLayout(LayoutKind.Explicit)]
         public struct TermiosStruct
         {
-            [MarshalAs(UnmanagedType.U4)]
-            [FieldOffset(0)]
+            [MarshalAs(UnmanagedType.U4), FieldOffset(0)]
             public uint c_iflag;
 
-            [MarshalAs(UnmanagedType.U4)]
-            [FieldOffset(4)]
+            [MarshalAs(UnmanagedType.U4), FieldOffset(4)]
             public uint c_oflag;
 
-            [MarshalAs(UnmanagedType.U4)]
-            [FieldOffset(8)]
+            [MarshalAs(UnmanagedType.U4), FieldOffset(8)]
             public uint c_cflag;
 
-            [MarshalAs(UnmanagedType.U4)]
-            [FieldOffset(12)]
+            [MarshalAs(UnmanagedType.U4), FieldOffset(12)]
             public uint c_lflag;
 
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 36)]
-            [FieldOffset(16)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 33), FieldOffset(16)]
             public byte[] c_cc;
 
-            [MarshalAs(UnmanagedType.U4)]
-            [FieldOffset(52)]
+            [MarshalAs(UnmanagedType.U1), FieldOffset(52)]
             public uint c_ispeed;
 
-            [MarshalAs(UnmanagedType.U4)]
-            [FieldOffset(56)]
+            [MarshalAs(UnmanagedType.U1), FieldOffset(56)]
             public uint c_ospeed;
+
+            public static TermiosStruct Default
+            {
+                get => new TermiosStruct { c_cc = new byte[33] };
+            }
         }
 
         [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "open64")]

@@ -203,7 +203,7 @@ namespace Codebot.Raspberry
         /// <remarks>See https://github.com/pyserial/pyserial/blob/master/serial/serialposix.py</remarks>
         private void UpdatePort(SerialPortOptions options)
         {
-            var term = new TermiosStruct();
+            var term = TermiosStruct.Default;
             tcgetattr(port, ref term);
             term.c_cflag |= CLOCAL | CREAD;
             term.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL | ISIG | IEXTEN);
