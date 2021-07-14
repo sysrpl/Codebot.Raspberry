@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static Codebot.Raspberry.Libc;
@@ -83,6 +84,18 @@ namespace Codebot.Raspberry
         /// The read timeout of in tenths of a second
         /// </summary>
         public byte Timeout { get; set; }
+
+        public override string ToString()
+        {
+            var properties = GetType().GetProperties();
+            var builder = new StringBuilder();
+            foreach (var info in properties)
+            {
+                var value = info.GetValue(this, null) ?? "(null)";
+                builder.AppendLine(info.Name + ": " + value);
+            }
+            return builder.ToString();
+        }
     }
 
     /// <summary>
@@ -135,8 +148,8 @@ namespace Codebot.Raspberry
         const uint ONLCR = 4;
         const uint OPOST = 1;
 
-        const uint VTIME = 6;
-        const uint VMIN = 7;
+        const uint VTIME = 5;
+        const uint VMIN = 6;
 
         public const int Baud300 = 300;
         public const int Baud1200 = 1200;
@@ -203,7 +216,7 @@ namespace Codebot.Raspberry
         /// <remarks>See https://github.com/pyserial/pyserial/blob/master/serial/serialposix.py</remarks>
         private void UpdatePort(SerialPortOptions options)
         {
-            var term = TermiosStruct.Default;
+            var term = new TermiosStruct();
             tcgetattr(port, ref term);
             term.c_cflag |= CLOCAL | CREAD;
             term.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL | ISIG | IEXTEN);
@@ -277,8 +290,8 @@ namespace Codebot.Raspberry
                 term.c_cflag &= ~CSTOPB;
             else
                 term.c_cflag |= CSTOPB;
-            term.c_cc[VMIN] = options.Min;
-            term.c_cc[VTIME] = options.Timeout;
+            term.c_cc5 = options.Timeout;
+            term.c_cc6 = options.Min; 
             tcsetattr(port, TCSANOW, ref term);
         }
 

@@ -64,31 +64,131 @@ namespace Codebot.Raspberry
         [StructLayout(LayoutKind.Explicit)]
         public struct TermiosStruct
         {
-            [MarshalAs(UnmanagedType.U4), FieldOffset(0)]
+            [FieldOffset(0)]
             public uint c_iflag;
 
-            [MarshalAs(UnmanagedType.U4), FieldOffset(4)]
+            [FieldOffset(4)]
             public uint c_oflag;
 
-            [MarshalAs(UnmanagedType.U4), FieldOffset(8)]
+            [FieldOffset(8)]
             public uint c_cflag;
 
-            [MarshalAs(UnmanagedType.U4), FieldOffset(12)]
+            [FieldOffset(12)]
             public uint c_lflag;
 
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 33), FieldOffset(16)]
-            public byte[] c_cc;
+            [FieldOffset(16)]
+            public byte c_line;
 
-            [MarshalAs(UnmanagedType.U1), FieldOffset(52)]
+            [FieldOffset(17)]
+            public byte c_cc0;
+
+            [FieldOffset(18)]
+            public byte c_cc1;
+
+            [FieldOffset(19)]
+            public byte c_cc2;
+
+            [FieldOffset(20)]
+            public byte c_cc3;
+
+            [FieldOffset(21)]
+            public byte c_cc4;
+
+            [FieldOffset(22)]
+            public byte c_cc5;
+
+            [FieldOffset(23)]
+            public byte c_cc6;
+
+            [FieldOffset(24)]
+            public byte c_cc7;
+
+            [FieldOffset(25)]
+            public byte c_cc8;
+
+            [FieldOffset(26)]
+            public byte c_cc9;
+
+            [FieldOffset(27)]
+            public byte c_cc10;
+
+            [FieldOffset(28)]
+            public byte c_cc11;
+
+            [FieldOffset(29)]
+            public byte c_cc12;
+
+            [FieldOffset(30)]
+            public byte c_cc13;
+
+            [FieldOffset(31)]
+            public byte c_cc14;
+
+            [FieldOffset(32)]
+            public byte c_cc15;
+
+            [FieldOffset(33)]
+            public byte c_cc16;
+
+            [FieldOffset(34)]
+            public byte c_cc17;
+
+            [FieldOffset(35)]
+            public byte c_cc18;
+
+            [FieldOffset(36)]
+            public byte c_cc19;
+
+            [FieldOffset(37)]
+            public byte c_cc20;
+
+            [FieldOffset(38)]
+            public byte c_cc21;
+
+            [FieldOffset(39)]
+            public byte c_cc22;
+
+            [FieldOffset(40)]
+            public byte c_cc23;
+
+            [FieldOffset(41)]
+            public byte c_cc24;
+
+            [FieldOffset(42)]
+            public byte c_cc25;
+
+            [FieldOffset(43)]
+            public byte c_cc26;
+
+            [FieldOffset(44)]
+            public byte c_cc27;
+
+            [FieldOffset(45)]
+            public byte c_cc28;
+
+            [FieldOffset(46)]
+            public byte c_cc29;
+
+            [FieldOffset(47)]
+            public byte c_cc30;
+
+            [FieldOffset(48)]
+            public byte c_cc31;
+
+            [FieldOffset(49)]
+            public byte c_cc32;
+
+            [FieldOffset(50)]
+            public byte c_cc33;
+
+            [FieldOffset(51)]
+            public byte c_cc34;
+
+            [FieldOffset(52)]
             public uint c_ispeed;
 
-            [MarshalAs(UnmanagedType.U1), FieldOffset(56)]
+            [FieldOffset(56)]
             public uint c_ospeed;
-
-            public static TermiosStruct Default
-            {
-                get => new TermiosStruct { c_cc = new byte[33] };
-            }
         }
 
         [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "open64")]
@@ -106,8 +206,7 @@ namespace Codebot.Raspberry
         [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "ioctl")]
         public static extern int ioctl(int fd, uint request, int value);
 
-        [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "tcgetattr")]
-        public static extern int tcgetattr(int fd, ref TermiosStruct term);
+        [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "tcgetattr")] public static extern int tcgetattr(int fd, ref TermiosStruct term);
 
         [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "tcsetattr")]
         public static extern int tcsetattr(int fd, int actions, ref TermiosStruct term);

@@ -58,6 +58,7 @@
     <Compile Include="src\StepperTest.cs" />
     <Compile Include="src\TimingTest.cs" />
     <Compile Include="src\PulseTest.cs" />
+    <Compile Include="src\SerialTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Codebot.Raspberry.Board\Codebot.Raspberry.Board.csproj">
