@@ -8,13 +8,15 @@ namespace Codebot.Raspberry
     {
         const string libc = "libc.so.6";
 
-        public const int O_RDWR = 0x002;
+        public const int O_RDONLY = 0x00;
+        public const int O_WRONLY = 0x01;
+        public const int O_RDWR = 0x02;
         public const int O_NOCTTY = 0x100;
         public const uint TCFLSH = 0x540b;
-        public const int TCIFLUSH = 0;
-        public const int TCIOFLUSH = 2;
-        public const int TCOFLUSH = 1;
-        public const int TCSANOW = 0;
+        public const int TCIFLUSH = 0x00;
+        public const int TCOFLUSH = 0x01;
+        public const int TCIOFLUSH = 0x02;
+        public const int TCSANOW = 0x00;
 
         [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "fopen64")]
         public static extern IntPtr fopen(string filename, string mode);
@@ -206,7 +208,8 @@ namespace Codebot.Raspberry
         [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "ioctl")]
         public static extern int ioctl(int fd, uint request, int value);
 
-        [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "tcgetattr")] public static extern int tcgetattr(int fd, ref TermiosStruct term);
+        [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "tcgetattr")]
+        public static extern int tcgetattr(int fd, ref TermiosStruct term);
 
         [DllImport(libc, CallingConvention = CallingConvention.Cdecl, EntryPoint = "tcsetattr")]
         public static extern int tcsetattr(int fd, int actions, ref TermiosStruct term);

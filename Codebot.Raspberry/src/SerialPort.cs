@@ -1,8 +1,6 @@
 using System;
 using System.IO;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using static Codebot.Raspberry.Libc;
 
 namespace Codebot.Raspberry
@@ -22,9 +20,9 @@ namespace Codebot.Raspberry
     /// </summary>
     public enum Parity
     {
-        Even,
+        None,
         Odd,
-        None
+        Even
     }
 
     /// <summary>
@@ -35,6 +33,18 @@ namespace Codebot.Raspberry
         One,
         Two
     }
+
+    /// <summary>
+    /// The flow control or handshaking method to use when opening a serial port
+    /// </summary>
+    [Flags]
+    public enum FlowControl
+    {
+        None = 0,
+        XOn = 1,
+        XOff = 2,
+        RequestToSend = 4
+    };
 
     /// <summary>
     /// Options to be used when opening a serial port
@@ -51,8 +61,9 @@ namespace Codebot.Raspberry
             DataBits = SerialPort.Bits8,
             Parity = Parity.None,
             StopBits = StopBits.One,
-            Min = 1,
-            Timeout = 0
+            FlowControl = 0,
+            Min = 0,
+            Timeout = 1
         };
 
         /// <summary>
@@ -76,8 +87,14 @@ namespace Codebot.Raspberry
         public StopBits StopBits { get; set; }
 
         /// <summary>
+        /// The flow control or handshake method
+        /// </summary>
+        public FlowControl FlowControl { get; set; }
+
+        /// <summary>
         /// The minimum number of characters for a completed read
         /// </summary>
+        /// <remarks>https://en.wikipedia.org/wiki/POSIX_terminal_interface#Non-canonical_mode_processing</remarks>
         public byte Min { get; set; }
 
         /// <summary>
@@ -147,6 +164,9 @@ namespace Codebot.Raspberry
         const uint OCRNL = 8;
         const uint ONLCR = 4;
         const uint OPOST = 1;
+        const uint IXON = 1024;
+        const uint IXOFF = 4096;
+        const uint CRTSCTS = 2147483648;
 
         const uint VTIME = 5;
         const uint VMIN = 6;
@@ -168,7 +188,10 @@ namespace Codebot.Raspberry
         public const int Bits8 = 8;
 
         private readonly string device;
-        private readonly byte[] buffer = new byte[1024];
+
+        private readonly byte[] emptyBuffer = new byte[0];
+        private readonly byte[] readBuffer = new byte[1024];
+        private byte[] writeBuffer;
         private int port;
 
         /// <summary>
@@ -290,6 +313,14 @@ namespace Codebot.Raspberry
                 term.c_cflag &= ~CSTOPB;
             else
                 term.c_cflag |= CSTOPB;
+            term.c_iflag &= ~(IXON | IXOFF);
+            term.c_cflag &= ~CRTSCTS;
+            if (options.FlowControl.HasFlag(FlowControl.XOn))
+                term.c_iflag |= IXON;
+            if (options.FlowControl.HasFlag(FlowControl.XOff))
+                term.c_iflag |= IXOFF;
+            if (options.FlowControl.HasFlag(FlowControl.RequestToSend))
+                term.c_cflag |= CRTSCTS;
             term.c_cc5 = options.Timeout;
             term.c_cc6 = options.Min; 
             tcsetattr(port, TCSANOW, ref term);
@@ -308,23 +339,29 @@ namespace Codebot.Raspberry
             return true;
         }
 
+        private void CheckOpened()
+        {
+            const string PortNotOpened = "Serial port is not opened";
+            if (!IsOpened)
+                throw new IOException(PortNotOpened);
+        }
+
         /// <summary>
         /// Flush reads or writes or both
         /// </summary>
         public void Flush(FlushDirection direction)
         {
-            if (IsClosed)
-                return;
+            CheckOpened();
             switch (direction)
             {
                 case FlushDirection.Input:
-                    ioctl(port, TCFLSH, TCIFLUSH);
+                    ioctl(port, TCFLSH, 0);
                     break;
                 case FlushDirection.Output:
-                    ioctl(port, TCFLSH, TCOFLUSH);
+                    ioctl(port, TCFLSH, 1);
                     break;
                 case FlushDirection.Both:
-                    ioctl(port, TCFLSH, TCIOFLUSH);
+                    ioctl(port, TCFLSH, 2);
                     break;
             }
         }
@@ -334,7 +371,8 @@ namespace Codebot.Raspberry
         /// </summary>
         public void Write(string text)
         {
-            if (IsOpened)
+            CheckOpened();
+            if (text.Length > 0)
                 WriteBytes(Encoding.UTF8.GetBytes(text));
         }
 
@@ -343,63 +381,36 @@ namespace Codebot.Raspberry
         /// </summary>
         public void WriteBytes(byte[] data)
         {
-            if (IsOpened)
-                write(port, data, data.Length);
+            CheckOpened();
+            if (data.Length > 0)
+            {
+                writeBuffer = data;
+                write(port, writeBuffer, writeBuffer.Length);
+            }
         }
 
         /// <summary>
-        /// The SerialRead callback returns the text read from the Read method
+        /// Read text
         /// </summary>
-        public delegate void SerialRead(SerialPort port, string text);
-
-        /// <summary>
-        /// Read text from the port using a callback when text is available
-        /// </summary>
-        public void Read(SerialRead readComplete)
+        public string Read()
         {
-            if (IsClosed)
-                return;
-            Task.Run(() => read(port, buffer, buffer.Length))
-                .ContinueWith(task =>
-                {
-                    if (task.IsCompleted && !(task.IsCanceled || task.IsFaulted))
-                    {
-                        var c = task.Result;
-                        if (c < 0)
-                            c = 0;
-                        string s = string.Empty;
-                        if (c > 0)
-                            s = Encoding.UTF8.GetString(buffer, 0, c);
-                        if (IsOpened)
-                            readComplete(this, s);
-                    }
-                });
+            CheckOpened();
+            var c = read(port, readBuffer, readBuffer.Length);
+            return c > 0 ? Encoding.UTF8.GetString(readBuffer, 0, c) : string.Empty;
         }
 
         /// <summary>
-        /// The SerialReadBytes callback returns the bytes read from the ReadBytes method
+        /// Read binary data
         /// </summary>
-        public delegate void SerialReadBytes(SerialPort port, byte[] data, int length);
-
-        /// <summary>
-        /// Read binary data from the port using a callback when data is available
-        /// </summary>
-        public void ReadBytes(SerialReadBytes readComplete)
+        public byte[] ReadBytes()
         {
-            if (IsClosed)
-                return;
-            Task.Run(() => read(port, buffer, buffer.Length))
-                .ContinueWith(task =>
-                {
-                    if (task.IsCompleted && !(task.IsCanceled || task.IsFaulted))
-                    {
-                        var c = task.Result;
-                        if (c < 0)
-                            c = 0;
-                        if (IsOpened)
-                            readComplete(this, buffer, c);
-                    }
-                });
+            CheckOpened();
+            var c = read(port, readBuffer, readBuffer.Length);
+            if (c < 1)
+                return emptyBuffer;
+            var a = new byte[c];
+            Array.Copy(readBuffer, a, c);
+            return a;
         }
 
         /// <summary>
