@@ -29,4 +29,3 @@ You may also want to check ``/boot/cmdline.txt`` and remove any references to se
 ### See also
 
 [Projects and Tools](/README.md)
-{"mode":"full","isActive":false}
