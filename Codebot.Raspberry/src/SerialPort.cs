@@ -61,7 +61,7 @@ namespace Codebot.Raspberry
             DataBits = SerialPort.Bits8,
             Parity = Parity.None,
             StopBits = StopBits.One,
-            FlowControl = 0,
+            FlowControl = FlowControl.None,
             Min = 0,
             Timeout = 1
         };

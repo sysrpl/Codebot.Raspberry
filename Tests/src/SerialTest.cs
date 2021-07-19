@@ -95,7 +95,15 @@ namespace Tests
             }
         }
 
-
+        static SerialPortOptions DefaultOptions()
+        {
+            var options = SerialPortOptions.Default;
+            options.Baud = SerialPort.Baud9600;
+            options.Parity = Parity.None;
+            options.Min = 0;
+            options.Timeout = 1;
+            return options;
+        }
 
         static void TestServer(string device)
         {
@@ -110,11 +118,11 @@ namespace Tests
                 var task = Task.Run(() => {
                     while (running)
                     {
-                        var text = port.Read();
-                        if (text.Length > 0)
+                        var receive = port.Read();
+                        if (receive.Length > 0)
                         {
-                            Write(text);
-                            port.Write($"> received {text.Length} characters / tick {tick++}\n");
+                            Write(receive);
+                            port.Write($"> received {receive.Length} characters / tick {tick++}\n");
                         }
                     }
                 });
@@ -128,19 +136,9 @@ namespace Tests
                 WriteLine($"Failed to open device");
         }
 
-        static SerialPortOptions DefaultOptions()
+        static void TestClient(string device)
         {
-            var options = SerialPortOptions.Default;
-            options.Baud = SerialPort.Baud115200;
-            options.Parity = Parity.Even;
-            options.Min = 0;
-            options.Timeout = 1;
-            return options;
-        }
-
-        static void TestSerialPort(string device)
-        {
-            WriteLine($"Testing serial port on device {device}\n");
+            WriteLine($"Testing serial port client on device {device}\n");
             var port = new SerialPort(device);
             var options = DefaultOptions();
             if (port.Open(options))
@@ -157,9 +155,9 @@ namespace Tests
                 });
                 while (true)
                 {
-                    WriteLine($"Transmit a text message or type quit to exit");
+                    WriteLine($"Transmit a text message or enter a blank line to quit:");
                     var transmit = ReadLine();
-                    if (transmit == "q" || transmit == "quit")
+                    if (transmit.Length == 0)
                         break;
                     port.Write(transmit + "\n");
                 }
@@ -171,10 +169,11 @@ namespace Tests
                 WriteLine($"Failed to open device");
         }
 
-
         static void TestSerialPort()
         {
             string device = File.Exists("/dev/ttyAMA0") ? "/dev/serial0" : "/dev/ttyUSB0";
+            if (!File.Exists(device))
+                device = "/dev/ttyS0";
             WriteLine($"Run test serial (p)ort settings, run as (s)erver, or run as (c)lient?");
             var test = ReadLine().Trim().ToLower();
             if (string.IsNullOrWhiteSpace(test))
@@ -188,7 +187,7 @@ namespace Tests
                     TestServer(device);
                     break;
                 case 'c':
-                    TestSerialPort(device);
+                    TestClient(device);
                     break;
             }
         }
