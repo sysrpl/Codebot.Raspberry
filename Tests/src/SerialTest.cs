@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Codebot.Raspberry;
 using static System.Console;
+using System.Threading;
 
 namespace Tests
 {
@@ -122,7 +123,7 @@ namespace Tests
                         if (receive.Length > 0)
                         {
                             Write(receive);
-                            port.Write($"> received {receive.Length} characters / tick {tick++}\n");
+                            port.Write($"{receive.Length} characters / tick {tick++}\n");
                         }
                     }
                 });
@@ -145,12 +146,18 @@ namespace Tests
             {
                 WriteLine($"Port was opened with these options\n{options}");
                 var running = true;
+                var ending = true;
                 var task = Task.Run(() => {
                     while (running)
                     {
                         var receive = port.Read();
                         if (receive.Length > 0)
+                        {
+                            if (ending)
+                                Write("recveived> ");
+                            ending = receive.Contains("\n");
                             Write(receive);
+                        }
                     }
                 });
                 while (true)
@@ -160,6 +167,7 @@ namespace Tests
                     if (transmit.Length == 0)
                         break;
                     port.Write(transmit + "\n");
+                    Thread.Sleep(200);
                 }
                 running = false;
                 task.Wait();
@@ -171,8 +179,13 @@ namespace Tests
 
         static void TestSerialPort()
         {
-            string device = File.Exists("/dev/ttyAMA0") ? "/dev/serial0" : "/dev/ttyUSB0";
-            if (!File.Exists(device))
+
+            string device;
+            if (File.Exists("/dev/ttyUSB0"))
+                device = "/dev/ttyUSB0";
+            else if (File.Exists("/dev/serial0"))
+                device = "/dev/serial0";
+            else
                 device = "/dev/ttyS0";
             WriteLine($"Run test serial (p)ort settings, run as (s)erver, or run as (c)lient?");
             var test = ReadLine().Trim().ToLower();
