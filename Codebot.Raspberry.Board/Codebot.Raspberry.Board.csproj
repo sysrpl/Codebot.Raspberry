@@ -94,6 +94,9 @@
     <Compile Include="src\Interop\Unix\Libc\Interop.epoll_wait.cs" />
     <Compile Include="src\Interop\Unix\libgpiod\Interop.libgpiod.cs" />
     <Compile Include="src\Interop\Unix\libbcm_host\Interop.libbcmhost.cs" />
+    <Compile Include="src\I2c\I2cDevice.cs" />
+    <Compile Include="src\I2c\I2cConnectionSettings.cs" />
+    <Compile Include="src\I2c\Devices\UnixI2cDevice.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

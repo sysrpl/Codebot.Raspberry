@@ -13,11 +13,11 @@ namespace Codebot.Raspberry.Board.Spi
     /// </summary>
     public class UnixSpiDevice : SpiDevice
     {
+        private static readonly object _initializationLock = new object();
         private const string DefaultRaspberryPath = "/dev/spidev";
-        private const uint SPI_IOC_MESSAGE_1 = 0x40206b00;
-        private static readonly object s_initializationLock = new object();
         private readonly SpiConnectionSettings _settings;
         private int _deviceFileDescriptor = -1;
+        private const uint SPI_IOC_MESSAGE_1 = 0x40206b00;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnixSpiDevice"/> class that will use the specified settings to communicate with the SPI device.
@@ -49,7 +49,7 @@ namespace Codebot.Raspberry.Board.Spi
                 return;
             }
 
-            lock (s_initializationLock)
+            lock (_initializationLock)
             {
                 string deviceFileName = $"{RaspberryPath}{_settings.BusId}.{_settings.ChipSelectLine}";
                 if (_deviceFileDescriptor >= 0)

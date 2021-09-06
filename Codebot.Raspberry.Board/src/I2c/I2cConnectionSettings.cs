@@ -21,13 +21,13 @@ namespace Codebot.Raspberry.Board.I2c
         public I2cConnectionSettings(int busId, int deviceAddress)
         {
             BusId = busId;
-            RaspberryAddress = deviceAddress;
+            DeviceAddress = deviceAddress;
         }
 
         internal I2cConnectionSettings(I2cConnectionSettings other)
         {
             BusId = other.BusId;
-            RaspberryAddress = other.RaspberryAddress;
+            DeviceAddress = other.DeviceAddress;
         }
 
         /// <summary>
@@ -38,6 +38,6 @@ namespace Codebot.Raspberry.Board.I2c
         /// <summary>
         /// The bus address of the I2C device.
         /// </summary>
-        public int RaspberryAddress { get; }
+        public int DeviceAddress { get; }
     }
 }

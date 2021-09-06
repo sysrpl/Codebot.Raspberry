@@ -9,8 +9,8 @@ namespace Codebot.Raspberry.Device
     /// <summary>
     /// The WS28XX device class represents a strip of WS28XX NeoPixels
     /// </summary>
-    /// <remarks>This device communicates with WS28XX NeoPixels using SPI over GPIO 10</remarks>
-    [Device("WS28XX", "NeoPixel Strip", Category = "Lighting", Remarks = "Must use GPIO 10")]
+    /// <remarks>This device communicates with WS28XX NeoPixels using SPI MOSI</remarks>
+    [Device("WS28XX", "NeoPixel Strip", Category = "Lighting", Remarks = "Must use SPI MOSI")]
     public sealed class NeoPixelStrip : HardwareDevice, IDisposable, IEnumerable<NeoPixel>
     {
         /// <summary>
