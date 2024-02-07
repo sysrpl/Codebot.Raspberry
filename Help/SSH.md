@@ -7,12 +7,14 @@ The instructions below can guide you in setting up `ssh` using secure key files 
 <details>
   <summary>How to configure your Pi to support ssh with key files</summary>
   
-On your Pi should enable ssh and generate a secure key on using these commands:
+On your Pi should enable ssh, sshfs, and generate a secure key on using these commands:
 
 ```bash
 # enable and start the ssh server
 sudo systemctl enable ssh
 sudo systemctl start ssh
+# install the tool for sshfs, the file system through ssh
+sudo apt install sshfs
 # generate ssh keys
 mkdir /home/pi/.ssh
 cd /home/pi/.ssh
@@ -36,7 +38,10 @@ sshfs pi@1.2.3.4:/home/pi ~/media/raspberry
 # setup ssh with the correct key on your Linux machine
 mkdir ~/.ssh
 cd ~/.ssh
-cp ~/media/raspberry/.ssh/id_rsa pi.pem
+cp ~/media/raspberry/.ssh/id_rsa id_rsa_pi
+openssl rsa -in id_rsa_pi -outform pem  > pi.pem
+# delete the temporary file and set permissions
+rm id_rsa_pi
 touch .ssh/config
 chmod 600 * 
 ```
@@ -73,7 +78,7 @@ sudo reboot
 If you reboot your Linux computer you can reconnect to the Pi file system using:
 
 ```bash
-sshfs pi:/home/pi ~/media/raspberry
+ssh pi:/home/pi ~/media/raspberry
 ```
 </details>
 

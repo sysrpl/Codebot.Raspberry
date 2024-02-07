@@ -27,7 +27,7 @@ namespace Codebot.Raspberry.Board.Drivers
             StatusUpdateSleepTime = TimeSpan.Zero; // This driver does not need this "magic sleep" as we're directly accessing the hardware registers
         }
 
-        public override PinValue Read(int pinNumber)
+        protected internal override PinValue Read(int pinNumber)
         {
             return _gpioDriver.Read(pinNumber);
         }

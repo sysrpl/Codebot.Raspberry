@@ -1,4 +1,4 @@
-# Raspberry Pi Projects and Tools
+# Raspberry Pi Dotnet Core Projects and Tools
 
 This repository contains projects and tools for working with Raspberry Pi GPIO pins and a collection of hardware peripherals.
 
@@ -27,5 +27,3 @@ The Codebot.Raspberry.Device folder contains multiple projects which abstract ha
 A sister repository to this is Codebot.Web. The Codebot.Web repository can be summarized as a simplified ASP.NET core library purpose designed to making websites and service as simple to create and manage as possible.
 
 The Codebot.Web repository pairs well the this one when used to create web interfaces and actions to control or format information read from hardware devices connected to your Pi as user friendly web pages accessible to anyone through their web browser.
-
-Test

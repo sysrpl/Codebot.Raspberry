@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Buffers.Binary;
 
 namespace Codebot.Raspberry.Board.I2c
 {
@@ -47,20 +46,6 @@ namespace Codebot.Raspberry.Board.I2c
         /// The data should not include the I2C device address.
         /// </param>
         public abstract void Write(ReadOnlySpan<byte> buffer);
-
-        public ushort ReadU16()
-        {
-            Span<byte> data = new Span<byte>(new byte[] { 0, 0 });
-            Read(data);
-            return BinaryPrimitives.ReadUInt16BigEndian(data);
-        }
-
-        public uint ReadU32()
-        {
-            Span<byte> data = new Span<byte>(new byte[] { 0, 0, 0, 0 });
-            Read(data);
-            return BinaryPrimitives.ReadUInt32BigEndian(data);
-        }
 
         /// <summary>
         /// Performs an atomic operation to write data to and then read data from the I2C bus on which the device is connected,

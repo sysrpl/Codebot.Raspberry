@@ -6,62 +6,34 @@ using Codebot.Raspberry.Board;
 
 namespace Codebot.Raspberry
 {
-    /// <summary>
-    /// The Pi class provide users access to Gpio pins and Wait methods
-    /// </summary>
     public static class Pi
     {
-        static PreciseTimer now;
-
-        public static double Now => now.ElapsedMilliseconds;
-
-        static Pi()
-        {
-            now = new PreciseTimer();
-            PreciseTimer.Wait(1);
-        }
-
         /// <summary>
-        /// Returns a number of nanoseconds as a fraction of milliseconds
-        /// </summary>
-        public static double Nanoseconds(double nanoseconds)
-        {
-            return nanoseconds / 1_000_000d;
-        }
-
-        /// <summary>
-        /// Returns a number of microseconds as a fraction of milliseconds
-        /// </summary>
-        public static double Microseconds(double microseconds)
-        {
-            return microseconds / 1_000d;
-        }
-
-        /// <summary>
-        /// Wait a specified number of nanoseconds
-        /// <remarks>A nanosecond is a billionth of a second</remarks>
-        /// </summary>
-        public static void WaitNanoseconds(double nanoseconds)
-        {
-            Wait(Nanoseconds(nanoseconds));
-        }
-
-        /// <summary>
-        /// Wait a specified number of milliseconds
-        /// <remarks>A microsecond is a millionth of a second</remarks>
+        /// Wait a specified number of microseconds
+        /// A microsecond (symbol μs) is one millionth of a second
         /// </summary>
         public static void WaitMicroseconds(double microseconds)
         {
-            Wait(Microseconds(microseconds));
+            Wait(microseconds / 1000);
         }
 
         /// <summary>
         /// Wait a specified number of milliseconds
-        /// <remarks>A millisecond is a thousandth of a second</remarks>
+        /// A millisecond is one thousandth of a second
         /// </summary>
         public static void Wait(double milliseconds)
         {
-            PreciseTimer.Wait(milliseconds);
+            var timer = new Timer();
+            double seconds = milliseconds / 1000.0;
+            while (seconds - timer.ElapsedSeconds > 1.0)
+                System.Threading.Thread.Sleep(100);
+            while (seconds - timer.ElapsedSeconds > 0.1)
+                System.Threading.Thread.Sleep(10);
+            while (seconds - timer.ElapsedSeconds > 0.01)
+                System.Threading.Thread.Sleep(1);
+            while (seconds - timer.ElapsedSeconds > 0.0)
+            {
+            }
         }
 
         /// <summary>
@@ -86,9 +58,6 @@ namespace Codebot.Raspberry
             }
         }
 
-        /// <summary>
-        /// The Gpio class provide users access to the Raspberry Pi Gpio pins
-        /// </summary>
         public static class Gpio
         {
             internal static readonly GpioController controller;
@@ -102,29 +71,6 @@ namespace Codebot.Raspberry
                     pins[i] = null;
             }
 
-            static internal void Close(int number)
-            {
-                controller.ClosePin(number);
-                pins[number] = null;
-            }
-
-            /// <summary>
-            /// Close and dispose of all pins.
-            /// </summary>
-            public static void Close()
-            {
-                foreach (var p in pins)
-                {
-                    if (p is null)
-                        continue;
-                    if (p.Valid)
-                        p.Close();
-                }
-            }
-
-            /// <summary>
-            /// Draw a diagram of the pin layout
-            /// </summary>
             public static void Diagram()
             {
                 Console.WriteLine("+--------------------------------------+");
@@ -151,9 +97,6 @@ namespace Codebot.Raspberry
                 Console.WriteLine("+--------------------------------------+");
             }
 
-            /// <summary>
-            /// The Gpio pins.
-            /// </summary>
             public static IEnumerable<GpioPin> Pins
             {
                 get
@@ -168,9 +111,6 @@ namespace Codebot.Raspberry
                 }
             }
 
-            /// <summary>
-            /// The list of GpioPin names.
-            /// </summary>
             public static IEnumerable<string> Names
             {
                 get
@@ -185,10 +125,6 @@ namespace Codebot.Raspberry
                 }
             }
 
-            /// <summary>
-            /// Get and open a GpioPin using its logical (Gpio) number.
-            /// </summary>
-            /// <remarks>You can use Pin.Close() to remove a pin.</remarks>
             public static GpioPin Pin(int number)
             {
 
@@ -207,20 +143,6 @@ namespace Codebot.Raspberry
                 return pin;
             }
 
-            /// <summary>
-            /// Get a GpioPin using its logical (Gpio) number and set it to
-            /// a specified pin kind.
-            /// </summary>
-            public static GpioPin Pin(int number, PinKind kind)
-            {
-                var pin = Pin(number);
-                pin.Kind = kind;
-                return pin;
-            }
-
-            /// <summary>
-            /// Gets the name of a pin based on its logical (Gpio) number
-            /// </summary>
             public static string Name(int number)
             {
                 switch (number)

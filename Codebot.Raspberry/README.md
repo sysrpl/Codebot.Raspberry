@@ -11,18 +11,25 @@ Before using this class and the UART pins you must enable serial communication o
 <details>
   <summary>Manually enabling serial port hardware</summary>
 
-There are two UARTs available on the Raspberry Pi - PL011 and mini UART. The PL011 is a capable, broadly 16550-compatible UART, while the mini UART has a reduced feature set. Only one of these two UARTs is available to the user at anytime.
+There are two types of UART available on the Raspberry Pi - PL011 and mini UART. The PL011 is a capable, broadly 16550-compatible UART, while the mini UART has a reduced feature set. You can enabled only one of these UARTs at a any one time. 
 
-To force the PL011 UART as your primary edit ``/boot/config.txt``  and add the following lines.
+ To enabled the PL011 UART edit ``/boot/config.txt``  and add the following line at the end.
 
 ````terminal
-enable_uart=1
 dtoverlay=pi3-miniuart-bt
 ````
 
-After saving and rebooting the device file ``/dev/serial0`` will be linked to ``/dev/ttyAMA0`` and be available on pins 14 and 15. Enabling ``pi3-miniuart-bt`` will have the side effect of cause your Pi's Bluetooth module to use the mini UART, a less capable device.
+After saving and rebooting the device file ``/dev/serial0`` will be linked to ``/dev/ttyAMA0`` which is the PL011 serial port. Enabling ``pi3-miniuart-bt`` will have the side effect of turning off your Pi's Bluetooth module. This is because the Bluetooth module conflicts with the PL011 hardware and its driver.
 
-You may also want to check ``/boot/cmdline.txt`` and remove any references to serial port consoles or the serial port login shell.
+If you want to enable both Bluetooth and UART serial communication, you may instead enable the mini UART driver. The do this comment out ``dtoverlay=pi3-miniuart-bt`` in your ``/boot/config.txt`` and add these lines in its place.
+
+````terminal
+enable_uart=1
+core_freq=250
+core_freq_min=250
+````
+
+After saving and rebooting the device file ``/dev/serial0`` will be linked to ``/dev/ttyS0`` which is the mini UART port.
 
 </details>
 

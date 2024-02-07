@@ -30,27 +30,6 @@ core_freq_min=250
 ```
 
 </details>
-<details>
-  <summary>Increasing your SPI buffer size</summary>
-
-If you need a larger SPI size buffer, you can add this (or your preferred buffer size) to your /boot/cmdline.txt:
-
-```console
-spidev.bufsiz=65536
-```
-
-Alternately you can create a file /etc/modprobe.d/spidev.conf with the content:
-
-```console
-options spidev bufsiz=65536
-```
-
-After rebooting you can check the SPI buffer size with: 
-
-```console
-cat /sys/module/spidev/parameters/bufsiz
-```
-</details>
 
 ## Other Information
 

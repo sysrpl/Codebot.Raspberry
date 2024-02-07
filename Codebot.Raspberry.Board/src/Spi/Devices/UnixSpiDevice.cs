@@ -13,11 +13,11 @@ namespace Codebot.Raspberry.Board.Spi
     /// </summary>
     public class UnixSpiDevice : SpiDevice
     {
-        private static readonly object _initializationLock = new object();
         private const string DefaultRaspberryPath = "/dev/spidev";
+        private const uint SPI_IOC_MESSAGE_1 = 0x40206b00;
+        private static readonly object s_initializationLock = new object();
         private readonly SpiConnectionSettings _settings;
         private int _deviceFileDescriptor = -1;
-        private const uint SPI_IOC_MESSAGE_1 = 0x40206b00;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnixSpiDevice"/> class that will use the specified settings to communicate with the SPI device.
@@ -49,7 +49,7 @@ namespace Codebot.Raspberry.Board.Spi
                 return;
             }
 
-            lock (_initializationLock)
+            lock (s_initializationLock)
             {
                 string deviceFileName = $"{RaspberryPath}{_settings.BusId}.{_settings.ChipSelectLine}";
                 if (_deviceFileDescriptor >= 0)
@@ -111,17 +111,14 @@ namespace Codebot.Raspberry.Board.Spi
 
         private UnixSpiMode SpiModeToUnixSpiMode(SpiMode mode)
         {
-            switch (mode)
+            return mode switch
             {
-                case SpiMode.Mode0:
-                    return UnixSpiMode.SPI_MODE_0;
-                case SpiMode.Mode1:
-                    return UnixSpiMode.SPI_MODE_1;
-                case SpiMode.Mode2:
-                    return UnixSpiMode.SPI_MODE_2;
-                default:
-                    throw new ArgumentException("Invalid SPI mode.", nameof(mode));
-            }
+                SpiMode.Mode0 => UnixSpiMode.SPI_MODE_0,
+                SpiMode.Mode1 => UnixSpiMode.SPI_MODE_1,
+                SpiMode.Mode2 => UnixSpiMode.SPI_MODE_2,
+                SpiMode.Mode3 => UnixSpiMode.SPI_MODE_3,
+                _ => throw new ArgumentException("Invalid SPI mode.", nameof(mode))
+            };
         }
 
         /// <summary>

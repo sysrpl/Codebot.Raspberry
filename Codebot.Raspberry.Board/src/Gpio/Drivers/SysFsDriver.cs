@@ -222,7 +222,7 @@ namespace Codebot.Raspberry.Board.Drivers
         /// </summary>
         /// <param name="pinNumber">The pin number in the driver's logical numbering scheme.</param>
         /// <returns>The value of the pin.</returns>
-        public override PinValue Read(int pinNumber)
+        protected internal override PinValue Read(int pinNumber)
         {
             PinValue result = default;
             string valuePath = $"{GpioBasePath}/gpio{pinNumber + s_pinOffset}/value";
@@ -248,12 +248,12 @@ namespace Codebot.Raspberry.Board.Drivers
 
         private PinValue ConvertSysFsValueToPinValue(string value)
         {
-            switch (value.Trim())
+            return value.Trim() switch
             {
-                case "0":  return PinValue.Low;
-                case "1": return PinValue.High;
-                default: throw new ArgumentException($"Invalid GPIO pin value {value}.");
-            }
+                "0" => PinValue.Low,
+                "1" => PinValue.High,
+                _ => throw new ArgumentException($"Invalid GPIO pin value {value}.")
+            };
         }
 
         /// <summary>
@@ -261,7 +261,7 @@ namespace Codebot.Raspberry.Board.Drivers
         /// </summary>
         /// <param name="pinNumber">The pin number in the driver's logical numbering scheme.</param>
         /// <param name="value">The value to be written to the pin.</param>
-        public override void Write(int pinNumber, PinValue value)
+        protected internal override void Write(int pinNumber, PinValue value)
         {
             string valuePath = $"{GpioBasePath}/gpio{pinNumber + s_pinOffset}/value";
             if (File.Exists(valuePath))
@@ -366,14 +366,14 @@ namespace Codebot.Raspberry.Board.Drivers
 
         private PinEventTypes StringValueToPinEventType(string value)
         {
-            switch (value.Trim())
+            return value.Trim() switch
             {
-                case "none": return PinEventTypes.None;
-                case "both": return PinEventTypes.Falling | PinEventTypes.Rising;
-                case "rising": return PinEventTypes.Rising;
-                case "falling":  return PinEventTypes.Falling;
-                default:  throw new ArgumentException("Invalid pin event value.", value);
-            }
+                "none" => PinEventTypes.None,
+                "both" => PinEventTypes.Falling | PinEventTypes.Rising,
+                "rising" => PinEventTypes.Rising,
+                "falling" => PinEventTypes.Falling,
+                _ => throw new ArgumentException("Invalid pin event value.", value)
+            };
         }
 
         private string PinEventTypeToStringValue(PinEventTypes kind)

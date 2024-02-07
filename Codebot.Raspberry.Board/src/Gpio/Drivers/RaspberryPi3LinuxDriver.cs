@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Buffers.Binary;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -69,38 +70,38 @@ namespace Codebot.Raspberry.Board.Drivers
         /// <returns>The pin number in the driver's logical numbering scheme.</returns>
         protected internal override int ConvertPinNumberToLogicalNumberingScheme(int pinNumber)
         {
-            switch (pinNumber)
+            return pinNumber switch
             {
-                case 3: return 2;
-                case 5: return 3;
-                case 7: return 4;
-                case 8: return 14;
-                case 10: return 15;
-                case 11: return 17;
-                case 12: return 18;
-                case 13: return 27;
-                case 15: return 22;
-                case 16: return 23;
-                case 18: return 24;
-                case 19: return 10;
-                case 21: return 9;
-                case 22: return 25;
-                case 23: return 11;
-                case 24: return 8;
-                case 26: return 7;
-                case 27: return 0;
-                case 28: return 1;
-                case 29: return 5;
-                case 31: return 6;
-                case 32: return 12;
-                case 33: return 13;
-                case 35: return 19;
-                case 36: return 16;
-                case 37: return 26;
-                case 38: return 20;
-                case 40: return 21;
-                default: throw new ArgumentException($"Board (header) pin {pinNumber} is not a GPIO pin on the {GetType().Name} device.", nameof(pinNumber));
-            }
+                3 => 2,
+                5 => 3,
+                7 => 4,
+                8 => 14,
+                10 => 15,
+                11 => 17,
+                12 => 18,
+                13 => 27,
+                15 => 22,
+                16 => 23,
+                18 => 24,
+                19 => 10,
+                21 => 9,
+                22 => 25,
+                23 => 11,
+                24 => 8,
+                26 => 7,
+                27 => 0,
+                28 => 1,
+                29 => 5,
+                31 => 6,
+                32 => 12,
+                33 => 13,
+                35 => 19,
+                36 => 16,
+                37 => 26,
+                38 => 20,
+                40 => 21,
+                _ => throw new ArgumentException($"Board (header) pin {pinNumber} is not a GPIO pin on the {GetType().Name} device.", nameof(pinNumber))
+            };
         }
 
         /// <summary>
@@ -175,7 +176,7 @@ namespace Codebot.Raspberry.Board.Drivers
         /// </summary>
         /// <param name="pinNumber">The pin number in the driver's logical numbering scheme.</param>
         /// <returns>The value of the pin.</returns>
-        public unsafe override PinValue Read(int pinNumber)
+        protected internal unsafe override PinValue Read(int pinNumber)
         {
             ValidatePinNumber(pinNumber);
 
@@ -269,21 +270,13 @@ namespace Codebot.Raspberry.Board.Drivers
                 return;
             }
 
-            byte modeToPullMode;
-            switch (mode)
+            byte modeToPullMode = mode switch
             {
-                case PinMode.Input:
-                    modeToPullMode = 0;
-                    break;
-                case PinMode.InputPullDown:
-                    modeToPullMode = 1;
-                    break;
-                case PinMode.InputPullUp:
-                    modeToPullMode = 2;
-                    break;
-                default:
-                    throw new ArgumentException($"{mode} is not supported as a pull up/down mode.");
-            }
+                PinMode.Input => (byte)0,
+                PinMode.InputPullDown => (byte)1,
+                PinMode.InputPullUp => (byte)2,
+                _ => throw new ArgumentException($"{mode} is not supported as a pull up/down mode.")
+            };
 
             /*
              * This is the process outlined by the BCM2835 datasheet on how to set the pull mode.
@@ -414,7 +407,7 @@ namespace Codebot.Raspberry.Board.Drivers
         /// </summary>
         /// <param name="pinNumber">The pin number in the driver's logical numbering scheme.</param>
         /// <param name="value">The value to be written to the pin.</param>
-        public override void Write(int pinNumber, PinValue value)
+        protected internal override void Write(int pinNumber, PinValue value)
         {
             ValidatePinNumber(pinNumber);
 
@@ -448,20 +441,6 @@ namespace Codebot.Raspberry.Board.Drivers
             set { *(ulong*)(_registerViewPointer->GPCLR) = value; }
         }
 
-        private static uint ReadUint(byte[] data)
-        {
-            // return BinaryPrimitives.ReadUInt32BigEndian(data);
-            // return BitConverter.ToUInt32(data, 0);
-            int i = 0;
-            byte tmp = data[i + 3];
-            data[i + 3] = data[i];
-            data[i] = tmp;
-            tmp = data[i + 2];
-            data[i + 2] = data[i + 1];
-            data[i + 1] = tmp;
-            return BitConverter.ToUInt32(data, i);
-        }
-
         /// <summary>
         /// Returns the peripheral base address on the CPU bus of the raspberry pi based on the ranges set within the device tree.
         /// </summary>
@@ -480,15 +459,15 @@ namespace Codebot.Raspberry.Board.Drivers
             {
                 // get the Peripheral Base Address on the VC bus from the device tree this is to be used to verify that
                 // the right thing is being read and should always be 0x7E000000
-                vcBusPeripheralBaseAddress = ReadUint(rdr.ReadBytes(4));  //BinaryPrimitives.ReadUInt32BigEndian(rdr.ReadBytes(4));
+                vcBusPeripheralBaseAddress = BinaryPrimitives.ReadUInt32BigEndian(rdr.ReadBytes(4));
 
                 // get the Peripheral Base Address on the CPU bus from the device tree.
-                cpuBusPeripheralBaseAddress = ReadUint(rdr.ReadBytes(4));  // BinaryPrimitives.ReadUInt32BigEndian(rdr.ReadBytes(4));
+                cpuBusPeripheralBaseAddress = BinaryPrimitives.ReadUInt32BigEndian(rdr.ReadBytes(4));
 
                 // if the CPU bus Peripheral Base Address is 0 then assume that this is a 64 bit address and so read the next 32 bits.
                 if (cpuBusPeripheralBaseAddress == 0)
                 {
-                    cpuBusPeripheralBaseAddress = ReadUint(rdr.ReadBytes(4)); ;  //BinaryPrimitives.ReadUInt32BigEndian(rdr.ReadBytes(4));
+                    cpuBusPeripheralBaseAddress = BinaryPrimitives.ReadUInt32BigEndian(rdr.ReadBytes(4));
                 }
 
                 // if the address values don't fall withing known values for the chipsets associated with the Pi2, Pi3 and Pi4 then assume an error

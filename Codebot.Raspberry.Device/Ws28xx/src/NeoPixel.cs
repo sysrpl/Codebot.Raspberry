@@ -26,9 +26,10 @@ namespace Codebot.Raspberry.Device
             Changed = true;
         }
 
-        public bool Changed { get; internal set; }
+        public bool Changed { get; set; }
 
         private Color color;
+        private double hue;
 
         public Color Color
         {
@@ -36,9 +37,12 @@ namespace Codebot.Raspberry.Device
             set
             {
                 color = value;
+                hue = color.GetHue() / 360d;
                 Changed = true;
             }
         }
+
+        public int Data { get; set; }
 
         public NeoPixel Mix(Color a, Color b, double m)
         {
@@ -54,6 +58,24 @@ namespace Codebot.Raspberry.Device
                 int green = (int)(a.G * i + b.G * m);
                 Color = Color.FromArgb(red, green, blue);
             }
+            return this;
+        }
+
+        public NeoPixel Hue(double h)
+        {
+            Color = ColorRGB.FromHSL(h, 1, 0.5);
+            return this;
+        }
+
+        public NeoPixel Lightness(double l)
+        {
+            Color = ColorRGB.FromHSL(hue, 1, l);
+            return this;
+        }
+
+        public NeoPixel Saturation(double s)
+        {
+            Color = ColorRGB.FromHSL(hue, s, 0.5);
             return this;
         }
 

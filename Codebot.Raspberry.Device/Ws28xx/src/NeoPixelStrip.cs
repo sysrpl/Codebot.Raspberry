@@ -9,8 +9,8 @@ namespace Codebot.Raspberry.Device
     /// <summary>
     /// The WS28XX device class represents a strip of WS28XX NeoPixels
     /// </summary>
-    /// <remarks>This device communicates with WS28XX NeoPixels using SPI MOSI</remarks>
-    [Device("WS28XX", "NeoPixel Strip", Category = "Lighting", Remarks = "Must use SPI MOSI")]
+    /// <remarks>This device communicates with WS28XX NeoPixels using SPI over GPIO 10</remarks>
+    [Device("WS28XX", "NeoPixel Strip", Category = "Lighting", Remarks = "Must use GPIO 10")]
     public sealed class NeoPixelStrip : HardwareDevice, IDisposable, IEnumerable<NeoPixel>
     {
         /// <summary>
@@ -18,9 +18,9 @@ namespace Codebot.Raspberry.Device
         /// </summary>
         private class PixelData
         {
-            const int BytesPerComponent = 3;
-            const int BytesPerPixel = BytesPerComponent * 3;
-            static readonly byte[] lookup = new byte[256 * BytesPerComponent];
+            private const int BytesPerComponent = 3;
+            private const int BytesPerPixel = BytesPerComponent * 3;
+            private static readonly byte[] lookup = new byte[256 * BytesPerComponent];
 
             static PixelData()
             {
@@ -38,33 +38,34 @@ namespace Codebot.Raspberry.Device
             // The NeoPixels require a 50us delay (all zeros) after. Since Spi freq is not exactly
             // as requested 100us is used here with good practical results. 100us @ 2.4Mbps and 8bit
             // data means we have to add 30 bytes of zero padding.
-            const int ResetDelayInBytes = 30;
+            private const int ResetDelayInBytes = 30;
 
-            public byte[] Bytes { get; private set; }
+            private byte[] data;
+            public Span<byte> Data => data;
 
             public void Resize(int count)
             {
-                Bytes = new byte[count * BytesPerPixel + ResetDelayInBytes];
+                data = new byte[count * BytesPerPixel + ResetDelayInBytes];
             }
 
             public void SetPixel(int index, Color color)
             {
                 var offset = index * BytesPerPixel;
-                Bytes[offset++] = lookup[color.G * BytesPerComponent + 0];
-                Bytes[offset++] = lookup[color.G * BytesPerComponent + 1];
-                Bytes[offset++] = lookup[color.G * BytesPerComponent + 2];
-                Bytes[offset++] = lookup[color.R * BytesPerComponent + 0];
-                Bytes[offset++] = lookup[color.R * BytesPerComponent + 1];
-                Bytes[offset++] = lookup[color.R * BytesPerComponent + 2];
-                Bytes[offset++] = lookup[color.B * BytesPerComponent + 0];
-                Bytes[offset++] = lookup[color.B * BytesPerComponent + 1];
-                Bytes[offset++] = lookup[color.B * BytesPerComponent + 2];
+                data[offset++] = lookup[color.G * BytesPerComponent + 0];
+                data[offset++] = lookup[color.G * BytesPerComponent + 1];
+                data[offset++] = lookup[color.G * BytesPerComponent + 2];
+                data[offset++] = lookup[color.R * BytesPerComponent + 0];
+                data[offset++] = lookup[color.R * BytesPerComponent + 1];
+                data[offset++] = lookup[color.R * BytesPerComponent + 2];
+                data[offset++] = lookup[color.B * BytesPerComponent + 0];
+                data[offset++] = lookup[color.B * BytesPerComponent + 1];
+                data[offset++] = lookup[color.B * BytesPerComponent + 2];
             }
         }
 
-        readonly PixelData data;
-        readonly SpiDevice device;
-        readonly List<NeoPixel> pixels;
+        private readonly PixelData data;
+        private readonly SpiDevice device;
+        private readonly List<NeoPixel> pixels;
 
         /// <summary>
         /// Create a new strip of count neopixels
@@ -123,7 +124,10 @@ namespace Codebot.Raspberry.Device
         public void Reset()
         {
             foreach (var p in pixels)
+            {
                 p.Color = Color.Black;
+                p.Data = 0;
+            }
         }
 
         /// <summary>
@@ -141,7 +145,7 @@ namespace Codebot.Raspberry.Device
                     p.Changed = false;
                 }
             }
-            device.Write(data.Bytes);
+            device.Write(data.Data);
             return true;
         }
 

@@ -68,7 +68,7 @@ namespace Codebot.Raspberry.Device
 
         private GpioPin selectPin;  // Low for commands, high for characters
         private GpioPin enablePin;  // Activated by a high pulse
-        private readonly GpioPin[] dataPins;
+        private GpioPin[] dataPins;
 
         private byte functionBits;
         private byte controlBits;
@@ -92,16 +92,16 @@ namespace Codebot.Raspberry.Device
             dataPins[5] = Pi.Gpio.Pin(d5);
             dataPins[6] = Pi.Gpio.Pin(d6);
             dataPins[7] = Pi.Gpio.Pin(d7);
-            selectPin.Kind = PinKind.Output;
-            enablePin.Kind = PinKind.Output;
-            dataPins[0].Kind = PinKind.Output;
-            dataPins[1].Kind = PinKind.Output;
-            dataPins[2].Kind = PinKind.Output;
-            dataPins[3].Kind = PinKind.Output;
-            dataPins[4].Kind = PinKind.Output;
-            dataPins[5].Kind = PinKind.Output;
-            dataPins[6].Kind = PinKind.Output;
-            dataPins[7].Kind = PinKind.Output;
+            selectPin.Mode = GpioPinMode.Output;
+            enablePin.Mode = GpioPinMode.Output;
+            dataPins[0].Mode = GpioPinMode.Output;
+            dataPins[1].Mode = GpioPinMode.Output;
+            dataPins[2].Mode = GpioPinMode.Output;
+            dataPins[3].Mode = GpioPinMode.Output;
+            dataPins[4].Mode = GpioPinMode.Output;
+            dataPins[5].Mode = GpioPinMode.Output;
+            dataPins[6].Mode = GpioPinMode.Output;
+            dataPins[7].Mode = GpioPinMode.Output;
             if (fourBitMode)
                 functionBits = LCD_4BITMODE;
             else

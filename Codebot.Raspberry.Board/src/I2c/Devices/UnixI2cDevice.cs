@@ -13,11 +13,11 @@ namespace Codebot.Raspberry.Board.I2c
     /// </summary>
     internal class UnixI2cDevice : I2cDevice
     {
-        private static readonly object _initializationLock = new object();
         private const string DefaultRaspberryPath = "/dev/i2c";
         private readonly I2cConnectionSettings _settings;
         private int _deviceFileDescriptor = -1;
         private I2cFunctionalityFlags _functionalities;
+        private static readonly object s_initializationLock = new object();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnixI2cDevice"/> class that will use the specified settings to communicate with the I2C device.
@@ -50,7 +50,7 @@ namespace Codebot.Raspberry.Board.I2c
             }
 
             string deviceFileName = $"{RaspberryPath}-{_settings.BusId}";
-            lock (_initializationLock)
+            lock (s_initializationLock)
             {
                 if (_deviceFileDescriptor >= 0)
                 {
@@ -61,7 +61,7 @@ namespace Codebot.Raspberry.Board.I2c
 
                 if (_deviceFileDescriptor < 0)
                 {
-                    throw new IOException($"Error {Marshal.GetLastWin32Error()}. Cannot open I2C device file '{deviceFileName}'.");
+                    throw new IOException($"Error {Marshal.GetLastWin32Error()}. Can not open I2C device file '{deviceFileName}'.");
                 }
 
                 I2cFunctionalityFlags tempFlags;
@@ -98,7 +98,7 @@ namespace Codebot.Raspberry.Board.I2c
                 messagesPtr[messageCount++] = new i2c_msg()
                 {
                     flags = I2cMessageFlags.I2C_M_WR,
-                    addr = (ushort)_settings.DeviceAddress,
+                    addr = (ushort)_settings.RaspberryAddress,
                     len = (ushort)writeBufferLength,
                     buf = writeBuffer
                 };
@@ -109,7 +109,7 @@ namespace Codebot.Raspberry.Board.I2c
                 messagesPtr[messageCount++] = new i2c_msg()
                 {
                     flags = I2cMessageFlags.I2C_M_RD,
-                    addr = (ushort)_settings.DeviceAddress,
+                    addr = (ushort)_settings.RaspberryAddress,
                     len = (ushort)readBufferLength,
                     buf = readBuffer
                 };
@@ -130,7 +130,7 @@ namespace Codebot.Raspberry.Board.I2c
 
         private unsafe void FileInterfaceTransfer(byte* writeBuffer, byte* readBuffer, int writeBufferLength, int readBufferLength)
         {
-            int result = Interop.ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_SLAVE_FORCE, (ulong)_settings.DeviceAddress);
+            int result = Interop.ioctl(_deviceFileDescriptor, (uint)I2cSettings.I2C_SLAVE_FORCE, (ulong)_settings.RaspberryAddress);
             if (result < 0)
             {
                 throw new IOException($"Error {Marshal.GetLastWin32Error()} performing I2C data transfer.");
