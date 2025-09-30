@@ -9,12 +9,13 @@
             "type": "process",
             "args": [
                 "build",
+                "${workspaceFolder}/pixelcli/pixelcli.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
-            ],
+                    ],
             "options": {
                 "cwd": "${fileDirname}"
-            },      
+            },
             "problemMatcher": "$msCompile",
             "group": {
                 "kind": "build",

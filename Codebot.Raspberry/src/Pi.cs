@@ -23,7 +23,7 @@ namespace Codebot.Raspberry
         /// </summary>
         public static void Wait(double milliseconds)
         {
-            var timer = new Timer();
+            var timer = new Codebot.Raspberry.Common.Timer();
             double seconds = milliseconds / 1000.0;
             while (seconds - timer.ElapsedSeconds > 1.0)
                 System.Threading.Thread.Sleep(100);

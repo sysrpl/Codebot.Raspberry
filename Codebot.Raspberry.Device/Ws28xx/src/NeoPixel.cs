@@ -13,8 +13,11 @@ namespace Codebot.Raspberry.Device
             return convert;
         }
 
-        public static implicit operator Color(NeoPixel p) => p.color;
-        public static implicit operator NeoPixel(Color c) => FromColor(c);
+        public static implicit operator Color (NeoPixel p) => p.color;
+        public static implicit operator ColorRGB (NeoPixel p) => new ColorRGB(p.color);
+
+        public static implicit operator NeoPixel (Color c) => FromColor(c);
+        public static implicit operator NeoPixel (ColorRGB c) => FromColor(c);
 
         public NeoPixel() : this(Color.Black)
         {

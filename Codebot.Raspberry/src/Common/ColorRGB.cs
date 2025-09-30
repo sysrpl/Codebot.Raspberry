@@ -16,6 +16,16 @@ namespace Codebot.Raspberry.Common
             B = value.B;
         }
 
+        public static ColorRGB operator +(ColorRGB a, ColorRGB b)
+        {
+            return new ColorRGB
+            {
+                R = (byte)Math.Min(a.R + b.R, 255),
+                G = (byte)Math.Min(a.G + b.G, 255),
+                B = (byte)Math.Min(a.B + b.B, 255)
+            };
+        }
+
         public static implicit operator Color(ColorRGB rgb) => Color.FromArgb(rgb.R, rgb.G, rgb.B);
         public static explicit operator ColorRGB(Color c) => new ColorRGB(c);
 
