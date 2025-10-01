@@ -70,17 +70,17 @@ namespace Codebot.Raspberry.Device
         /// <summary>
         /// Create a new strip of count neopixels
         /// </summary>
-        public NeoPixelStrip(int count)
+        public NeoPixelStrip(int count, int bus = 0)
         {
             data = new PixelData();
-            var settings = new SpiConnectionSettings(0, 0)
+            var settings = new SpiConnectionSettings(bus, 0)
             {
                 ClockFrequency = 2_400_000,
                 Mode = SpiMode.Mode0,
                 DataBitLength = 8
             };
             device = SpiDevice.Create(settings);
-            pixels = new List<NeoPixel>();
+            pixels = [];
             Count = count;
         }
 
