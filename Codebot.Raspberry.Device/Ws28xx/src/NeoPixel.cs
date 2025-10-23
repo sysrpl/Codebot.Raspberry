@@ -45,7 +45,16 @@ namespace Codebot.Raspberry.Device
             }
         }
 
+        public Color Secondary { get; set; }
+        public double Stamp { get; set; }
         public int Data { get; set; }
+
+        public NeoPixel Add(Color a)
+        {
+            var b = Color;
+            Color = Color.FromArgb(Math.Clamp(a.R + b.R, 0, 255), Math.Clamp(a.G + b.G, 0, 255), Math.Clamp(a.B + b.B, 0, 255));
+            return this;
+        }
 
         public NeoPixel Mix(Color a, Color b, double m)
         {
@@ -67,6 +76,45 @@ namespace Codebot.Raspberry.Device
         public NeoPixel Hue(double h)
         {
             Color = ColorRGB.FromHSL(h, 1, 0.5);
+            return this;
+        }
+
+        public NeoPixel Intensity(double i)
+        {
+            i = Math.Clamp(i, 0, 1);
+            if (i == 0.5)
+                return this;
+            if (i == 0)
+            {
+                Color = Color.Black;
+                return this;
+            }
+            if (i == 1)
+            {
+                Color = Color.White;
+                return this;
+            }
+            var c = Color;
+            if (c == Color.Black)
+                return this;
+            double r = c.R;
+            double g = c.G;
+            double b = c.B;
+            if (i > 0.5)
+            {
+                i = (i - 0.5) / 0.5;
+                r += i * 255;
+                g += i * 255;
+                b += i * 255;
+            }
+            else
+            {
+                i /= 0.5;
+                r *= i;
+                g *= i;
+                b *= i;
+            }
+            Color = Color.FromArgb((byte)Math.Clamp(r, 0, 255), (byte)Math.Clamp(g, 0, 255), (byte)Math.Clamp(b, 0, 255));
             return this;
         }
 

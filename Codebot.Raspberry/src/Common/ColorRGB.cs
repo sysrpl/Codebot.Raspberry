@@ -101,9 +101,9 @@ namespace Codebot.Raspberry.Common
             }
             return new ColorRGB
             {
-                R = Convert.ToByte(r * 255),
-                G = Convert.ToByte(g * 255),
-                B = Convert.ToByte(b * 255)
+                R = Convert.ToByte(Math.Clamp(r, 0, 1) * 255),
+                G = Convert.ToByte(Math.Clamp(g, 0, 1) * 255),
+                B = Convert.ToByte(Math.Clamp(b, 0, 1) * 255)
             };
         }
 

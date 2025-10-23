@@ -67,15 +67,17 @@ namespace Codebot.Raspberry.Device
         private readonly SpiDevice device;
         private readonly List<NeoPixel> pixels;
 
+
         /// <summary>
         /// Create a new strip of count neopixels
         /// </summary>
-        public NeoPixelStrip(int count, int bus = 0)
+        public NeoPixelStrip(int count, int bus = 0, int clock =  2_400_000)
         {
+            Bus = bus;
             data = new PixelData();
             var settings = new SpiConnectionSettings(bus, 0)
             {
-                ClockFrequency = 2_400_000,
+                ClockFrequency = clock,
                 Mode = SpiMode.Mode0,
                 DataBitLength = 8
             };
@@ -110,6 +112,11 @@ namespace Codebot.Raspberry.Device
         }
 
         /// <summary>
+        /// Get the neopixels strip SPI data bus
+        /// </summary>
+        public int Bus { get; private set; }
+
+        /// <summary>
         /// Gets or sets a neopixel by index
         /// </summary>
         public NeoPixel this[int index]
@@ -126,6 +133,8 @@ namespace Codebot.Raspberry.Device
             foreach (var p in pixels)
             {
                 p.Color = Color.Black;
+                p.Secondary = Color.Black;
+                p.Stamp = 0;
                 p.Data = 0;
             }
         }
